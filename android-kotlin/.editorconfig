@@ -1,0 +1,24 @@
+# KtLint configuration for Arthur's Life App
+# See: https://pinterest.github.io/ktlint/latest/rules/configuration-ktlint/
+
+# Enable Android Kotlin Style Guide rules
+android=true
+
+# Disable specific rules if needed (uncomment to use)
+# disabled_rules=import-ordering,no-wildcard-imports
+
+# Maximum line length
+max_line_length=120
+
+# Insert final newline
+insert_final_newline=true
+
+# Charset
+charset=utf-8
+
+# Indentation
+indent_style=space
+indent_size=4
+
+# Trim trailing whitespace
+trim_trailing_whitespace=true

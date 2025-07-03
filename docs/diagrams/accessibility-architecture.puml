@@ -1,0 +1,65 @@
+@startuml accessibility-architecture
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Arthur's Life App - Accessibility Architecture
+
+Person(arthur, "Arthur", "Child with accessibility needs")
+
+System_Boundary(android, "Android System") {
+  System_Ext(talkback, "TalkBack Service", "Screen reader")
+  System_Ext(magnification, "Magnification Service", "Text and UI scaling")
+  System_Ext(highcontrast, "High Contrast Service", "Color accessibility")
+  System_Ext(keyboard, "Keyboard Navigation", "External keyboard support")
+}
+
+System_Boundary(app, "Arthur's Life App") {
+  Container_Boundary(presentation, "Presentation Layer") {
+    Component(semantics, "Accessibility Semantics", "Kotlin + Compose", "Content descriptions, roles, and state descriptions for all UI elements")
+    Component(navigation, "Focus Navigation", "Kotlin + Compose", "Logical tab order and keyboard navigation support")
+    Component(theming, "Adaptive Theming", "Kotlin + Compose", "Dynamic color contrast and text scaling support")
+  }
+  
+  Container_Boundary(domain, "Domain Layer") {
+    Component(a11yservice, "AccessibilityService", "Kotlin", "Business rules for accessibility preferences and adaptive behavior")
+    Component(userprefs, "User Preferences", "Kotlin", "Arthur's accessibility settings and customizations")
+  }
+  
+  Container_Boundary(infra, "Infrastructure Layer") {
+    Component(prefsstore, "PreferencesDataStore", "Kotlin", "Persistent storage for accessibility settings")
+  }
+}
+
+arthur --> app : "Uses with assistive\ntechnologies"
+
+' Android system interactions
+app --> talkback : "Provides semantic\ninformation"
+app --> magnification : "Supports text\nscaling"
+app --> highcontrast : "Adapts colors"
+app --> keyboard : "Handles focus\nnavigation"
+
+' Internal accessibility flow
+semantics --> a11yservice : "Queries accessibility\npreferences"
+navigation --> a11yservice : "Gets navigation\nrules"
+theming --> a11yservice : "Applies visual\nadaptations"
+
+a11yservice --> userprefs : "Reads Arthur's\npreferences"
+userprefs --> prefsstore : "Persists settings"
+
+' Feedback loops
+talkback --> arthur : "Speaks content\ndescriptions"
+magnification --> arthur : "Enlarges text\nand UI"
+highcontrast --> arthur : "Improves color\nvisibility"
+
+note right of a11yservice
+  Business rules include:
+  • Minimum touch target sizes
+  • Content description patterns
+  • Voice announcement timing
+  • High contrast color mappings
+  • Focus order algorithms
+end note
+
+SHOW_LEGEND()
+@enduml

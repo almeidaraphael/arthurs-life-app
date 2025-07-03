@@ -1,0 +1,40 @@
+@startuml c4-container
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Arthur's Life App - Container Diagram
+
+Person(arthur, "Arthur", "Child user")
+Person(parent, "Parent/Caregiver", "App administrator")
+System_Ext(talkback, "Android TalkBack", "Accessibility service")
+
+System_Boundary(arthurslife, "Arthur's Life App") {
+  Container(mainactivity, "MainActivity", "Kotlin + Jetpack Compose", "Single activity hosting all screens with accessibility-first UI design")
+  
+  Container(presentation, "Presentation Layer", "Kotlin + Compose + ViewModels", "MVVM architecture with reactive UI state management and accessibility semantics")
+  
+  Container(application, "Application Layer", "Kotlin", "Use cases orchestrating domain operations: EarnTokenUseCase, RedeemRewardUseCase, TrackProgressUseCase")
+  
+  Container(domain, "Domain Layer", "Kotlin", "Core business logic: User aggregate, Token economy rules, Task management, Reward system")
+  
+  Container(infrastructure, "Infrastructure Layer", "Kotlin", "Data persistence, preferences, and external service implementations")
+  
+  ContainerDb(roomdb, "Room Database", "SQLite", "Local offline-first storage for user data, tasks, tokens, and rewards")
+  
+  ContainerDb(datastore, "DataStore", "Preferences", "Encrypted storage for user preferences and app settings")
+}
+
+arthur --> mainactivity : "Interacts with\naccessible UI"
+parent --> mainactivity : "Configures app\nthrough admin screens"
+mainactivity --> talkback : "Provides content\ndescriptions"
+
+mainactivity --> presentation : "User interactions"
+presentation --> application : "Triggers use cases"
+application --> domain : "Executes business logic"
+domain --> infrastructure : "Persists data"
+infrastructure --> roomdb : "CRUD operations"
+infrastructure --> datastore : "Settings & preferences"
+
+SHOW_LEGEND()
+@enduml

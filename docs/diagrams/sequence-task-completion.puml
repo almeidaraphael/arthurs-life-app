@@ -1,0 +1,67 @@
+@startuml sequence-task-completion
+!theme vibrant
+
+title Arthur Completes a Task - Sequence Diagram
+
+actor Arthur as "Arthur"
+participant "TaskButton\n(Compose UI)" as UI
+participant "TasksViewModel" as VM
+participant "EarnTokenUseCase" as UC
+participant "Task" as Task
+participant "User" as User
+participant "RewardCalculationService" as RCS
+participant "UserRepository" as UR
+participant "TalkBack" as TB
+
+note over Arthur, TB : Arthur's Daily Routine Flow
+
+Arthur -> UI : Taps "Brush Teeth" task
+activate UI
+
+UI -> TB : Announces "Task completed!"
+TB -> Arthur : Speaks announcement
+
+UI -> VM : onTaskCompleted(taskId)
+activate VM
+
+VM -> UC : execute(userId, taskId)
+activate UC
+
+UC -> Task : markCompleted(by: User)
+activate Task
+
+Task -> RCS : calculateTokenReward(task, user)
+activate RCS
+RCS -> User : getCurrentLevel()
+RCS -> Task : getDifficulty()
+RCS --> UC : TokenAmount(5)
+deactivate RCS
+
+Task --> UC : TaskCompletion
+deactivate Task
+
+UC -> User : earnTokens(amount)
+activate User
+User -> User : updateBalance()
+User -> User : checkLevelUp()
+User --> UC : TokenTransaction
+deactivate User
+
+UC -> UR : save(user)
+UR --> UC : Success
+
+UC --> VM : Result.Success(newBalance)
+deactivate UC
+
+VM -> VM : updateUiState()
+VM --> UI : UiState(newBalance, celebration)
+deactivate VM
+
+UI -> UI : showCelebrationAnimation()
+UI -> TB : "You earned 5 tokens! Balance: 23"
+TB -> Arthur : Speaks token update
+
+deactivate UI
+
+note over Arthur : Arthur sees visual feedback\nand hears audio confirmation
+@enduml

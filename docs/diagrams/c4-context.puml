@@ -1,0 +1,23 @@
+@startuml c4-context
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Arthur's Life App - System Context
+
+Person(arthur, "Arthur", "A child user who needs accessible, gamified support for daily routines and positive behavior reinforcement")
+Person(parent, "Parent/Caregiver", "Sets up tasks, manages rewards, and monitors Arthur's progress while ensuring his safety and privacy")
+System_Ext(talkback, "Android TalkBack", "System accessibility service that reads screen content aloud for Arthur")
+System_Ext(accessibility, "Android Accessibility Services", "Platform services for large text, high contrast, and keyboard navigation")
+
+System_Boundary(device, "Arthur's Android Device") {
+  System(arthurslife, "Arthur's Life App", "Native Android app providing token-based gamification system for daily tasks with accessibility-first design")
+}
+
+arthur --> arthurslife : "Completes tasks,\nredeems rewards,\nviews progress"
+parent --> arthurslife : "Sets up tasks,\nconfigures rewards,\nreviews progress"
+arthurslife --> talkback : "Provides semantic\ncontent descriptions"
+arthurslife --> accessibility : "Supports large text,\nhigh contrast,\nkeyboard navigation"
+
+SHOW_LEGEND()
+@enduml

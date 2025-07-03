@@ -1,0 +1,83 @@
+# IDE and Editor Files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS Generated Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Temporary Files
+TMP/
+*.tmp
+*.temp
+.cxx/
+.externalNativeBuild/
+.cache/
+
+# Node.js (if any web components are added later)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment Variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Build artifacts (general)
+build/
+dist/
+target/
+out/
+
+# Documentation build outputs
+docs/_build/
+docs/.doctrees/
+
+# Kotlin/Android/Gradle
+.gradle/
+**/build/
+**/out/
+!gradle/wrapper/gradle-wrapper.jar
+*.iml
+*.hprof
+*.kotlin_module
+*.class
+*.jar
+*.apk
+*.ap_*
+*.dex
+*.log
+*.cxx/
+*.idea/
+*.DS_Store
+captures/
+.externalNativeBuild/
+.cxx/
+local.properties
+
+# Kotlin build cache
+.kotlin/
+
+# Gradle configuration cache
+android-kotlin/build/reports/configuration-cache/
