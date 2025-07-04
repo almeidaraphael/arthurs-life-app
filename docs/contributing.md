@@ -851,7 +851,7 @@ composeTestRule
 
 ### Resources
 
-- **Architecture Questions**: Review [Domain-Driven Design Guide](ddd.md)
+- **Architecture Questions**: Review [Domain-Driven Design Guide](architecture.md)
 - **Setup Issues**: Check [Getting Started Guide](getting-started.md)
 - **Testing Help**: See [Testing Documentation](testing.md)
 - **Accessibility**: Review Jetpack Compose accessibility docs
@@ -878,4 +878,4 @@ and more accessible.
 
 ---
 
-[🏠 Back to Main README](../README.md) | [🚀 Setup Guide](getting-started.md) | [🏗️ Architecture](ddd.md) | [🧪 Testing](testing.md)
+[🏠 Back to Main README](../README.md) | [🚀 Setup Guide](getting-started.md) | [🏗️ Architecture](architecture.md) | [🧪 Testing](testing.md)

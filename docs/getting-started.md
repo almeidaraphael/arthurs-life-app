@@ -196,10 +196,10 @@ cd arthurs-life-app/android-kotlin
 
 After completing setup:
 
-1. **Explore the codebase** - [Architecture Guide](ddd.md)
+1. **Explore the codebase** - [Architecture Guide](architecture.md)
 2. **Review development standards** - [Contributing Guide](contributing.md)  
 3. **Understand our testing approach** - [Testing Documentation](testing.md)
-4. **Learn about our tools** - [Development Tools](development-tools.md)
+4. **Learn about our tools** - [Development Tools](development-tools-guide.md)
 
 ## Debugging
 
@@ -367,4 +367,4 @@ Welcome to the Arthur's Life Android App development team! 🚀
 
 ---
 
-[🏠 Back to Main README](../README.md) | [📝 Contributing Guide](contributing.md) | [🏗️ Architecture](ddd.md)
+[🏠 Back to Main README](../README.md) | [📝 Contributing Guide](contributing.md) | [🏗️ Architecture](architecture.md)

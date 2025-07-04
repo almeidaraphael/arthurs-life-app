@@ -5,7 +5,6 @@ plugins {
     id("kotlin-kapt")
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.ktlint)
     alias(libs.plugins.detekt)
 }
 
@@ -79,6 +78,9 @@ dependencies {
 
     // Security
     implementation(libs.bcrypt)
+    
+    // Static Analysis
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.7")
 
     // Testing
     testImplementation(libs.junit)
@@ -90,25 +92,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 }
 
-// KtLint Configuration
-ktlint {
-    version.set("1.5.0")
-    android.set(true)
-    ignoreFailures.set(false)
-    reporters {
-        reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.PLAIN)
-        reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.CHECKSTYLE)
-        reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.SARIF)
-    }
-    filter {
-        exclude("**/generated/**")
-        exclude("**/build/**")
-    }
-    additionalEditorconfig =
-        mapOf(
-            "max_line_length" to "120",
-        )
-}
 
 // Detekt Configuration
 detekt {
@@ -126,8 +109,29 @@ tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
         sarif.required.set(true)
         md.required.set(true)
     }
+    autoCorrect = true
+}
+
+// Add detekt format task
+tasks.register("detektFormat", io.gitlab.arturbosch.detekt.Detekt::class) {
+    description = "Formats code with detekt"
+    parallel = true
+    config.setFrom(files("$rootDir/config/detekt/detekt.yml"))
+    buildUponDefaultConfig = true
+    autoCorrect = true
+    setSource(files("src/main/java", "src/test/java"))
+    include("**/*.kt")
+    include("**/*.kts")
+    exclude("**/build/**")
+    exclude("**/generated/**")
+    reports {
+        html.required.set(false)
+        xml.required.set(false)
+        txt.required.set(false)
+        sarif.required.set(false)
+        md.required.set(false)
+    }
 }
 
 // Task dependencies for quality checks
-tasks.getByPath("preBuild").dependsOn("ktlintCheck")
 tasks.getByPath("preBuild").dependsOn("detekt")

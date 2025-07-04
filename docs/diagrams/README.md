@@ -20,7 +20,7 @@ to visualize and document the system architecture before implementation.
 | Topic | Link |
 |-------|------|
 | **Contributing** | [../contributing.md](../contributing.md) |
-| **Architecture** | [../ddd.md](../ddd.md) |
+| **Architecture** | [../architecture.md](../architecture.md) |
 | **Tech Stack** | [../tech-stack.md](../tech-stack.md) |
 
 ## Usage Instructions
@@ -39,4 +39,4 @@ make -C docs/diagrams all
 
 ---
 
-[🏠 Back to Main README](../../README.md) | [📝 Contributing](../contributing.md) | [🏗️ Architecture](../ddd.md)
+[🏠 Back to Main README](../../README.md) | [📝 Contributing](../contributing.md) | [🏗️ Architecture](../architecture.md)

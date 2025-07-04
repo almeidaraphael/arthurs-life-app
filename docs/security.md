@@ -20,7 +20,7 @@ ensuring safe operation of the token economy system.
 |-------|------|
 | **Setup Guide** | [getting-started.md](getting-started.md) |
 | **Contributing** | [contributing.md](contributing.md) |
-| **Architecture** | [ddd.md](ddd.md) |
+| **Architecture** | [architecture.md](architecture.md) |
 | **Testing** | [testing.md](testing.md) |
 
 ## Security Overview

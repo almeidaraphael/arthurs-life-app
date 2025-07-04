@@ -293,4 +293,4 @@ app/src/main/java/com/arthurslife/app/
 
 ---
 
-[🏠 Back to Main README](../README.md) | [🚀 Setup Guide](getting-started.md) | [📝 Contributing](contributing.md) | [🏗️ Architecture](ddd.md)
+[🏠 Back to Main README](../README.md) | [🚀 Setup Guide](getting-started.md) | [📝 Contributing](contributing.md) | [🏗️ Architecture](architecture.md)
