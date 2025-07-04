@@ -22,6 +22,10 @@ fun authenticationNavigation(
                 onRoleSelected = { role ->
                     navController.navigate("pin_entry/${role.name}")
                 },
+                onChildDirectAccess = {
+                    // Direct access for child - no PIN required
+                    onAuthSuccess(UserRole.CHILD)
+                },
             )
         }
 

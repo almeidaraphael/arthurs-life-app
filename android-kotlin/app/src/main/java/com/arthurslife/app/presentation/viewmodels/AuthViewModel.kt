@@ -16,74 +16,82 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel
-    @Inject
-    constructor(
-        private val authenticationService: AuthenticationService,
-        private val authenticationSessionService: AuthenticationSessionService,
-    ) : ViewModel() {
-        private val _authState = MutableStateFlow(AuthenticationState())
-        val authState: StateFlow<AuthenticationState> = _authState.asStateFlow()
+@Inject
+constructor(
+    private val authenticationService: AuthenticationService,
+    private val authenticationSessionService: AuthenticationSessionService,
+) : ViewModel() {
+    private val _authState = MutableStateFlow(AuthenticationState())
+    val authState: StateFlow<AuthenticationState> = _authState.asStateFlow()
 
-        init {
-            viewModelScope.launch {
-                val currentUser = authenticationSessionService.getCurrentUser()
-                if (currentUser != null) {
-                    _authState.value =
-                        AuthenticationState(
-                            currentUser = currentUser,
-                            isAuthenticated = true,
-                            currentRole = currentUser.role,
-                        )
-                }
-            }
-        }
-
-        fun authenticateWithPin(
-            pin: String,
-            onResult: (AuthResult) -> Unit,
-        ) {
-            viewModelScope.launch {
-                val result = authenticationService.authenticateWithPin(pin)
-                updateAuthState(result)
-                onResult(result)
-            }
-        }
-
-        fun switchRole(
-            targetRole: UserRole,
-            onResult: (AuthResult) -> Unit,
-        ) {
-            viewModelScope.launch {
-                val result = authenticationService.switchRole(targetRole)
-                if (result is AuthResult.Success) {
-                    updateAuthState(result)
-                }
-                onResult(result)
-            }
-        }
-
-        private fun updateAuthState(result: AuthResult) {
-            _authState.value =
-                when (result) {
-                    is AuthResult.Success ->
-                        AuthenticationState(
-                            currentUser = result.user,
-                            isAuthenticated = true,
-                            currentRole = result.user.role,
-                        )
-                    else ->
-                        AuthenticationState(
-                            currentUser = null,
-                            isAuthenticated = false,
-                            currentRole = null,
-                        )
-                }
-        }
-
-        fun logout() {
-            viewModelScope.launch {
-                authenticationService.logout()
-                _authState.value = AuthenticationState()
+    init {
+        viewModelScope.launch {
+            val currentUser = authenticationSessionService.getCurrentUser()
+            if (currentUser != null) {
+                _authState.value =
+                    AuthenticationState(
+                        currentUser = currentUser,
+                        isAuthenticated = true,
+                        currentRole = currentUser.role,
+                    )
             }
         }
     }
+
+    fun authenticateWithPin(
+        pin: String,
+        onResult: (AuthResult) -> Unit,
+    ) {
+        viewModelScope.launch {
+            val result = authenticationService.authenticateWithPin(pin)
+            updateAuthState(result)
+            onResult(result)
+        }
+    }
+
+    fun switchRole(
+        targetRole: UserRole,
+        onResult: (AuthResult) -> Unit,
+    ) {
+        viewModelScope.launch {
+            val result = authenticationService.switchRole(targetRole)
+            if (result is AuthResult.Success) {
+                updateAuthState(result)
+            }
+            onResult(result)
+        }
+    }
+
+    fun authenticateAsChild(onResult: (AuthResult) -> Unit) {
+        viewModelScope.launch {
+            val result = authenticationService.authenticateAsChild()
+            updateAuthState(result)
+            onResult(result)
+        }
+    }
+
+    private fun updateAuthState(result: AuthResult) {
+        _authState.value =
+            when (result) {
+                is AuthResult.Success ->
+                    AuthenticationState(
+                        currentUser = result.user,
+                        isAuthenticated = true,
+                        currentRole = result.user.role,
+                    )
+                else ->
+                    AuthenticationState(
+                        currentUser = null,
+                        isAuthenticated = false,
+                        currentRole = null,
+                    )
+            }
+    }
+
+    fun logout() {
+        viewModelScope.launch {
+            authenticationService.logout()
+            _authState.value = AuthenticationState()
+        }
+    }
+}

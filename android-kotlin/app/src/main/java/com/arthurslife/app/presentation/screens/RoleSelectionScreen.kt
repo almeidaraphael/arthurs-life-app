@@ -17,12 +17,15 @@ import androidx.compose.ui.unit.dp
 import com.arthurslife.app.domain.user.UserRole
 
 @Composable
-fun roleSelectionScreen(onRoleSelected: (UserRole) -> Unit) {
+fun roleSelectionScreen(
+    onRoleSelected: (UserRole) -> Unit,
+    onChildDirectAccess: () -> Unit,
+) {
     Column(
         modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(16.dp),
+        Modifier
+            .fillMaxSize()
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
@@ -34,11 +37,11 @@ fun roleSelectionScreen(onRoleSelected: (UserRole) -> Unit) {
         Spacer(modifier = Modifier.height(32.dp))
 
         Button(
-            onClick = { onRoleSelected(UserRole.CHILD) },
+            onClick = { onChildDirectAccess() },
             modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .height(80.dp),
+            Modifier
+                .fillMaxWidth()
+                .height(80.dp),
         ) {
             Text(
                 text = "Child",
@@ -51,9 +54,9 @@ fun roleSelectionScreen(onRoleSelected: (UserRole) -> Unit) {
         Button(
             onClick = { onRoleSelected(UserRole.CAREGIVER) },
             modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .height(80.dp),
+            Modifier
+                .fillMaxWidth()
+                .height(80.dp),
         ) {
             Text(
                 text = "Caregiver",

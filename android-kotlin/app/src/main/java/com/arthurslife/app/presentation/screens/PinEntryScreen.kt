@@ -56,9 +56,9 @@ fun pinEntryScreen(
 
     Column(
         modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(16.dp),
+        Modifier
+            .fillMaxSize()
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
@@ -85,7 +85,7 @@ fun pinEntryScreen(
                 isLoading = true
                 viewModel.authenticateWithPin(newPin) { result ->
                     isLoading = false
-                    errorMessage = handleAuthResult(result, targetRole, onAuthSuccess)
+                    errorMessage = handleAuthResult(result, targetRole)
                 }
             },
         )
@@ -167,8 +167,8 @@ private fun authenticateButton(
         if (isLoading) {
             androidx.compose.material3.CircularProgressIndicator(
                 modifier =
-                    androidx.compose.ui.Modifier
-                        .size(16.dp),
+                androidx.compose.ui.Modifier
+                    .size(16.dp),
             )
         } else {
             Text("Authenticate")
@@ -179,12 +179,11 @@ private fun authenticateButton(
 private fun handleAuthResult(
     result: com.arthurslife.app.domain.auth.AuthResult,
     targetRole: UserRole,
-    onAuthSuccess: () -> Unit,
 ): String? =
     when (result) {
         is com.arthurslife.app.domain.auth.AuthResult.Success -> {
             if (result.user.role == targetRole) {
-                onAuthSuccess()
+                // Authentication success is handled by LaunchedEffect watching authState
                 null
             } else {
                 "Wrong role for this PIN"

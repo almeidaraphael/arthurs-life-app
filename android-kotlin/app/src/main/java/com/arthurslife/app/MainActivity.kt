@@ -9,13 +9,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
+import com.arthurslife.app.domain.user.UserRole
+import com.arthurslife.app.presentation.navigation.MainAppNavigation
 import com.arthurslife.app.presentation.navigation.authenticationNavigation
 import com.arthurslife.app.presentation.viewmodels.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -50,31 +51,35 @@ fun arthursLifeApp(authViewModel: AuthViewModel = hiltViewModel()) {
     val navController = rememberNavController()
 
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-        if (authState.isAuthenticated) {
+        if (authState.isAuthenticated && authState.currentRole != null) {
             // Navigate to main app based on user role
-            mainAppContent(
-                userRole = authState.currentRole,
+            MainAppNavigation(
+                userRole = authState.currentRole!!,
                 modifier = Modifier.padding(innerPadding),
+                onRoleSwitch = { newRole ->
+                    // Role switching is handled by the AuthViewModel
+                    // The UI will automatically update when authState changes
+                },
             )
         } else {
             authenticationNavigation(
                 navController = navController,
-                onAuthSuccess = { _ ->
-                    // Authentication handled by ViewModel
+                onAuthSuccess = { role ->
+                    // Set authentication state based on role
+                    when (role) {
+                        UserRole.CHILD -> {
+                            // For child, directly authenticate without PIN
+                            authViewModel.authenticateAsChild { _ ->
+                                // Authentication result handled by ViewModel state
+                            }
+                        }
+                        UserRole.CAREGIVER -> {
+                            // PIN authentication for caregiver is handled in PinEntryScreen
+                            // This callback should only be called after successful PIN entry
+                        }
+                    }
                 },
             )
         }
     }
-}
-
-@Composable
-fun mainAppContent(
-    userRole: com.arthurslife.app.domain.user.UserRole?,
-    modifier: Modifier = Modifier,
-) {
-    // Temporary placeholder for authenticated user content
-    Text(
-        text = "Welcome ${userRole?.name ?: "User"}! Main app coming soon...",
-        modifier = modifier,
-    )
 }

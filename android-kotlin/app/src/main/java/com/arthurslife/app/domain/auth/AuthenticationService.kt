@@ -8,6 +8,8 @@ interface AuthenticationService {
 
     suspend fun switchRole(targetRole: UserRole): AuthResult
 
+    suspend fun authenticateAsChild(): AuthResult
+
     suspend fun logout()
 }
 
