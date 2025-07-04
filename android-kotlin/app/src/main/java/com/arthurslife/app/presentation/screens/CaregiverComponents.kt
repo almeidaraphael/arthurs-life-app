@@ -1,8 +1,6 @@
 package com.arthurslife.app.presentation.screens
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -10,14 +8,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.TrendingUp
-import androidx.compose.material.icons.filled.ExpandMore
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -28,13 +20,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.arthurslife.app.presentation.theme.BaseAppTheme
+import com.arthurslife.app.presentation.theme.components.SemanticIconType
+import com.arthurslife.app.presentation.theme.components.ThemeAwareAvatar
+import com.arthurslife.app.presentation.theme.components.ThemeAwareIcon
 
 @Composable
-fun ChildSelectorSection() {
+fun childSelectorSection(theme: BaseAppTheme) {
     Column {
         Text(
             text = "Managing",
@@ -45,32 +40,23 @@ fun ChildSelectorSection() {
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            ChildAvatar()
+            childAvatar(theme = theme)
             Spacer(modifier = Modifier.width(8.dp))
-            ChildNameWithDropdown()
+            childNameWithDropdown(theme = theme)
         }
     }
 }
 
 @Composable
-fun ChildAvatar() {
-    Box(
-        modifier =
-        Modifier
-            .size(32.dp)
-            .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.primary),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(
-            text = "👦",
-            style = MaterialTheme.typography.titleMedium,
-        )
-    }
+fun childAvatar(theme: BaseAppTheme) {
+    ThemeAwareAvatar(
+        theme = theme,
+        size = 32.dp,
+    )
 }
 
 @Composable
-fun ChildNameWithDropdown() {
+fun childNameWithDropdown(theme: BaseAppTheme) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -86,8 +72,9 @@ fun ChildNameWithDropdown() {
         IconButton(
             onClick = { expanded = !expanded },
         ) {
-            Icon(
-                imageVector = Icons.Default.ExpandMore,
+            ThemeAwareIcon(
+                semanticType = SemanticIconType.EXPAND_MORE,
+                theme = theme,
                 contentDescription = "Switch child",
                 tint = MaterialTheme.colorScheme.onPrimaryContainer,
             )
@@ -106,7 +93,7 @@ fun ChildNameWithDropdown() {
 }
 
 @Composable
-fun CaregiverRoleLabel() {
+fun caregiverRoleLabel() {
     Text(
         text = "Caregiver",
         style = MaterialTheme.typography.titleMedium,
@@ -115,7 +102,7 @@ fun CaregiverRoleLabel() {
 }
 
 @Composable
-fun RowScope.TokenBalanceColumn() {
+fun RowScope.tokenBalanceColumn(theme: BaseAppTheme) {
     Column(
         modifier = Modifier.weight(1f),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -123,8 +110,9 @@ fun RowScope.TokenBalanceColumn() {
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Icon(
-                imageVector = Icons.Default.Star,
+            ThemeAwareIcon(
+                semanticType = SemanticIconType.TOKEN,
+                theme = theme,
                 contentDescription = "Tokens",
                 tint = Color(DashboardConstants.GOLD_COLOR),
                 modifier = Modifier.size(20.dp),
@@ -145,7 +133,7 @@ fun RowScope.TokenBalanceColumn() {
 }
 
 @Composable
-fun RowScope.WeeklyProgressColumn() {
+fun RowScope.weeklyProgressColumn(theme: BaseAppTheme) {
     Column(
         modifier = Modifier.weight(1f),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -153,8 +141,9 @@ fun RowScope.WeeklyProgressColumn() {
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.TrendingUp,
+            ThemeAwareIcon(
+                semanticType = SemanticIconType.PROGRESS_INDICATOR,
+                theme = theme,
                 contentDescription = "Progress",
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(20.dp),
@@ -176,12 +165,12 @@ fun RowScope.WeeklyProgressColumn() {
 }
 
 @Composable
-fun OverviewStatsRow() {
+fun overviewStatsRow(theme: BaseAppTheme) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        TokenBalanceColumn()
-        WeeklyProgressColumn()
+        tokenBalanceColumn(theme = theme)
+        weeklyProgressColumn(theme = theme)
     }
 }

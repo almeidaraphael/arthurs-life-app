@@ -5,12 +5,14 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.arthurslife.app.domain.user.UserRole
-import com.arthurslife.app.presentation.screens.pinEntryScreen
-import com.arthurslife.app.presentation.screens.roleSelectionScreen
+import com.arthurslife.app.presentation.screens.PinEntryScreen
+import com.arthurslife.app.presentation.screens.RoleSelectionScreen
+import com.arthurslife.app.presentation.theme.ThemeViewModel
 
 @Composable
-fun authenticationNavigation(
+fun AuthenticationNavigation(
     navController: NavHostController,
+    themeViewModel: ThemeViewModel,
     onAuthSuccess: (UserRole) -> Unit,
 ) {
     NavHost(
@@ -18,7 +20,8 @@ fun authenticationNavigation(
         startDestination = "role_selection",
     ) {
         composable("role_selection") {
-            roleSelectionScreen(
+            RoleSelectionScreen(
+                themeViewModel = themeViewModel,
                 onRoleSelected = { role ->
                     navController.navigate("pin_entry/${role.name}")
                 },
@@ -33,8 +36,9 @@ fun authenticationNavigation(
             val roleString = backStackEntry.arguments?.getString("role") ?: return@composable
             val targetRole = UserRole.valueOf(roleString)
 
-            pinEntryScreen(
+            PinEntryScreen(
                 targetRole = targetRole,
+                themeViewModel = themeViewModel,
                 onAuthSuccess = { onAuthSuccess(targetRole) },
                 onCancel = { navController.popBackStack() },
             )

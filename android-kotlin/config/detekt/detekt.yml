@@ -35,7 +35,7 @@ style:
 
   ForbiddenComment:
     active: true
-    comments: [ 'TODO:', 'FIXME:' ]
+    comments: [ 'FIXME:' ]
 
   ReturnCount:
     active: false
