@@ -81,3 +81,10 @@ local.properties
 
 # Gradle configuration cache
 android-kotlin/build/reports/configuration-cache/
+
+# Build reports and analysis
+**/build/reports/
+**/build/tmp/
+**/build/kotlin/
+**/build/generated/
+**/build/intermediates/

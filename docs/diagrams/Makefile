@@ -43,6 +43,11 @@ docker-svg:
 	@docker run --rm -v $(PWD):/data plantuml/plantuml -tsvg /data/c4-component.puml
 	@docker run --rm -v $(PWD):/data plantuml/plantuml -tsvg /data/sequence-task-completion.puml
 	@docker run --rm -v $(PWD):/data plantuml/plantuml -tsvg /data/accessibility-architecture.puml
+	@docker run --rm -v $(PWD):/data plantuml/plantuml -tsvg /data/theme-system-architecture.puml
+	@docker run --rm -v $(PWD):/data plantuml/plantuml -tsvg /data/security-architecture.puml
+	@docker run --rm -v $(PWD):/data plantuml/plantuml -tsvg /data/database-entity-relationship.puml
+	@docker run --rm -v $(PWD):/data plantuml/plantuml -tsvg /data/user-authentication-flow.puml
+	@docker run --rm -v $(PWD):/data plantuml/plantuml -tsvg /data/token-economy-state-machine.puml
 	@echo "SVG diagrams generated successfully with Docker!"
 
 # Generate PDF images using Docker
@@ -78,6 +83,27 @@ container:
 component:
 	@plantuml -tsvg diagrams/c4-component.puml
 
+# Generate specific new diagrams (local PlantUML)
+.PHONY: theme
+theme:
+	@plantuml -tsvg theme-system-architecture.puml
+
+.PHONY: security
+security:
+	@plantuml -tsvg security-architecture.puml
+
+.PHONY: database
+database:
+	@plantuml -tsvg database-entity-relationship.puml
+
+.PHONY: auth
+auth:
+	@plantuml -tsvg user-authentication-flow.puml
+
+.PHONY: token
+token:
+	@plantuml -tsvg token-economy-state-machine.puml
+
 # Generate specific diagram using Docker
 .PHONY: docker-context
 docker-context:
@@ -90,6 +116,27 @@ docker-container:
 .PHONY: docker-component
 docker-component:
 	@docker run --rm -v $(PWD):/data plantuml/plantuml -tsvg /data/c4-component.puml
+
+# Generate specific new diagrams using Docker
+.PHONY: docker-theme
+docker-theme:
+	@docker run --rm -v $(PWD):/data plantuml/plantuml -tsvg /data/theme-system-architecture.puml
+
+.PHONY: docker-security
+docker-security:
+	@docker run --rm -v $(PWD):/data plantuml/plantuml -tsvg /data/security-architecture.puml
+
+.PHONY: docker-database
+docker-database:
+	@docker run --rm -v $(PWD):/data plantuml/plantuml -tsvg /data/database-entity-relationship.puml
+
+.PHONY: docker-auth
+docker-auth:
+	@docker run --rm -v $(PWD):/data plantuml/plantuml -tsvg /data/user-authentication-flow.puml
+
+.PHONY: docker-token
+docker-token:
+	@docker run --rm -v $(PWD):/data plantuml/plantuml -tsvg /data/token-economy-state-machine.puml
 
 # Check if PlantUML is installed
 .PHONY: check
@@ -117,6 +164,13 @@ validate-docker:
 	@docker run --rm -v $(PWD):/data plantuml/plantuml -checkonly /data/c4-context.puml
 	@docker run --rm -v $(PWD):/data plantuml/plantuml -checkonly /data/c4-container.puml
 	@docker run --rm -v $(PWD):/data plantuml/plantuml -checkonly /data/c4-component.puml
+	@docker run --rm -v $(PWD):/data plantuml/plantuml -checkonly /data/sequence-task-completion.puml
+	@docker run --rm -v $(PWD):/data plantuml/plantuml -checkonly /data/accessibility-architecture.puml
+	@docker run --rm -v $(PWD):/data plantuml/plantuml -checkonly /data/theme-system-architecture.puml
+	@docker run --rm -v $(PWD):/data plantuml/plantuml -checkonly /data/security-architecture.puml
+	@docker run --rm -v $(PWD):/data plantuml/plantuml -checkonly /data/database-entity-relationship.puml
+	@docker run --rm -v $(PWD):/data plantuml/plantuml -checkonly /data/user-authentication-flow.puml
+	@docker run --rm -v $(PWD):/data plantuml/plantuml -checkonly /data/token-economy-state-machine.puml
 	@echo "All PlantUML diagrams are valid!"
 
 # Help target
@@ -132,6 +186,11 @@ help:
 	@echo "  context   - Generate only context diagram"
 	@echo "  container - Generate only container diagram"
 	@echo "  component - Generate only component diagram"
+	@echo "  theme     - Generate only theme system architecture diagram"
+	@echo "  security  - Generate only security architecture diagram"
+	@echo "  database  - Generate only database ERD diagram"
+	@echo "  auth      - Generate only authentication flow diagram"
+	@echo "  token     - Generate only token economy state machine diagram"
 	@echo ""
 	@echo "Docker-based (no local PlantUML installation required):"
 	@echo "  docker-png       - Generate PNG diagrams with Docker"
@@ -141,6 +200,11 @@ help:
 	@echo "  docker-context   - Generate only context diagram with Docker"
 	@echo "  docker-container - Generate only container diagram with Docker"
 	@echo "  docker-component - Generate only component diagram with Docker"
+	@echo "  docker-theme     - Generate only theme system architecture with Docker"
+	@echo "  docker-security  - Generate only security architecture with Docker"
+	@echo "  docker-database  - Generate only database ERD with Docker"
+	@echo "  docker-auth      - Generate only authentication flow with Docker"
+	@echo "  docker-token     - Generate only token economy state machine with Docker"
 	@echo ""
 	@echo "Utilities:"
 	@echo "  clean        - Remove generated files"

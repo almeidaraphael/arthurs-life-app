@@ -1,4 +1,4 @@
-# Security & Privacy Planning
+# Security & Privacy Practices
 
 [🏠 Back to Main README](../README.md) | [📋 Planning Overview](README.md)
 

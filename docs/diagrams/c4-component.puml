@@ -6,7 +6,7 @@ LAYOUT_WITH_LEGEND()
 title Arthur's Life App - Domain Layer Components
 
 Container_Boundary(domain, "Domain Layer - Arthur's Core Business Logic") {
-  Component(user, "User Aggregate", "Kotlin", "Arthur's profile, token balance, level progression, and accessibility preferences")
+  Component(user, "User Aggregate", "Kotlin", "Arthur's profile, token balance, level progression, accessibility preferences, and role-based theme settings")
   Component(task, "Task Entity", "Kotlin", "Task definitions, completion tracking, difficulty levels, and reward calculations")
   Component(reward, "Reward Entity", "Kotlin", "Available rewards, costs, categories, and redemption rules")
   Component(token, "Token Value Object", "Kotlin", "Immutable token amounts with validation and arithmetic operations")
@@ -22,10 +22,20 @@ Container_Boundary(application, "Application Layer - Use Cases") {
   Component(trackprogress, "TrackProgressUseCase", "Kotlin", "Compiles progress reports and achievement calculations")
 }
 
+Container_Boundary(presentation, "Presentation Layer - Theme System") {
+  Component(thememanager, "ThemeManager", "Kotlin", "Central theme registry and lookup system for all available themes")
+  Component(themeviewmodel, "ThemeViewModel", "Kotlin", "Theme state management and persistence with role-based defaults")
+  Component(themeawareicon, "ThemeAwareIcon", "Compose", "Semantic icon system that maps abstract concepts to theme-specific icons")
+  Component(themeawareavatar, "ThemeAwareAvatar", "Compose", "Role-appropriate avatar display based on current theme")
+  Component(themeawarebackground, "ThemeAwareBackground", "Compose", "Theme-specific background styling with images and tints")
+  Component(themeselector, "ThemeSelector", "Compose", "Interactive theme selection UI with live preview")
+}
+
 Container_Boundary(infrastructure, "Infrastructure Layer - Data Access") {
   Component(userrepo, "UserRepositoryImpl", "Kotlin", "Room database operations for user data persistence")
   Component(taskrepo, "TaskRepositoryImpl", "Kotlin", "Task storage, retrieval, and completion history")
   Component(rewardrepo, "RewardRepositoryImpl", "Kotlin", "Reward catalog management and redemption tracking")
+  Component(themepreferences, "ThemePreferencesDataStore", "Kotlin", "Persistent theme storage with per-role preference management")
 }
 
 ' Use case dependencies on domain
@@ -47,6 +57,15 @@ earntoken --> userrepo : "Persists updates"
 earntoken --> taskrepo : "Records completion"
 redeemreward --> userrepo : "Saves balance"
 redeemreward --> rewardrepo : "Logs redemption"
+
+' Theme system dependencies
+themeviewmodel --> thememanager : "Retrieves themes"
+themeviewmodel --> themepreferences : "Loads/saves preferences"
+themeviewmodel --> user : "Gets role-based defaults"
+themeawareicon --> thememanager : "Gets semantic icons"
+themeawareavatar --> thememanager : "Gets theme avatar"
+themeawarebackground --> thememanager : "Gets background styling"
+themeselector --> themeviewmodel : "Changes theme selection"
 
 SHOW_LEGEND()
 @enduml

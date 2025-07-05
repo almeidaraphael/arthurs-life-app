@@ -1,0 +1,194 @@
+@startuml user-authentication-flow
+!theme plain
+
+title Arthur's Life App - User Authentication Flow
+
+actor Child as "Child User"
+actor Parent as "Parent/Caregiver"
+participant MainActivity as "MainActivity"
+participant AuthViewModel as "AuthViewModel"
+participant AuthService as "AuthService"
+participant SecurityService as "SecurityService"
+participant AndroidKeystore as "Android Keystore"
+participant BiometricAuth as "Biometric Authentication"
+participant SessionManager as "SessionManager"
+participant SecurityMonitor as "Security Monitor"
+participant DataStore as "DataStore"
+
+== Initial App Launch ==
+
+Child -> MainActivity: Launch app
+MainActivity -> AuthViewModel: checkAuthState()
+AuthViewModel -> SessionManager: getCurrentSession()
+SessionManager -> DataStore: getStoredSession()
+DataStore -> SessionManager: return session data
+
+alt Session exists and valid
+    SessionManager -> AuthViewModel: return valid session
+    AuthViewModel -> MainActivity: authenticated(CHILD)
+    MainActivity -> Child: show child dashboard
+else Session expired or invalid
+    SessionManager -> AuthViewModel: return null
+    AuthViewModel -> MainActivity: unauthenticated()
+    MainActivity -> Child: show role selection screen
+end
+
+== Role Selection ==
+
+Child -> MainActivity: select "Child Mode"
+MainActivity -> AuthViewModel: setUserRole(CHILD)
+AuthViewModel -> MainActivity: show child interface
+
+== Parent Mode Access ==
+
+Parent -> MainActivity: select "Parent Mode"
+MainActivity -> AuthViewModel: requestParentAuth()
+AuthViewModel -> MainActivity: show PIN entry screen
+
+== PIN Authentication ==
+
+Parent -> MainActivity: enter PIN
+MainActivity -> AuthViewModel: authenticate(pin)
+AuthViewModel -> SecurityService: validatePin(pin)
+SecurityService -> AndroidKeystore: retrieveStoredPinHash()
+AndroidKeystore -> SecurityService: return pinHash
+SecurityService -> SecurityService: compareHashes(enteredPin, storedHash)
+
+alt PIN Valid
+    SecurityService -> AuthViewModel: authentication successful
+    AuthViewModel -> SessionManager: createSession(PARENT)
+    SessionManager -> DataStore: storeSession(sessionData)
+    SessionManager -> AuthViewModel: session created
+    AuthViewModel -> MainActivity: authenticated(PARENT)
+    MainActivity -> Parent: show parent dashboard
+    
+    ' Security logging
+    SecurityService -> SecurityMonitor: logSecurityEvent(AUTH_SUCCESS)
+    
+    ' Auto-logout timer
+    SessionManager -> SessionManager: startAutoLogoutTimer(5 minutes)
+    
+else PIN Invalid
+    SecurityService -> AuthViewModel: authentication failed
+    AuthViewModel -> SecurityService: incrementFailedAttempts()
+    SecurityService -> SecurityMonitor: logSecurityEvent(AUTH_FAILURE)
+    
+    alt Failed attempts < 3
+        AuthViewModel -> MainActivity: show error, retry
+        MainActivity -> Parent: "Incorrect PIN, try again"
+    else Failed attempts >= 3
+        SecurityService -> AuthViewModel: account locked
+        AuthViewModel -> MainActivity: show lockout screen
+        MainActivity -> Parent: "Account locked for 15 minutes"
+        SecurityService -> SecurityMonitor: logSecurityEvent(ACCOUNT_LOCKED)
+    end
+end
+
+== Optional Biometric Authentication ==
+
+note over Parent, BiometricAuth: Alternative authentication method
+
+Parent -> MainActivity: select "Use Biometric"
+MainActivity -> AuthViewModel: requestBiometricAuth()
+AuthViewModel -> BiometricAuth: authenticate()
+BiometricAuth -> AndroidKeystore: verify biometric
+AndroidKeystore -> BiometricAuth: biometric result
+
+alt Biometric Success
+    BiometricAuth -> AuthViewModel: authentication successful
+    AuthViewModel -> SessionManager: createSession(PARENT)
+    SessionManager -> AuthViewModel: session created
+    AuthViewModel -> MainActivity: authenticated(PARENT)
+    MainActivity -> Parent: show parent dashboard
+    SecurityService -> SecurityMonitor: logSecurityEvent(BIOMETRIC_AUTH_SUCCESS)
+    
+else Biometric Failed
+    BiometricAuth -> AuthViewModel: authentication failed
+    AuthViewModel -> MainActivity: fallback to PIN
+    MainActivity -> Parent: "Biometric failed, enter PIN"
+    SecurityService -> SecurityMonitor: logSecurityEvent(BIOMETRIC_AUTH_FAILURE)
+end
+
+== Session Management ==
+
+note over SessionManager: Session timeout and management
+
+SessionManager -> SessionManager: check session timeout
+alt Session active within timeout
+    SessionManager -> AuthViewModel: session valid
+else Session timeout exceeded
+    SessionManager -> AuthViewModel: session expired
+    AuthViewModel -> MainActivity: logout()
+    MainActivity -> AuthViewModel: clearSession()
+    AuthViewModel -> SessionManager: destroySession()
+    SessionManager -> DataStore: clearStoredSession()
+    SecurityService -> SecurityMonitor: logSecurityEvent(SESSION_TIMEOUT)
+    MainActivity -> Parent: redirect to role selection
+end
+
+== Role Switching ==
+
+note over Child, Parent: Switching between child and parent modes
+
+Parent -> MainActivity: "Switch to Child Mode"
+MainActivity -> AuthViewModel: logout()
+AuthViewModel -> SessionManager: destroySession()
+SessionManager -> DataStore: clearStoredSession()
+AuthViewModel -> MainActivity: unauthenticated()
+MainActivity -> Child: show role selection
+SecurityService -> SecurityMonitor: logSecurityEvent(ROLE_SWITCH)
+
+== Security Monitoring ==
+
+note over SecurityMonitor: Continuous security monitoring
+
+SecurityMonitor -> SecurityMonitor: analyze authentication patterns
+SecurityMonitor -> SecurityMonitor: detect suspicious activities
+
+alt Suspicious pattern detected
+    SecurityMonitor -> SecurityService: trigger security alert
+    SecurityService -> AuthViewModel: force logout
+    AuthViewModel -> MainActivity: security logout
+    MainActivity -> Parent: "Security alert - please re-authenticate"
+end
+
+== Token Economy Access Control ==
+
+note over AuthViewModel: Role-based access to token operations
+
+Parent -> MainActivity: "Award tokens to child"
+MainActivity -> AuthViewModel: checkPermission(AWARD_TOKENS)
+AuthViewModel -> SessionManager: getCurrentUserRole()
+
+alt User is PARENT
+    SessionManager -> AuthViewModel: return PARENT role
+    AuthViewModel -> MainActivity: permission granted
+    MainActivity -> Parent: show token award interface
+else User is CHILD
+    SessionManager -> AuthViewModel: return CHILD role
+    AuthViewModel -> MainActivity: permission denied
+    MainActivity -> Child: "This feature requires parent mode"
+end
+
+== Secure Data Access ==
+
+note over DataStore: Encrypted data storage and retrieval
+
+AuthViewModel -> DataStore: getUserData()
+DataStore -> AndroidKeystore: getEncryptionKey()
+AndroidKeystore -> DataStore: return encryption key
+DataStore -> DataStore: decryptData()
+DataStore -> AuthViewModel: return decrypted user data
+
+== Error Handling ==
+
+note over SecurityService: Secure error handling
+
+SecurityService -> SecurityMonitor: logSecurityEvent(ERROR_OCCURRED)
+SecurityService -> AuthViewModel: return generic error
+AuthViewModel -> MainActivity: show user-friendly error
+MainActivity -> Parent: "Authentication failed, please try again"
+
+note over SecurityService: Never expose sensitive error details
+
+@enduml

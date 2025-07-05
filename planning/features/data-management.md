@@ -122,41 +122,12 @@ Comprehensive data management system for secure storage, backup, synchronization
 ## Technical Implementation
 
 ### Data Structure
-```kotlin
-data class DataBackup(
-    val id: String,
-    val familyId: String,
-    val backupDate: Timestamp,
-    val dataVersion: String,
-    val encryptionKey: String,
-    val backupSize: Long,
-    val backupType: BackupType,
-    val dataCategories: List<DataCategory>,
-    val verificationHash: String,
-    val storageLocation: String
-)
+The data management system requires robust data structures to support family data operations:
 
-data class DataExport(
-    val id: String,
-    val requestedBy: String,
-    val exportType: ExportType,
-    val dataCategories: List<DataCategory>,
-    val timeRange: TimeRange,
-    val format: ExportFormat,
-    val encryptionEnabled: Boolean,
-    val generatedAt: Timestamp,
-    val filePath: String
-)
-
-enum class BackupType {
-    AUTOMATIC, MANUAL, MIGRATION, EMERGENCY
-}
-
-enum class DataCategory {
-    USER_PROFILES, TASKS, TOKENS, REWARDS, ACHIEVEMENTS, 
-    SETTINGS, ANALYTICS, FAMILY_STRUCTURE
-}
-```
+- **Backup Records**: Comprehensive backup metadata including family identification, backup date, data version, encryption information, size metrics, backup type classification, included data categories, verification hashes, and storage location references
+- **Export Requests**: Detailed export tracking including requestor identification, export type, data categories, time range, format specifications, encryption settings, generation timestamp, and file path information
+- **Backup Type Classification**: Support for Automatic, Manual, Migration, and Emergency backup types to handle different backup scenarios
+- **Data Category Organization**: Structured organization of family data including User Profiles, Tasks, Tokens, Rewards, Achievements, Settings, Analytics, and Family Structure components
 
 ### Data Operations
 - **Backup Creation**: Automated and manual backup generation with encryption
@@ -167,59 +138,12 @@ enum class DataCategory {
 - **Cleanup Operations**: Automated cleanup of old data and temporary files
 
 ### Backup System Architecture
-```kotlin
-class DataBackupManager {
-    suspend fun createBackup(familyId: String, backupType: BackupType): Result<DataBackup> {
-        return try {
-            // Gather all family data
-            val familyData = gatherFamilyData(familyId)
-            
-            // Encrypt data
-            val encryptedData = encryptData(familyData, getEncryptionKey(familyId))
-            
-            // Create backup record
-            val backup = DataBackup(
-                id = generateBackupId(),
-                familyId = familyId,
-                backupDate = Timestamp.now(),
-                dataVersion = getCurrentDataVersion(),
-                encryptionKey = getEncryptionKey(familyId),
-                backupSize = encryptedData.size.toLong(),
-                backupType = backupType,
-                dataCategories = DataCategory.values().toList(),
-                verificationHash = calculateHash(encryptedData),
-                storageLocation = uploadToCloudStorage(encryptedData)
-            )
-            
-            // Store backup record
-            saveBackupRecord(backup)
-            
-            Result.success(backup)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
-    
-    suspend fun restoreBackup(backupId: String): Result<Unit> {
-        return try {
-            val backup = getBackupRecord(backupId)
-            val encryptedData = downloadFromCloudStorage(backup.storageLocation)
-            
-            // Verify data integrity
-            val calculatedHash = calculateHash(encryptedData)
-            require(calculatedHash == backup.verificationHash) { "Backup integrity verification failed" }
-            
-            // Decrypt and restore data
-            val familyData = decryptData(encryptedData, backup.encryptionKey)
-            restoreFamilyData(backup.familyId, familyData)
-            
-            Result.success(Unit)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
-}
-```
+The system requires a comprehensive backup management service that handles:
+
+- **Backup Creation Process**: Automated gathering of all family data, encryption using family-specific keys, creation of backup records with metadata including size and verification hashes, upload to secure cloud storage, and local backup record storage
+- **Data Integrity Verification**: Hash calculation and verification to ensure backup completeness and detect corruption during storage or transmission
+- **Backup Restoration Process**: Secure download of backup data from cloud storage, integrity verification through hash comparison, decryption using family encryption keys, and restoration of all family data components
+- **Error Handling**: Comprehensive error handling for network issues, encryption failures, storage problems, and data corruption scenarios with appropriate rollback mechanisms
 
 ### Privacy & Security
 - **Data Encryption**: End-to-end encryption for all sensitive data
@@ -255,4 +179,4 @@ class DataBackupManager {
 
 ---
 
-**Previous:** [Accessibility Features](accessibility-features.md) | **Next:** [Back to Planning Overview](README.md)
+**Related Features:** [Security](security.md) | [Accessibility Features](accessibility-features.md) | [Analytics Insights](analytics-insights.md)

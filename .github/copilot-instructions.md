@@ -2,22 +2,39 @@
 
 ## 🎯 Project Overview
 
-**Arthur's Life** is a native Android family task management application built with Kotlin, Jetpack Compose, and Domain-Driven Design principles. The app features a token-based reward system for children to complete tasks and earn rewards.
+**Arthur's Life** is a family task management Android app built with Kotlin and Jetpack Compose. It uses a gamified token-based reward system to help families organize daily tasks with role-based access for Children, Caregivers, and Admins.
+
+### Current Implementation Status
+- ✅ **Theme System**: Role-based theming with Mario Classic and Material Dark/Light themes
+- ✅ **Authentication**: PIN-based role switching between Child/Caregiver/Admin modes  
+- ✅ **Navigation**: Basic navigation structure with role-specific screens
+- ✅ **Architecture Foundation**: Domain-driven design with clean architecture layers
+- ❌ **Core Features**: Task management, token economy, rewards, achievements (NOT YET IMPLEMENTED)
+
+### Technology Stack
+- **Platform**: Native Android (API 24+, Target SDK 35)
+- **Language**: Kotlin 2.1.0 with Java 21
+- **UI**: Jetpack Compose with Material Design 3
+- **Architecture**: Domain-Driven Design (DDD) with Clean Architecture
+- **Database**: Room with SQLite (offline-first)
+- **DI**: Hilt
+- **Static Analysis**: Detekt (replaces KtLint)
+- **Testing**: JUnit, Espresso
 
 ## 🏗️ Architecture Principles
 
 ### Domain-Driven Design (DDD)
-- **Aggregate Roots**: User, Task, Token, Reward
-- **Value Objects**: UserRole, TaskCategory, TaskDifficulty
-- **Domain Events**: TaskCompleted, TokensEarned, RewardRedeemed
-- **Repository Pattern**: Clean data layer separation
+- **Aggregates**: User, Task, Achievement, Token, Reward
+- **Value Objects**: UserRole, TaskCategory, TaskDifficulty, AchievementType
+- **Domain Events**: TaskCompleted, TokensEarned, RewardRedeemed, AchievementUnlocked
+- **Repository Pattern**: Clean separation between domain and infrastructure
 
-### SOLID Principles
-- **Single Responsibility**: One class, one purpose
-- **Open/Closed**: Extensible for new features
-- **Liskov Substitution**: Proper inheritance
-- **Interface Segregation**: Focused interfaces
-- **Dependency Inversion**: Depend on abstractions
+### SOLID Principles Applied
+- **Single Responsibility**: Each class has one clear purpose
+- **Open/Closed**: Extensible design for new features
+- **Liskov Substitution**: Proper inheritance hierarchies
+- **Interface Segregation**: Focused, cohesive interfaces
+- **Dependency Inversion**: Depend on abstractions, not concretions
 
 ### DRY (Don't Repeat Yourself)
 - Reusable Compose components
@@ -30,65 +47,42 @@
 ### Code Quality Requirements
 - **Java 21** (preferred) or **Java 17** (fallback)
 - **Kotlin 2.1.0** with explicit null safety
-- **100% KtLint compliance** before commits
-- **Detekt static analysis** with zero violations
+- **Detekt compliance** for formatting and static analysis
 - **Unit test coverage** minimum 80% for domain layer
 
-### Ktlint Compliance Rules (MANDATORY)
-- **Function Naming**: All @Composable functions MUST use camelCase (e.g., `taskScreen`, not `TaskScreen`)
+### Detekt Compliance Rules (CURRENT STANDARD)
+- **Function Naming**: Follow camelCase for functions, PascalCase for classes
 - **No Wildcard Imports**: Use specific imports instead of `import package.*`
 - **Explicit Imports**: Import each class/function explicitly
-- **Factory Method Exception**: Only factory methods can start with uppercase letters
-- **Auto-Format Required**: Run `./gradlew ktlintFormat` after every code change
-- **Pre-Commit Check**: Ensure `./gradlew ktlintMainSourceSetFormat` passes before committing
+- **LongParameterList**: Functions with more than 6 parameters should use data classes to group parameters
+- **MagicNumber**: Replace magic numbers with named constants
+- **Auto-Format Required**: Run `./gradlew detektFormat` after every code change
+- **Pre-Commit Check**: Ensure `./gradlew detekt` passes before committing
 
-#### Specific Naming Examples
-```kotlin
-// ✅ Correct: Composable functions use camelCase
-@Composable
-fun taskListScreen() { }
+### Quick Detekt Commands (for fixing errors)
+```bash
+# Navigate to Android project
+cd android-kotlin
 
-@Composable
-fun userProfileCard() { }
+# Run detekt analysis and see errors
+./gradlew detekt
 
-@Composable
-fun pinEntryScreen() { }
+# Check specific detekt report for detailed errors
+cat app/build/reports/detekt/detekt.xml
 
-// ❌ Incorrect: PascalCase for Composables (ktlint error)
-@Composable
-fun TaskListScreen() { }
-
-@Composable
-fun UserProfileCard() { }
-
-@Composable
-fun PinEntryScreen() { }
-```
-
-#### Import Rules
-```kotlin
-// ✅ Correct: Specific imports
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-
-// ❌ Incorrect: Wildcard imports (ktlint error)
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+# Common fixes:
+# - LongParameterList: Create data classes to group 7+ parameters
+# - MagicNumber: Define constants for numeric literals
+# - WildcardImport: Replace import com.example.* with specific imports
 ```
 
 ### Build & Quality Commands
 ```bash
-# Format code
-./gradlew ktlintFormat
+# Navigate to Android project
+cd android-kotlin
+
+# Format code with Detekt
+./gradlew detektFormat
 
 # Static analysis
 ./gradlew detekt
@@ -106,8 +100,53 @@ import androidx.compose.runtime.*
 ### Naming Conventions
 - **Classes**: PascalCase (`TaskRepository`, `UserViewModel`)
 - **Functions**: camelCase (`createTask()`, `validateInput()`)
+- **Composables**: camelCase (`taskScreen()`, `userProfileCard()`)
 - **Constants**: SCREAMING_SNAKE_CASE (`MAX_TASK_NAME_LENGTH`)
 - **Packages**: lowercase (`com.arthurslife.app.domain.task`)
+
+## 📁 Project Structure
+
+```
+android-kotlin/app/src/main/java/com/arthurslife/app/
+├── domain/              # Business logic and entities
+│   ├── user/           # User roles and authentication
+│   ├── task/           # Task domain (basic structure exists)
+│   ├── achievement/    # Achievement domain (basic structure exists)
+│   ├── auth/           # Authentication domain
+│   ├── theme/          # Theme domain models
+│   └── common/         # Shared domain models and exceptions
+├── infrastructure/     # Data layer implementation
+│   ├── database/       # Room entities and DAOs
+│   ├── preferences/    # DataStore implementations
+│   ├── auth/           # Auth repository implementations
+│   ├── task/           # Task repository implementations
+│   ├── achievement/    # Achievement repository implementations
+│   └── user/           # User repository implementations
+├── presentation/       # UI layer with Compose
+│   ├── screens/        # Screen composables (Home, Profile, Task Management, etc)
+│   ├── theme/          # Theme system and theme-aware components
+│   ├── navigation/     # Navigation configuration
+│   └── viewmodels/     # ViewModels (Auth, Task, Achievement)
+├── data/               # Data layer helpers
+│   └── theme/          # Theme preferences data store
+└── di/                 # Hilt dependency injection modules
+```
+
+## 👥 User Roles & Implementation
+
+### Child Role
+- **Primary Theme**: Mario Classic (gamified experience)
+- **Screens**: Home, Tasks, Rewards, Achievements, Profile
+- **Capabilities**: View and complete tasks, see token balance, browse/redeem rewards
+
+### Caregiver Role
+- **Primary Theme**: Material Light/Dark (professional interface)
+- **Screens**: Dashboard, Task Management, Progress, Children, Profile
+- **Capabilities**: Create/manage tasks, set rewards, monitor children's progress
+
+### Admin Role
+- **Access**: Full system administration
+- **Capabilities**: Manage family structure, assign permissions, system settings
 
 ## 📱 UI Development Guidelines
 
@@ -116,6 +155,12 @@ import androidx.compose.runtime.*
 - Apply `@Preview` annotations for design verification
 - Follow Material Design 3 principles
 - Implement proper state hoisting patterns
+
+### Theme System Requirements
+- All UI components must support theme switching
+- Use semantic icon mapping for theme-specific icons
+- Mario Classic theme uses game terminology (Quests, Coins, etc.)
+- Material themes use standard terminology (Tasks, Tokens, etc.)
 
 ### Accessibility Requirements
 - Provide `contentDescription` for images
@@ -157,27 +202,36 @@ import androidx.compose.runtime.*
 - Apply ProGuard obfuscation
 - Validate data at all boundaries
 
-## 📁 Project Structure
+## � Implementation Guidelines
 
-```
-app/src/main/java/com/arthurslife/app/
-├── domain/              # Business logic
-│   ├── user/           # User management
-│   ├── task/           # Task operations
-│   ├── token/          # Token economy
-│   └── reward/         # Reward system
-├── data/               # Data layer
-│   ├── local/         # Room database
-│   ├── repository/    # Data repositories
-│   └── mapper/        # Data mappers
-├── presentation/       # UI layer
-│   ├── screens/       # Screen composables
-│   ├── components/    # Reusable components
-│   ├── theme/         # Material Design
-│   └── navigation/    # Navigation logic
-├── di/                # Dependency injection
-└── util/              # Utilities
-```
+### When Adding New Features
+1. **Start with Domain**: Define entities, value objects, and business rules in `domain/`
+2. **Create Use Cases**: Implement business logic as use cases
+3. **Add Infrastructure**: Repository implementations in `infrastructure/`
+4. **Build UI**: Theme-aware Compose screens in `presentation/screens/`
+5. **Add DI**: Wire dependencies in `di/` modules
+6. **Test**: Comprehensive unit and integration tests
+
+### Current Development Priorities (MVP)
+1. **Task Management System**
+    - Implement task creation, assignment, completion
+    - Build TaskRepository and TaskDao
+    - Create task management screens
+
+2. **Token Economy**
+    - Implement token earning through task completion
+    - Build token balance tracking
+    - Create spending mechanisms
+
+3. **Basic Reward System**
+    - Implement reward catalog
+    - Build token redemption system
+    - Create reward management screens
+
+4. **Achievement System**
+    - Implement basic achievement tracking
+    - Build achievement unlock logic
+    - Create achievement display screens
 
 ## 💡 Code Generation Guidelines
 
@@ -198,6 +252,7 @@ app/src/main/java/com/arthurslife/app/
 - Implement proper error boundaries
 - Add loading states
 - Follow accessibility guidelines
+- Support theme switching (Mario Classic vs Material themes)
 
 ### When generating tests:
 - Include setup and teardown methods
@@ -207,10 +262,10 @@ app/src/main/java/com/arthurslife/app/
 
 ## 🚫 Common Pitfalls to Avoid
 
-### Ktlint Violations (CRITICAL)
-- **No PascalCase Composables** - Use camelCase for @Composable functions (e.g., `taskScreen`, not `TaskScreen`)
+### Detekt Violations (CRITICAL)
+- **Follow camelCase for functions** - Including @Composable functions (e.g., `taskScreen`, not `TaskScreen`)
 - **No wildcard imports** - Import specific classes only (e.g., `import androidx.compose.material3.Button`, not `import androidx.compose.material3.*`)
-- **No factory method confusion** - Only factory methods can start with uppercase letters
+- **Explicit imports** - Import each class/function explicitly
 
 ### General Code Quality
 - **No magic numbers** - Use named constants
@@ -235,7 +290,7 @@ app/src/main/java/com/arthurslife/app/
 ## 🎯 Success Criteria
 
 All generated code must:
-1. **Pass KtLint formatting** - Zero violations in `./gradlew ktlintMainSourceSetFormat`
+1. **Pass Detekt formatting** - Zero violations in `./gradlew detekt`
 2. Follow DDD, SOLID, and DRY principles
 3. Pass Detekt static analysis checks
 4. Include comprehensive tests
@@ -247,7 +302,74 @@ All generated code must:
 
 ### Mandatory Verification
 Before considering any code generation task complete:
-- Run `./gradlew ktlintMainSourceSetFormat` and ensure it passes
+- Run `./gradlew detektFormat` and ensure it passes
+- Run `./gradlew detekt` for static analysis
 - Verify all @Composable functions use camelCase naming
 - Confirm no wildcard imports are used
 - Check that all imports are explicit and specific
+
+### 🔧 Detekt Error Fixing Guide
+
+When encountering detekt errors, follow this systematic approach:
+
+#### Quick Fix Command
+```bash
+cd android-kotlin && ./gradlew detekt
+```
+
+#### Common Error Types & Solutions
+
+**1. LongParameterList (7+ parameters)**
+- **Solution**: Create data classes to group related parameters
+- **Example**: Replace `fun myFunction(a: String, b: Int, c: Boolean, d: List<String>, e: (String) -> Unit, f: () -> Unit, g: Boolean)` 
+- **With**: Create `data class MyFunctionParams(...)` and use `fun myFunction(params: MyFunctionParams)`
+
+**2. MagicNumber (hardcoded numbers)**
+- **Solution**: Define named constants
+- **Example**: Replace `Text(modifier = Modifier.padding(16.dp))` 
+- **With**: `private const val DEFAULT_PADDING = 16` and `Text(modifier = Modifier.padding(DEFAULT_PADDING.dp))`
+
+**3. WildcardImport (import com.example.*)**
+- **Solution**: Replace with explicit imports
+- **Example**: Replace `import androidx.compose.material3.*` 
+- **With**: Individual imports like `import androidx.compose.material3.Button`
+
+#### When Asked to "run detekt and fix errors"
+1. Navigate to `android-kotlin/` directory
+2. Run `./gradlew detekt`
+3. Read errors from `app/build/reports/detekt/detekt.xml`
+4. Fix each error type systematically:
+   - **LongParameterList**: Group parameters into data classes
+   - **MagicNumber**: Extract constants with meaningful names
+   - **WildcardImport**: Use explicit imports
+5. Re-run detekt to verify fixes
+6. Report summary of fixes applied
+
+## 🧭 Context Guidelines for GitHub Copilot
+
+### Current Project State
+- Theme system and authentication are fully implemented
+- Navigation structure exists but screens are mostly placeholders
+- Domain models exist but business logic is missing
+- Database schema is incomplete
+- Core features (tasks, tokens, rewards, achievements) need implementation
+
+### When Asked to Implement Features
+1. Check existing patterns in theme system and authentication code
+2. Follow DDD structure: domain → infrastructure → presentation  
+3. Maintain theme compatibility across all new UI
+4. Add proper error handling and validation
+5. Write tests for new business logic
+
+### File Patterns to Follow
+- Domain interfaces in `domain/[feature]/`
+- Repository implementations in `infrastructure/[feature]/`
+- ViewModels in `presentation/viewmodels/`
+- Theme-aware components in `presentation/theme/components/`
+- DI modules in `di/`
+
+### Key Files for Reference
+- `presentation/theme/` - Theme system implementation patterns
+- `presentation/navigation/MainAppNavigation.kt` - Navigation structure
+- `domain/user/` and `infrastructure/auth/` - Complete implementation examples
+- `di/AuthModule.kt` - Dependency injection patterns

@@ -1,24 +1,35 @@
-# Architecture & Design Principles
+# Architecture & Design Principles - Technical Documentation
 
-[🏠 Back to Main README](../README.md)
+[🏠 Back to Docs Hub](README.md) | [🏠 Main README](../README.md)
 
-## 📋 Page Navigation
+Comprehensive guide to the architectural patterns, design principles, and system structure of Arthur's Life family task management app.
 
-| Section | Description |
-|---------|-------------|
-| [Domain-Driven Design](#domain-driven-design-ddd) | Core DDD principles and implementation |
-| [SOLID Principles](#solid-principles) | Object-oriented design guidelines |
-| [DRY Implementation](#dry-dont-repeat-yourself) | Code reuse strategies |
-| [System Architecture](#system-architecture) | Overall application structure |
+## 📋 Document Overview
 
-## 🔗 Related Documentation
+### Purpose
+Document the architectural decisions, design patterns, and structural organization that guide the development of a maintainable, scalable family task management application.
 
-| Topic | Link |
-|-------|------|
-| **Getting Started** | [getting-started.md](getting-started.md) |
-| **Technology Stack** | [tech-stack.md](tech-stack.md) |
-| **Testing Guide** | [testing.md](testing.md) |
-| **Development Guide** | [development.md](development.md) |
+### Audience
+- **Primary**: Software architects and senior developers designing system components
+- **Secondary**: All developers implementing features and maintaining code
+- **Prerequisites**: Understanding of DDD, SOLID principles, and Android development
+
+### Scope
+Covers domain-driven design implementation, SOLID principles application, DRY strategies, and overall system architecture. Does not include deployment architecture or infrastructure details.
+
+## 🎯 Quick Reference
+
+### Key Information
+- **Summary**: DDD-based architecture with SOLID principles for family task management
+- **Status**: Complete - actively maintained
+- **Last Updated**: 2025-01-06
+- **Related**: [Tech Stack](tech-stack.md), [Development Guide](development.md)
+
+### Common Tasks
+- [Understanding Domain Model](#domain-driven-design-ddd)
+- [Implementing SOLID Principles](#solid-principles)
+- [Applying DRY Strategies](#dry-dont-repeat-yourself)
+- [System Structure Overview](#system-architecture)
 
 ## Domain-Driven Design (DDD)
 
@@ -249,15 +260,17 @@ com.arthurslife.app/
 │   ├── user/           # User aggregate with roles and authentication
 │   ├── task/           # Task management with categories and completion
 │   ├── token/          # Token economy with earning and spending
-│   └── reward/         # Reward system with catalog and redemption
+│   ├── reward/         # Reward system with catalog and redemption
+│   └── theme/          # Theme domain models and business logic
 ├── data/               # Data layer implementation
 │   ├── local/         # Room database and DataStore persistence
 │   ├── repository/    # Repository pattern implementations
-│   └── mapper/        # Domain/data model mapping
+│   ├── mapper/        # Domain/data model mapping
+│   └── theme/         # Theme preferences data store
 ├── presentation/       # UI layer with Jetpack Compose
 │   ├── screens/       # Screen composables organized by feature
 │   ├── components/    # Reusable UI components following DRY
-│   ├── theme/         # Material Design 3 theming
+│   ├── theme/         # Role-based theme system implementation
 │   └── navigation/    # Type-safe navigation configuration
 ├── di/                # Hilt dependency injection modules
 └── util/              # Shared utility functions and extensions
@@ -279,6 +292,34 @@ Presentation → Domain ← Data
 Components   Events   Implementations
 ```
 
+### Architecture Diagrams
+
+#### Domain Layer Components
+![Domain Layer Components](diagrams/c4-component.svg)
+
+The C4 Component diagram shows the detailed structure of Arthur's Life App's domain layer, including:
+- **Domain Layer**: Core business logic with User, Task, Reward, and Token entities
+- **Application Layer**: Use cases orchestrating domain operations
+- **Presentation Layer**: Theme system components including ThemeManager, ThemeViewModel, and theme-aware UI components
+- **Infrastructure Layer**: Repository implementations and theme preferences storage
+
+#### Database Entity Relationships
+![Database Entity Relationship Diagram](diagrams/database-entity-relationship.svg)
+
+The Entity-Relationship diagram illustrates the complete data model with:
+- **11 Core Entities**: User, Family, Task, TokenTransaction, Reward, Achievement, and supporting entities
+- **Relationship Mappings**: Foreign key relationships and cardinalities between entities
+- **Domain Boundaries**: Clear separation between user management, task system, token economy, and achievement tracking
+
+#### Token Economy State Machine
+![Token Economy State Machine](diagrams/token-economy-state-machine.svg)
+
+The state machine diagram captures the complex token economy workflow:
+- **Task Lifecycle**: From assignment through completion and validation
+- **Token Operations**: Earning, spending, and fraud detection mechanisms
+- **Reward System**: Browsing, validation, approval, and fulfillment processes
+- **Security States**: Validation failures, purchase denial, and emergency reset procedures
+
 ### Key Architectural Benefits
 
 - **Separation of Concerns**: Clear boundaries between layers
@@ -287,7 +328,103 @@ Components   Events   Implementations
 - **Reusability**: DRY approach reduces code duplication
 - **Scalability**: DDD patterns support feature growth
 - **Type Safety**: Kotlin's type system prevents common errors
+- **Theme Flexibility**: Role-based theming system supports diverse user preferences
+
+## 🔗 Integration Points
+
+### Dependencies
+- **Internal**: [Tech Stack](tech-stack.md) - Technology choices supporting architecture
+- **Internal**: [Development Guide](development.md) - Implementation workflows
+- **Planning**: [App Structure](../planning/app-structure.md) - High-level system design
+
+### Related Features
+- **Theme System**: Role-based theming architecture in [Theme System](../planning/features/theme-system.md)
+- **User Management**: Role-based access control in [User Management](../planning/features/user-management.md)
+- **Task Management**: Task domain implementation in [Task Management](../planning/features/task-management.md)
+
+## 📊 Success Metrics
+
+### Implementation Goals
+- **Maintainability**: Code follows SOLID principles for easy modification
+- **Testability**: Domain logic independent of Android framework
+- **Scalability**: DDD patterns support feature growth without architectural changes
+- **Code Quality**: DRY implementation reduces duplication and bugs
+
+### Quality Indicators
+- **Separation of Concerns**: Clear boundaries between presentation, domain, and data layers
+- **Dependency Direction**: All dependencies point inward toward domain
+- **Test Coverage**: Domain logic has comprehensive unit test coverage
+- **Code Reuse**: Common patterns implemented as shared components
+
+## 🚧 Implementation Status
+
+**Current Status**: Complete
+
+### Completed Features
+- [x] Domain-driven design implementation with aggregates and value objects
+- [x] SOLID principles applied across all layers
+- [x] DRY strategies implemented for common functionality
+- [x] Clean architecture with clear layer separation
+- [x] Repository pattern for data access abstraction
+- [x] Domain events for cross-aggregate communication
+
+### Future Enhancements
+- [ ] Event sourcing for audit trail capabilities
+- [ ] CQRS implementation for read/write optimization
+- [ ] Microservices architecture for cloud deployment
+- [ ] Advanced caching strategies for performance
+
+## 🔄 Maintenance
+
+### Regular Updates
+- **When to Update**: When adding new aggregates, major refactoring, or architectural changes
+- **Update Process**: Review architectural decisions, update diagrams, validate principles
+- **Review Schedule**: Monthly architecture review, quarterly comprehensive assessment
+
+### Version History
+- **v1.0.0** (2025-01-06): Initial architecture documentation with DDD and SOLID principles
+
+## 📚 Additional Resources
+
+### Internal Documentation
+- [Getting Started](getting-started.md) - Development environment setup
+- [Tech Stack](tech-stack.md) - Technology choices and rationale
+- [Testing Guide](testing.md) - Testing strategies aligned with architecture
+- [Development Guide](development.md) - Implementation workflows
+
+### External Resources
+- [Domain-Driven Design](https://domainlanguage.com/ddd/) - DDD fundamentals
+- [SOLID Principles](https://en.wikipedia.org/wiki/SOLID) - Object-oriented design principles
+- [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html) - Architectural patterns
+- [Android Architecture Guide](https://developer.android.com/topic/architecture) - Android-specific patterns
+
+### Tools and Utilities
+- [PlantUML](https://plantuml.com/) - Architecture diagram generation
+- [Detekt](https://detekt.dev/) - Static analysis for architecture validation
+- [Dependency Analysis](https://github.com/autonomousapps/dependency-analysis-android-gradle-plugin) - Dependency validation
 
 ---
 
-[🏠 Back to Main README](../README.md) | [🚀 Getting Started](getting-started.md) | [🧪 Testing Guide](testing.md)
+## 📝 Contributing
+
+### How to Contribute
+1. **Follow Architectural Principles**: Ensure new code follows DDD and SOLID principles
+2. **Update Documentation**: Reflect architectural changes in this document
+3. **Validate Design**: Review new features against established patterns
+4. **Test Architecture**: Ensure architectural boundaries are maintained
+
+### Review Process
+1. **Architecture Review**: Validate adherence to established principles
+2. **Code Review**: Ensure implementation follows documented patterns
+3. **Documentation Review**: Update architectural documentation as needed
+4. **Integration Testing**: Verify architectural boundaries are maintained
+
+### Style Guidelines
+- Follow established domain modeling patterns
+- Maintain clear separation of concerns
+- Document architectural decisions and rationale
+- Include code examples demonstrating principles
+
+---
+
+**Navigation**: [🏠 Docs Hub](README.md) | [🏠 Main README](../README.md) | [📋 Planning](../planning/README.md)
