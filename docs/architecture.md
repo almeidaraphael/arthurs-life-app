@@ -249,15 +249,17 @@ com.arthurslife.app/
 │   ├── user/           # User aggregate with roles and authentication
 │   ├── task/           # Task management with categories and completion
 │   ├── token/          # Token economy with earning and spending
-│   └── reward/         # Reward system with catalog and redemption
+│   ├── reward/         # Reward system with catalog and redemption
+│   └── theme/          # Theme domain models and business logic
 ├── data/               # Data layer implementation
 │   ├── local/         # Room database and DataStore persistence
 │   ├── repository/    # Repository pattern implementations
-│   └── mapper/        # Domain/data model mapping
+│   ├── mapper/        # Domain/data model mapping
+│   └── theme/         # Theme preferences data store
 ├── presentation/       # UI layer with Jetpack Compose
 │   ├── screens/       # Screen composables organized by feature
 │   ├── components/    # Reusable UI components following DRY
-│   ├── theme/         # Material Design 3 theming
+│   ├── theme/         # Role-based theme system implementation
 │   └── navigation/    # Type-safe navigation configuration
 ├── di/                # Hilt dependency injection modules
 └── util/              # Shared utility functions and extensions
@@ -287,6 +289,7 @@ Components   Events   Implementations
 - **Reusability**: DRY approach reduces code duplication
 - **Scalability**: DDD patterns support feature growth
 - **Type Safety**: Kotlin's type system prevents common errors
+- **Theme Flexibility**: Role-based theming system supports diverse user preferences
 
 ---
 

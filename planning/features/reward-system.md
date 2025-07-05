@@ -119,50 +119,12 @@ Comprehensive reward and redemption system for motivation, goal achievement, and
 ## Technical Implementation
 
 ### Data Structure
-```kotlin
-data class Reward(
-    val id: String,
-    val title: String,
-    val description: String,
-    val category: RewardCategory,
-    val tokenCost: Int,
-    val imageUrl: String?,
-    val status: RewardStatus,
-    val availability: RewardAvailability,
-    val minimumLevel: Int,
-    val maxRedemptions: Int?,
-    val expirationDate: LocalDate?,
-    val createdBy: String,
-    val isCustom: Boolean,
-    val requiresApproval: Boolean,
-    val fulfillmentInstructions: String?
-)
+The reward system requires comprehensive data structures to support reward management:
 
-data class RewardRedemption(
-    val id: String,
-    val rewardId: String,
-    val userId: String,
-    val tokensSpent: Int,
-    val redeemedAt: Timestamp,
-    val status: RedemptionStatus,
-    val approvedBy: String?,
-    val fulfilledAt: Timestamp?,
-    val notes: String?,
-    val satisfactionRating: Int?
-)
-
-enum class RewardCategory {
-    ENTERTAINMENT, TREATS, ACTIVITIES, PRIVILEGES, TOYS, EXPERIENCES
-}
-
-enum class RewardStatus {
-    AVAILABLE, REDEEMED, EXPIRED, UNAVAILABLE
-}
-
-enum class RedemptionStatus {
-    PENDING, APPROVED, FULFILLED, CANCELLED
-}
-```
+- **Reward Definition**: Complete reward information including identification, title, description, category classification, token cost, image references, availability status, level requirements, redemption limits, expiration dates, creator identification, customization flags, approval requirements, and fulfillment instructions
+- **Redemption Records**: Detailed redemption tracking including redemption identification, reward reference, user identification, tokens spent, redemption timestamp, status tracking, approval information, fulfillment timestamp, notes, and satisfaction ratings
+- **Category Classification**: Organized reward categories including Entertainment, Treats, Activities, Privileges, Toys, and Experiences for easy browsing and management
+- **Status Management**: Comprehensive status tracking for rewards (Available, Redeemed, Expired, Unavailable) and redemptions (Pending, Approved, Fulfilled, Cancelled)
 
 ### Reward Operations
 - **Browse Rewards**: Filter and search available rewards by category
@@ -173,24 +135,13 @@ enum class RedemptionStatus {
 - **Generate Analytics**: Create reports on reward effectiveness
 
 ### Reward Validation Logic
-```kotlin
-fun validateRewardRedemption(userId: String, rewardId: String): Result<Unit> {
-    val user = getUserById(userId)
-    val reward = getRewardById(rewardId)
-    
-    return when {
-        user.tokenBalance < reward.tokenCost -> 
-            Result.failure(InsufficientTokensException())
-        user.level < reward.minimumLevel -> 
-            Result.failure(InsufficientLevelException())
-        reward.status != RewardStatus.AVAILABLE -> 
-            Result.failure(RewardUnavailableException())
-        reward.expirationDate?.isBefore(LocalDate.now()) == true -> 
-            Result.failure(RewardExpiredException())
-        else -> Result.success(Unit)
-    }
-}
-```
+The system requires comprehensive validation logic for reward redemptions:
+
+- **Token Balance Validation**: Verify user has sufficient tokens before allowing redemption, preventing insufficient balance purchases
+- **Level Requirement Validation**: Ensure user meets minimum level requirements for exclusive or advanced rewards
+- **Availability Validation**: Confirm reward is currently available and not disabled, expired, or out of stock
+- **Expiration Date Validation**: Check reward expiration dates to prevent redemption of expired limited-time offers
+- **Business Rule Validation**: Additional validation for family-specific rules, redemption limits, and caregiver approval requirements
 
 ### Reward Personalization
 - **Interest Tracking**: Learn child preferences through redemption patterns

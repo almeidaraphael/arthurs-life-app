@@ -118,40 +118,12 @@ Comprehensive digital token economy system for motivation, reward tracking, and 
 ## Technical Implementation
 
 ### Data Structure
-```kotlin
-data class Token(
-    val id: String,
-    val userId: String,
-    val amount: Int,
-    val type: TokenType,
-    val source: TokenSource,
-    val description: String,
-    val timestamp: Timestamp,
-    val relatedTaskId: String?,
-    val relatedRewardId: String?,
-    val issuedBy: String?
-)
+The token economy system requires comprehensive data structures to support financial transactions:
 
-data class TokenBalance(
-    val userId: String,
-    val currentBalance: Int,
-    val totalEarned: Int,
-    val totalSpent: Int,
-    val level: Int,
-    val experiencePoints: Int,
-    val lastUpdated: Timestamp
-)
-
-enum class TokenType {
-    EARNED, SPENT, BONUS, PENALTY, TRANSFER
-}
-
-enum class TokenSource {
-    TASK_COMPLETION, BEHAVIOR_REWARD, DAILY_BONUS,
-    ACHIEVEMENT_UNLOCK, CAREGIVER_AWARD, STREAK_BONUS,
-    REWARD_PURCHASE, MANUAL_ADJUSTMENT
-}
-```
+- **Token Transaction Records**: Complete transaction information including identification, user reference, amount, transaction type, source classification, description, timestamp, related task/reward references, and issuer information
+- **Balance Management**: User token balance tracking including current balance, total earned, total spent, level progression, experience points, and last update timestamp
+- **Transaction Types**: Classification of token transactions as Earned, Spent, Bonus, Penalty, or Transfer operations
+- **Source Classification**: Detailed tracking of token sources including Task Completion, Behavior Reward, Daily Bonus, Achievement Unlock, Caregiver Award, Streak Bonus, Reward Purchase, and Manual Adjustment
 
 ### Token Operations
 - **Earn Tokens**: Validate and award tokens for various activities
@@ -162,29 +134,13 @@ enum class TokenSource {
 - **Track History**: Maintain complete transaction records
 
 ### Token Validation Logic
-```kotlin
-fun validateTokenTransaction(userId: String, amount: Int, type: TokenType): Result<Unit> {
-    val currentBalance = getTokenBalance(userId)
-    
-    return when (type) {
-        TokenType.SPENT -> {
-            if (currentBalance.currentBalance >= amount) {
-                Result.success(Unit)
-            } else {
-                Result.failure(InsufficientTokensException(amount, currentBalance.currentBalance))
-            }
-        }
-        TokenType.EARNED -> {
-            if (amount > 0) {
-                Result.success(Unit)
-            } else {
-                Result.failure(InvalidTokenAmountException(amount))
-            }
-        }
-        else -> Result.success(Unit)
-    }
-}
-```
+The system requires comprehensive token transaction validation:
+
+- **Spending Validation**: Verify user has sufficient token balance before processing spending transactions, preventing overdraft scenarios
+- **Earning Validation**: Ensure positive token amounts for earning transactions, preventing invalid negative earnings
+- **Transaction Type Validation**: Apply appropriate validation rules based on transaction type (Earned, Spent, Bonus, Penalty, Transfer)
+- **Business Rule Validation**: Additional validation for family-specific spending limits, approval requirements, and age-appropriate transaction amounts
+- **Fraud Prevention**: Detect unusual transaction patterns and prevent duplicate or suspicious token operations
 
 ### Financial Literacy Features
 - **Spending Tracking**: Visual charts showing token spending categories
@@ -213,4 +169,4 @@ fun validateTokenTransaction(userId: String, amount: Int, type: TokenType): Resu
 
 ---
 
-**Previous:** [Task Management System](task-management.md) | **Next:** [Reward System](reward-system.md)
+**Related Features:** [Task Management](task-management.md) | [Reward System](reward-system.md) | [Achievement System](achievement-system.md)

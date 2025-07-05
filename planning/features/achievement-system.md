@@ -1,6 +1,6 @@
-# Global Achievement System
+# Achievement System Feature
 
-Comprehensive achievement system design for motivation, engagement, and celebration of milestones across all families.
+Comprehensive achievement system for motivation, engagement, and celebration of milestones across all families using standardized achievements and rewards.
 
 ## Achievement Categories
 
@@ -123,31 +123,13 @@ Comprehensive achievement system design for motivation, engagement, and celebrat
 - Offline achievement queue for delayed sync
 
 ### Data Structure
-```kotlin
-data class Achievement(
-    val id: String,
-    val name: String,
-    val description: String,
-    val category: AchievementCategory,
-    val requirements: AchievementRequirements,
-    val tokenReward: Int,
-    val badgeIcon: String,
-    val isUnlocked: Boolean,
-    val progress: AchievementProgress,
-    val unlockedAt: Timestamp?,
-    val specialUnlocks: List<String>
-)
+The achievement system requires a structured data model that supports:
 
-data class AchievementProgress(
-    val current: Int,
-    val target: Int,
-    val percentage: Float
-)
-
-enum class AchievementCategory {
-    DAILY, WEEKLY, MILESTONE, SPECIAL, STREAK
-}
-```
+- **Achievement Definition**: Each achievement stores identification, display name, description, category classification, and unlock requirements
+- **Progress Tracking**: Real-time progress monitoring with current value, target value, and percentage completion calculation
+- **Reward Integration**: Token reward amounts and special unlocks (themes, characters, exclusive content)
+- **Achievement Categories**: Organized into Daily, Weekly, Milestone, Special, and Streak categories for discovery and organization
+- **Completion Records**: Timestamps and achievement unlock history for celebration and analytics
 
 ### Celebration Flow
 - Achievement unlock detected on task completion
@@ -196,4 +178,4 @@ enum class AchievementCategory {
 
 ---
 
-**Next:** [Wishlist System](wishlist.md) for savings goals and family integration features.
+**Related Features:** [Token Economy](token-economy.md) | [Reward System](reward-system.md) | [Task Management](task-management.md)

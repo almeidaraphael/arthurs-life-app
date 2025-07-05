@@ -79,7 +79,8 @@
 ## UI & Design System
 
 - **Jetpack Compose** - Modern declarative UI
-- **Material Design 3** - Google's design system
+- **Material Design 3** - Google's design system with theming support
+- **Theme System** - Role-based theming (Material Light/Dark, Mario Classic)
 - **Compose Navigation** - Type-safe navigation
 - **Coil** - Image loading library
 - **TalkBack support** - Basic accessibility compliance
@@ -105,7 +106,7 @@ app/src/main/java/com/arthurslife/app/
 ├── presentation/       # Jetpack Compose UI layer
 │   ├── components/    # Reusable composables
 │   ├── screens/       # Screen composables
-│   ├── theme/         # Material Design theme
+│   ├── theme/         # Theme system with role-based theming
 │   └── navigation/    # Navigation graph
 ├── di/                # Dependency injection modules
 └── util/              # Utility classes and extensions
@@ -212,11 +213,11 @@ app/src/main/java/com/arthurslife/app/
 
 ## Accessibility Implementation
 
-- **Screen reader support** with proper semantics
-- **High contrast themes**
-- **Large text support**
-- **Reduced motion** for sensitive users
-- **Keyboard navigation** support
+- **Cognitive accessibility focus** with simple language and clear navigation
+- **Screen reader support** with basic TalkBack integration
+- **High contrast themes** available through theme system
+- **Large text support** respecting system font settings
+- **Standard touch targets** with minimum 44dp sizing
 
 ## Local Storage & Persistence
 
