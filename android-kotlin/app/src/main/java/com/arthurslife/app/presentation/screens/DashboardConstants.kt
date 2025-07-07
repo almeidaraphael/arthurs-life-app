@@ -9,7 +9,4 @@ object DashboardConstants {
     const val FRIDAY_PROGRESS = 0.9f
     const val SATURDAY_PROGRESS = 0.3f
     const val SUNDAY_PROGRESS = 0.7f
-
-    // Gold color for tokens
-    const val GOLD_COLOR = 0xFFFFD700
 }

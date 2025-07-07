@@ -20,7 +20,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.arthurslife.app.presentation.theme.BaseAppTheme
@@ -114,7 +113,7 @@ fun RowScope.tokenBalanceColumn(theme: BaseAppTheme) {
                 semanticType = SemanticIconType.TOKEN,
                 theme = theme,
                 contentDescription = "Tokens",
-                tint = Color(DashboardConstants.GOLD_COLOR),
+                tint = MaterialTheme.colorScheme.secondary,
                 modifier = Modifier.size(20.dp),
             )
             Spacer(modifier = Modifier.width(4.dp))

@@ -32,10 +32,7 @@ fun ThemeAwareStartTaskButton(
         )
         Spacer(modifier = Modifier.width(8.dp))
         Text(
-            text = when (theme.displayName) {
-                "Mario Classic" -> "Start Next Quest"
-                else -> "Start Next Task"
-            },
+            text = "Start Next ${theme.taskLabel.dropLast(1)}", // Remove 's' to make it singular
         )
     }
 }
@@ -63,10 +60,7 @@ fun ThemeAwareSecondaryActionsRow(
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(
-                text = when (theme.displayName) {
-                    "Mario Classic" -> "Shop"
-                    else -> "Rewards"
-                },
+                text = "Rewards", // Keep simple for now, can be enhanced later
             )
         }
 
@@ -82,11 +76,24 @@ fun ThemeAwareSecondaryActionsRow(
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(
-                text = when (theme.displayName) {
-                    "Mario Classic" -> "Trophies"
-                    else -> "Achievements"
-                },
+                text = theme.achievementLabel,
             )
         }
+    }
+}
+
+@Composable
+fun ThemeAwareActionButtons(
+    currentTheme: BaseAppTheme,
+    primaryText: String,
+    onPrimaryClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Button(
+        onClick = onPrimaryClick,
+        modifier = modifier,
+        shape = currentTheme.shapes.extraSmall,
+    ) {
+        Text(text = primaryText)
     }
 }

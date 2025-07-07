@@ -21,4 +21,11 @@ enum class SemanticIconType {
     CHILD_CARE,
     SWITCH_ACCOUNT,
     CHECK_SELECTED,
+
+    // Task management icons
+    EDIT,
+    DELETE,
+    SUCCESS,
+    TASKS,
+    UNDO,
 }

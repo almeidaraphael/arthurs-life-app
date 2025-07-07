@@ -3,12 +3,17 @@ package com.arthurslife.app.presentation.theme.mario
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.filled.Undo
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.ChildCare
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.SwitchAccount
+import androidx.compose.material.icons.filled.Task
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
@@ -39,6 +44,13 @@ object MarioThemeIcons {
             SemanticIconType.CHILD_CARE -> Icons.Default.ChildCare // Player character
             SemanticIconType.SWITCH_ACCOUNT -> Icons.Default.SwitchAccount // Character switch
             SemanticIconType.CHECK_SELECTED -> Icons.Default.Check // Selection check
+
+            // Task management icons - use Material icons with gaming context
+            SemanticIconType.EDIT -> Icons.Default.Edit // Edit quest
+            SemanticIconType.DELETE -> Icons.Default.Delete // Remove quest
+            SemanticIconType.SUCCESS -> Icons.Default.CheckCircle // Quest complete
+            SemanticIconType.TASKS -> Icons.Default.Task // Quest list
+            SemanticIconType.UNDO -> Icons.AutoMirrored.Filled.Undo // Undo quest completion
         }
     }
 }

@@ -4,10 +4,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.filled.TrendingUp
+import androidx.compose.material.icons.automirrored.filled.Undo
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.ChildCare
 import androidx.compose.material.icons.filled.Construction
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.LocalFireDepartment
@@ -15,6 +19,7 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.SwitchAccount
+import androidx.compose.material.icons.filled.Task
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 
@@ -45,6 +50,13 @@ object MaterialThemeIcons {
             SemanticIconType.CHILD_CARE -> Icons.Default.ChildCare
             SemanticIconType.SWITCH_ACCOUNT -> Icons.Default.SwitchAccount
             SemanticIconType.CHECK_SELECTED -> Icons.Default.Check
+
+            // Task management icons
+            SemanticIconType.EDIT -> Icons.Default.Edit
+            SemanticIconType.DELETE -> Icons.Default.Delete
+            SemanticIconType.SUCCESS -> Icons.Default.CheckCircle
+            SemanticIconType.TASKS -> Icons.Default.Task
+            SemanticIconType.UNDO -> Icons.AutoMirrored.Filled.Undo
         }
     }
 }

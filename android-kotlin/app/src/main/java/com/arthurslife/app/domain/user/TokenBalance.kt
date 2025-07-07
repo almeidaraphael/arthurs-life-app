@@ -64,6 +64,23 @@ value class TokenBalance private constructor(
          * @return A TokenBalance with 0 tokens
          */
         fun zero(): TokenBalance = TokenBalance(0)
+
+        /**
+         * Creates a TokenBalance with administrative override allowing negative amounts.
+         *
+         * This factory method bypasses the normal business rule that prevents negative
+         * token balances. It should only be used in administrative contexts, such as
+         * when caregivers undo tasks that result in negative balances.
+         *
+         * @param amount The token amount, can be negative for administrative purposes
+         * @return A new TokenBalance instance
+         *
+         * @sample
+         * ```kotlin
+         * val adminBalance = TokenBalance.createAdmin(-10) // Valid for admin operations
+         * ```
+         */
+        fun createAdmin(amount: Int): TokenBalance = TokenBalance(amount)
     }
 
     /**
@@ -117,6 +134,29 @@ value class TokenBalance private constructor(
     fun subtract(tokens: Int): TokenBalance {
         require(tokens >= 0) { "Cannot subtract negative tokens" }
         require(tokens <= amount) { "Insufficient tokens. Available: $amount, Requested: $tokens" }
+        return TokenBalance(amount - tokens)
+    }
+
+    /**
+     * Creates a new TokenBalance by subtracting tokens with administrative override.
+     *
+     * This method allows caregivers to perform administrative actions that can result
+     * in negative token balances, such as undoing completed tasks even when the child
+     * doesn't have sufficient tokens. This is used for corrective actions and should
+     * only be called in administrative contexts.
+     *
+     * @param tokens Number of tokens to subtract, must be non-negative
+     * @return A new TokenBalance with the decreased amount (can be negative)
+     * @throws IllegalArgumentException if tokens is negative
+     *
+     * @sample
+     * ```kotlin
+     * val balance = TokenBalance.create(5)
+     * val afterUndo = balance.adminSubtract(10) // Returns new instance with -5 tokens
+     * ```
+     */
+    fun adminSubtract(tokens: Int): TokenBalance {
+        require(tokens >= 0) { "Cannot subtract negative tokens" }
         return TokenBalance(amount - tokens)
     }
 

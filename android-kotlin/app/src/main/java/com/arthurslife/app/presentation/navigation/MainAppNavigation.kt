@@ -24,6 +24,7 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,8 +40,11 @@ import androidx.navigation.compose.rememberNavController
 import com.arthurslife.app.domain.user.UserRole
 import com.arthurslife.app.presentation.screens.CaregiverDashboardScreen
 import com.arthurslife.app.presentation.screens.CaregiverProfileScreen
+import com.arthurslife.app.presentation.screens.CaregiverTaskManagementScreen
+import com.arthurslife.app.presentation.screens.ChildAchievementScreen
 import com.arthurslife.app.presentation.screens.ChildHomeScreen
 import com.arthurslife.app.presentation.screens.ChildProfileScreen
+import com.arthurslife.app.presentation.screens.ChildTaskScreen
 import com.arthurslife.app.presentation.screens.PlaceholderScreen
 import com.arthurslife.app.presentation.screens.RoleSwitchingDialog
 import com.arthurslife.app.presentation.screens.ThemeSettingsScreen
@@ -202,13 +206,13 @@ private fun AppNavHost(
             ChildHomeScreen(themeViewModel = themeViewModel)
         }
         composable("child_tasks") {
-            PlaceholderScreen("Tasks", "View and complete your daily tasks", themeViewModel = themeViewModel)
+            ChildTaskScreen(currentTheme = themeViewModel.currentTheme.collectAsState().value)
         }
         composable("child_rewards") {
             PlaceholderScreen("Rewards", "Spend your tokens on rewards", themeViewModel = themeViewModel)
         }
         composable("child_achievements") {
-            PlaceholderScreen("Achievements", "View your badges and achievements", themeViewModel = themeViewModel)
+            ChildAchievementScreen()
         }
         composable("child_profile") {
             ChildProfileScreen(
@@ -225,7 +229,7 @@ private fun AppNavHost(
             CaregiverDashboardScreen(themeViewModel = themeViewModel)
         }
         composable("caregiver_tasks") {
-            PlaceholderScreen("Tasks", "Manage tasks for your children", themeViewModel = themeViewModel)
+            CaregiverTaskManagementScreen(currentTheme = themeViewModel.currentTheme.collectAsState().value)
         }
         composable("caregiver_progress") {
             PlaceholderScreen("Progress", "View progress and analytics", themeViewModel = themeViewModel)
