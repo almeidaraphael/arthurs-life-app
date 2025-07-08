@@ -57,7 +57,9 @@ interface TaskDao {
      * @param userId ID of the user whose completed tasks to retrieve
      * @return List of completed tasks for the user
      */
-    @Query("SELECT * FROM tasks WHERE assignedToUserId = :userId AND isCompleted = 1 ORDER BY createdAt DESC")
+    @Query(
+        "SELECT * FROM tasks WHERE assignedToUserId = :userId AND isCompleted = 1 ORDER BY createdAt DESC",
+    )
     suspend fun findCompletedByUserId(userId: String): List<TaskEntity>
 
     /**
@@ -66,7 +68,9 @@ interface TaskDao {
      * @param userId ID of the user whose incomplete tasks to retrieve
      * @return List of incomplete tasks for the user
      */
-    @Query("SELECT * FROM tasks WHERE assignedToUserId = :userId AND isCompleted = 0 ORDER BY createdAt DESC")
+    @Query(
+        "SELECT * FROM tasks WHERE assignedToUserId = :userId AND isCompleted = 0 ORDER BY createdAt DESC",
+    )
     suspend fun findIncompleteByUserId(userId: String): List<TaskEntity>
 
     /**
@@ -84,7 +88,9 @@ interface TaskDao {
      * @param userId ID of the user
      * @return Total tokens earned from task completion
      */
-    @Query("SELECT SUM(tokenReward) FROM tasks WHERE assignedToUserId = :userId AND isCompleted = 1")
+    @Query(
+        "SELECT SUM(tokenReward) FROM tasks WHERE assignedToUserId = :userId AND isCompleted = 1",
+    )
     suspend fun countTokensEarned(userId: String): Int?
 
     /**

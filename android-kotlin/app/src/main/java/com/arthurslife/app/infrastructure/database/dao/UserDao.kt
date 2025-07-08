@@ -12,8 +12,8 @@ interface UserDao {
     @Query("SELECT * FROM users WHERE id = :id")
     suspend fun getUserById(id: String): UserEntity?
 
-    @Query("SELECT * FROM users WHERE pin = :pin")
-    suspend fun getUserByPin(pin: String): UserEntity?
+    @Query("SELECT * FROM users WHERE pinHash = :pinHash")
+    suspend fun getUserByPinHash(pinHash: String): UserEntity?
 
     @Query("SELECT * FROM users WHERE role = :role")
     suspend fun getUsersByRole(role: String): List<UserEntity>

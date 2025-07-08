@@ -26,11 +26,15 @@ constructor(
 
     override suspend fun findById(id: String): Task? = taskDataSource.findById(id)
 
-    override suspend fun findByUserId(userId: String): List<Task> = taskDataSource.findByUserId(userId)
+    override suspend fun findByUserId(userId: String): List<Task> = taskDataSource.findByUserId(
+        userId,
+    )
 
     override suspend fun getAllTasks(): List<Task> = taskDataSource.getAllTasks()
 
-    override suspend fun findByCategory(category: TaskCategory): List<Task> = taskDataSource.findByCategory(category)
+    override suspend fun findByCategory(category: TaskCategory): List<Task> = taskDataSource.findByCategory(
+        category,
+    )
 
     override suspend fun findCompletedByUserId(userId: String): List<Task> = taskDataSource.findCompletedByUserId(
         userId,
@@ -46,7 +50,11 @@ constructor(
 
     override suspend fun deleteTask(taskId: String) = taskDataSource.deleteTask(taskId)
 
-    override suspend fun countCompletedTasks(userId: String): Int = taskDataSource.countCompletedTasks(userId)
+    override suspend fun countCompletedTasks(userId: String): Int = taskDataSource.countCompletedTasks(
+        userId,
+    )
 
-    override suspend fun countTokensEarned(userId: String): Int = taskDataSource.countTokensEarned(userId)
+    override suspend fun countTokensEarned(userId: String): Int = taskDataSource.countTokensEarned(
+        userId,
+    )
 }

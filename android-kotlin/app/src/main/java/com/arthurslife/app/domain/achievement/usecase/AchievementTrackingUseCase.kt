@@ -86,7 +86,8 @@ constructor(
             val unlockedAchievement = updatedAchievement.unlock()
             achievementRepository.updateAchievement(unlockedAchievement)
             return listOf(unlockedAchievement)
-        } else {
+        } else if (updatedAchievement.progress != achievement.progress) {
+            // Only update if progress has changed and it's not being unlocked
             achievementRepository.updateAchievement(updatedAchievement)
         }
 
@@ -109,7 +110,8 @@ constructor(
             val unlockedAchievement = updatedAchievement.unlock()
             achievementRepository.updateAchievement(unlockedAchievement)
             return listOf(unlockedAchievement)
-        } else {
+        } else if (updatedAchievement.progress != achievement.progress) {
+            // Only update if progress has changed and it's not being unlocked
             achievementRepository.updateAchievement(updatedAchievement)
         }
 

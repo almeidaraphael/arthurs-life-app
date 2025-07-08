@@ -1,5 +1,7 @@
 # GitHub Copilot Instructions - Arthur's Life App
 
+> **IMPORTANT:** All Gradle and project commands must be executed from the `android-kotlin` directory. Before running any build, test, detekt, or formatting command, agents MUST check their current working directory and change to `android-kotlin` if not already there. Never assume the current directory—always verify and log/report the directory change.
+
 ## 🎯 Project Overview
 
 **Arthur's Life** is a family task management Android app built with Kotlin and Jetpack Compose. It uses a gamified token-based reward system to help families organize daily tasks with role-based access for Children, Caregivers, and Admins.
@@ -50,6 +52,12 @@
 - **Detekt compliance** for formatting and static analysis
 - **Unit test coverage** minimum 80% for domain layer
 
+### Gradle Command Execution (MANDATORY)
+- Before running any Gradle or project command, always check the current working directory.
+- If not in `android-kotlin`, change to that directory and log/report the action.
+- Never assume the current directory—always verify.
+- All command/code blocks must reflect this requirement.
+
 ### Detekt Compliance Rules (CURRENT STANDARD)
 - **Function Naming**: Follow camelCase for functions, PascalCase for classes
 - **No Wildcard Imports**: Use specific imports instead of `import package.*`
@@ -61,8 +69,8 @@
 
 ### Quick Detekt Commands (for fixing errors)
 ```bash
-# Navigate to Android project
-cd android-kotlin
+# Check current directory and change to android-kotlin if needed
+if [ "$(basename $(pwd))" != "android-kotlin" ]; then cd android-kotlin; fi
 
 # Run detekt analysis and see errors
 ./gradlew detekt
@@ -78,8 +86,8 @@ cat app/build/reports/detekt/detekt.xml
 
 ### Build & Quality Commands
 ```bash
-# Navigate to Android project
-cd android-kotlin
+# Check current directory and change to android-kotlin if needed
+if [ "$(basename $(pwd))" != "android-kotlin" ]; then cd android-kotlin; fi
 
 # Format code with Detekt
 ./gradlew detektFormat
@@ -302,6 +310,7 @@ All generated code must:
 
 ### Mandatory Verification
 Before considering any code generation task complete:
+- Check and log the current working directory before running any Gradle or project command. Change to `android-kotlin` if not already there.
 - Run `./gradlew detektFormat` and ensure it passes
 - Run `./gradlew detekt` for static analysis
 - Verify all @Composable functions use camelCase naming

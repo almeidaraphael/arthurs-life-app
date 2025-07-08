@@ -479,7 +479,9 @@ fun ThemeAwareCompletedTaskCard(
     Card(
         modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = currentTheme.colorScheme.secondaryContainer.copy(alpha = DISABLED_CONTAINER_ALPHA),
+            containerColor = currentTheme.colorScheme.secondaryContainer.copy(
+                alpha = DISABLED_CONTAINER_ALPHA,
+            ),
         ),
         shape = currentTheme.shapes.medium,
     ) {

@@ -24,7 +24,9 @@ constructor(
 
     override suspend fun findById(id: String): Achievement? = achievementDataSource.findById(id)
 
-    override suspend fun findByUserId(userId: String): List<Achievement> = achievementDataSource.findByUserId(userId)
+    override suspend fun findByUserId(userId: String): List<Achievement> = achievementDataSource.findByUserId(
+        userId,
+    )
 
     override suspend fun findUnlockedByUserId(userId: String): List<Achievement> =
         achievementDataSource.findUnlockedByUserId(userId)

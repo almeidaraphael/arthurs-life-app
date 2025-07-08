@@ -28,10 +28,16 @@ object MarioThemeIcons {
             // Core game/app icons - use custom Mario icons
             SemanticIconType.TOKEN -> ImageVector.vectorResource(R.drawable.ic_mario_coin)
             SemanticIconType.AVATAR -> ImageVector.vectorResource(R.drawable.ic_mario_face)
-            SemanticIconType.START_TASK -> ImageVector.vectorResource(R.drawable.ic_mario_controller)
-            SemanticIconType.REWARDS -> ImageVector.vectorResource(R.drawable.ic_mario_treasure_chest)
+            SemanticIconType.START_TASK -> ImageVector.vectorResource(
+                R.drawable.ic_mario_controller,
+            )
+            SemanticIconType.REWARDS -> ImageVector.vectorResource(
+                R.drawable.ic_mario_treasure_chest,
+            )
             SemanticIconType.ACHIEVEMENTS -> ImageVector.vectorResource(R.drawable.ic_mario_trophy)
-            SemanticIconType.PROGRESS_INDICATOR -> ImageVector.vectorResource(R.drawable.ic_mario_star)
+            SemanticIconType.PROGRESS_INDICATOR -> ImageVector.vectorResource(
+                R.drawable.ic_mario_star,
+            )
             SemanticIconType.STREAK_FIRE -> Icons.Default.LocalFireDepartment
 
             // Navigation icons - use Material icons with Mario context

@@ -13,7 +13,12 @@ package com.arthurslife.app.domain.common
 sealed class DomainException(
     message: String,
     cause: Throwable? = null,
-) : Exception(message, cause)
+) : Exception(message, cause) {
+    /**
+     * Public constructor for testing purposes.
+     */
+    constructor(message: String) : this(message, null)
+}
 
 /**
  * Exception for task domain operations.

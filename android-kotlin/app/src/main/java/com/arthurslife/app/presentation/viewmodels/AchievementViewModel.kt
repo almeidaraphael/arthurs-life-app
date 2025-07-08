@@ -53,12 +53,14 @@ constructor(
                     _achievements.value = achievements
                     _uiState.value = _uiState.value.copy(isLoading = false)
                 } else {
+                    _achievements.value = emptyList()
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
                         error = "No child user found",
                     )
                 }
             } catch (e: DomainException) {
+                _achievements.value = emptyList()
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
                     error = e.message,

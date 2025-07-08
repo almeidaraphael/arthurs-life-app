@@ -109,7 +109,9 @@ value class PIN private constructor(
      * val isInvalid = pin.verify("5678") // false
      * ```
      */
-    fun verify(rawPin: String): Boolean = BCrypt.verifyer().verify(rawPin.toCharArray(), hashedValue).verified
+    fun verify(
+        rawPin: String,
+    ): Boolean = BCrypt.verifyer().verify(rawPin.toCharArray(), hashedValue).verified
 
     /**
      * Returns the BCrypt hash value for storage purposes.

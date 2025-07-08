@@ -7,7 +7,10 @@ package com.arthurslife.app.presentation.viewmodels
 /**
  * Base exception for ViewModel operations.
  */
-sealed class ViewModelException(message: String, cause: Throwable? = null) : Exception(message, cause)
+sealed class ViewModelException(
+    message: String,
+    cause: Throwable? = null,
+) : Exception(message, cause)
 
 /**
  * Thrown when user data loading fails.

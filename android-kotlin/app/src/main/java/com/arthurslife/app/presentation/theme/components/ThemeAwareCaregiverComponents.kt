@@ -52,7 +52,15 @@ fun ThemeAwareChildSelectorHeader(
 private fun themeAwareChildSelectorSection(currentTheme: BaseAppTheme) {
     Column {
         Text(
-            text = if (currentTheme.displayName.contains("Mario", ignoreCase = true)) "Supervising" else "Managing",
+            text = if (currentTheme.displayName.contains(
+                    "Mario",
+                    ignoreCase = true,
+                )
+            ) {
+                "Supervising"
+            } else {
+                "Managing"
+            },
             style = MaterialTheme.typography.titleSmall,
             color = currentTheme.colorScheme.onPrimaryContainer,
         )
@@ -78,7 +86,15 @@ private fun themeAwareChildSelectorSection(currentTheme: BaseAppTheme) {
 @Composable
 private fun themeAwareCaregiverRoleLabel(currentTheme: BaseAppTheme) {
     Text(
-        text = if (currentTheme.displayName.contains("Mario", ignoreCase = true)) "Castle Guardian" else "Caregiver",
+        text = if (currentTheme.displayName.contains(
+                "Mario",
+                ignoreCase = true,
+            )
+        ) {
+            "Castle Guardian"
+        } else {
+            "Caregiver"
+        },
         style = MaterialTheme.typography.titleMedium,
         color = currentTheme.colorScheme.onPrimaryContainer,
     )
@@ -190,7 +206,15 @@ private fun RowScope.themeAwareWeeklyProgressColumn(currentTheme: BaseAppTheme) 
             )
         }
         Text(
-            text = if (currentTheme.displayName.contains("Mario", ignoreCase = true)) "this adventure" else "this week",
+            text = if (currentTheme.displayName.contains(
+                    "Mario",
+                    ignoreCase = true,
+                )
+            ) {
+                "this adventure"
+            } else {
+                "this week"
+            },
             style = MaterialTheme.typography.bodySmall,
             color = currentTheme.colorScheme.onSurfaceVariant,
         )
@@ -304,7 +328,15 @@ private fun RowScope.caregiverAddTaskButton(currentTheme: BaseAppTheme) {
         )
         Spacer(modifier = Modifier.width(8.dp))
         Text(
-            if (currentTheme.displayName.contains("Mario", ignoreCase = true)) "Add Quest" else "Add Task",
+            if (currentTheme.displayName.contains(
+                    "Mario",
+                    ignoreCase = true,
+                )
+            ) {
+                "Add Quest"
+            } else {
+                "Add Task"
+            },
         )
     }
 }
@@ -323,7 +355,15 @@ private fun RowScope.caregiverManageRewardsButton(currentTheme: BaseAppTheme) {
         )
         Spacer(modifier = Modifier.width(8.dp))
         Text(
-            if (currentTheme.displayName.contains("Mario", ignoreCase = true)) "Manage Shop" else "Manage Rewards",
+            if (currentTheme.displayName.contains(
+                    "Mario",
+                    ignoreCase = true,
+                )
+            ) {
+                "Manage Shop"
+            } else {
+                "Manage Rewards"
+            },
         )
     }
 }
@@ -353,7 +393,15 @@ private fun RowScope.caregiverReportButton(currentTheme: BaseAppTheme) {
         )
         Spacer(modifier = Modifier.width(4.dp))
         Text(
-            if (currentTheme.displayName.contains("Mario", ignoreCase = true)) "Adventure Log" else "Weekly Report",
+            if (currentTheme.displayName.contains(
+                    "Mario",
+                    ignoreCase = true,
+                )
+            ) {
+                "Adventure Log"
+            } else {
+                "Weekly Report"
+            },
         )
     }
 }
@@ -372,7 +420,15 @@ private fun RowScope.caregiverSettingsButton(currentTheme: BaseAppTheme) {
         )
         Spacer(modifier = Modifier.width(4.dp))
         Text(
-            if (currentTheme.displayName.contains("Mario", ignoreCase = true)) "Player Settings" else "Child Settings",
+            if (currentTheme.displayName.contains(
+                    "Mario",
+                    ignoreCase = true,
+                )
+            ) {
+                "Player Settings"
+            } else {
+                "Child Settings"
+            },
         )
     }
 }

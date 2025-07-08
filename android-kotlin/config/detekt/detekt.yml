@@ -8,7 +8,7 @@ build:
 config:
   validation: true
   warningsAsErrors: false
-  excludes: '.*Test.kt, .*Generated.kt'
+  excludes: '.*Generated.kt'
 
 processors:
   active: true
@@ -40,9 +40,9 @@ style:
   ReturnCount:
     active: false
 
+  # Desabilitar explicitamente a regra MaxLineLength padrão
   MaxLineLength:
-    active: true
-    maxLineLength: 120
+    active: false
 
 naming:
   FunctionNaming:
@@ -102,11 +102,10 @@ formatting:
     autoCorrect: true
     indentSize: 4
     
-  # Max line length
+  # Desabilitar MaximumLineLength - deixar outras regras quebrarem as linhas
   MaximumLineLength:
-    active: true
-    maxLineLength: 120
-    
+    active: false
+
   # Import ordering
   ImportOrdering:
     active: true
@@ -161,17 +160,17 @@ formatting:
     active: true
     autoCorrect: true
     
-  # Parameter and argument list formatting
+  # Parameter and argument list formatting - configurações mais agressivas
   ParameterListWrapping:
     active: true
     autoCorrect: true
-    maxLineLength: 120
-    
+    maxLineLength: 100  # Mais agressivo para forçar quebras
+
   ArgumentListWrapping:
     active: true
     autoCorrect: true
-    maxLineLength: 120
-    
+    maxLineLength: 100  # Mais agressivo para forçar quebras
+
   # Chain wrapping
   ChainWrapping:
     active: true
@@ -242,4 +241,3 @@ formatting:
   StringTemplate:
     active: true
     autoCorrect: true
-

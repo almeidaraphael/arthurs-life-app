@@ -33,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -58,7 +59,9 @@ class NoRippleInteractionSource : MutableInteractionSource {
     override suspend fun emit(interaction: androidx.compose.foundation.interaction.Interaction) {
         // Intentionally empty - we don't want to emit interactions for ripple effect
     }
-    override fun tryEmit(interaction: androidx.compose.foundation.interaction.Interaction): Boolean = true
+    override fun tryEmit(
+        interaction: androidx.compose.foundation.interaction.Interaction,
+    ): Boolean = true
 }
 
 @Composable
@@ -127,6 +130,26 @@ fun MainAppNavigation(
 }
 
 @Composable
+private fun AppNavHost(
+    navController: NavHostController,
+    startDestination: String,
+    userRole: UserRole,
+    themeViewModel: ThemeViewModel,
+    modifier: Modifier = Modifier,
+    onRequestRoleSwitch: (UserRole) -> Unit = {},
+) {
+    NavHost(
+        navController = navController,
+        startDestination = startDestination,
+        modifier = modifier,
+    ) {
+        setupChildScreens(themeViewModel, navController, onRequestRoleSwitch)
+        setupCaregiverScreens(themeViewModel, navController, onRequestRoleSwitch)
+        setupCommonScreens(userRole, themeViewModel, navController)
+    }
+}
+
+@Composable
 private fun AppBottomNavigationBar(
     navigationItems: List<NavigationItem>,
     selectedItem: String,
@@ -187,76 +210,89 @@ private fun getNavigationItemColors() = NavigationBarItemDefaults.colors(
     unselectedTextColor = Color.White.copy(alpha = 0.6f),
 )
 
-@Composable
-private fun AppNavHost(
+private fun NavGraphBuilder.setupChildScreens(
+    themeViewModel: ThemeViewModel,
     navController: NavHostController,
-    startDestination: String,
+    onRequestRoleSwitch: (UserRole) -> Unit,
+) {
+    composable("child_home") {
+        ChildHomeScreen(themeViewModel = themeViewModel)
+    }
+    composable("child_tasks") {
+        ChildTaskScreen(currentTheme = themeViewModel.currentTheme.collectAsState().value)
+    }
+    composable("child_rewards") {
+        PlaceholderScreen(
+            "Rewards",
+            "Spend your tokens on rewards",
+            themeViewModel = themeViewModel,
+        )
+    }
+    composable("child_achievements") {
+        ChildAchievementScreen()
+    }
+    composable("child_profile") {
+        ChildProfileScreen(
+            themeViewModel = themeViewModel,
+            onSwitchMode = { onRequestRoleSwitch(UserRole.CAREGIVER) },
+            onThemeSettingsClick = {
+                navController.navigate("theme_settings")
+            },
+        )
+    }
+}
+
+private fun NavGraphBuilder.setupCaregiverScreens(
+    themeViewModel: ThemeViewModel,
+    navController: NavHostController,
+    onRequestRoleSwitch: (UserRole) -> Unit,
+) {
+    composable("caregiver_dashboard") {
+        CaregiverDashboardScreen(themeViewModel = themeViewModel)
+    }
+    composable("caregiver_tasks") {
+        CaregiverTaskManagementScreen(
+            currentTheme = themeViewModel.currentTheme.collectAsState().value,
+        )
+    }
+    composable("caregiver_progress") {
+        PlaceholderScreen(
+            "Progress",
+            "View progress and analytics",
+            themeViewModel = themeViewModel,
+        )
+    }
+    composable("caregiver_children") {
+        PlaceholderScreen(
+            "Children",
+            "Manage your children and their settings",
+            themeViewModel = themeViewModel,
+        )
+    }
+    composable("caregiver_profile") {
+        CaregiverProfileScreen(
+            themeViewModel = themeViewModel,
+            onSwitchMode = { onRequestRoleSwitch(UserRole.CHILD) },
+            onThemeSettingsClick = {
+                navController.navigate("theme_settings")
+            },
+        )
+    }
+}
+
+private fun NavGraphBuilder.setupCommonScreens(
     userRole: UserRole,
     themeViewModel: ThemeViewModel,
-    modifier: Modifier = Modifier,
-    onRequestRoleSwitch: (UserRole) -> Unit = {},
+    navController: NavHostController,
 ) {
-    NavHost(
-        navController = navController,
-        startDestination = startDestination,
-        modifier = modifier,
-    ) {
-        // Child mode screens
-        composable("child_home") {
-            ChildHomeScreen(themeViewModel = themeViewModel)
-        }
-        composable("child_tasks") {
-            ChildTaskScreen(currentTheme = themeViewModel.currentTheme.collectAsState().value)
-        }
-        composable("child_rewards") {
-            PlaceholderScreen("Rewards", "Spend your tokens on rewards", themeViewModel = themeViewModel)
-        }
-        composable("child_achievements") {
-            ChildAchievementScreen()
-        }
-        composable("child_profile") {
-            ChildProfileScreen(
-                themeViewModel = themeViewModel,
-                onSwitchMode = { onRequestRoleSwitch(UserRole.CAREGIVER) },
-                onThemeSettingsClick = {
-                    navController.navigate("theme_settings")
-                },
-            )
-        }
-
-        // Caregiver mode screens
-        composable("caregiver_dashboard") {
-            CaregiverDashboardScreen(themeViewModel = themeViewModel)
-        }
-        composable("caregiver_tasks") {
-            CaregiverTaskManagementScreen(currentTheme = themeViewModel.currentTheme.collectAsState().value)
-        }
-        composable("caregiver_progress") {
-            PlaceholderScreen("Progress", "View progress and analytics", themeViewModel = themeViewModel)
-        }
-        composable("caregiver_children") {
-            PlaceholderScreen("Children", "Manage your children and their settings", themeViewModel = themeViewModel)
-        }
-        composable("caregiver_profile") {
-            CaregiverProfileScreen(
-                themeViewModel = themeViewModel,
-                onSwitchMode = { onRequestRoleSwitch(UserRole.CHILD) },
-                onThemeSettingsClick = {
-                    navController.navigate("theme_settings")
-                },
-            )
-        }
-
-        // Theme settings screen
-        composable("theme_settings") {
-            ThemeSettingsScreen(
-                userRole = userRole,
-                themeViewModel = themeViewModel,
-                onBackClick = {
-                    navController.popBackStack()
-                },
-            )
-        }
+    composable("theme_settings") {
+        ThemeSettingsScreen(
+            userRole = userRole,
+            themeViewModel = themeViewModel,
+            onBackClick = {
+                navController.popBackStack()
+            },
+        )
     }
 }
 
@@ -274,7 +310,11 @@ private fun getNavigationItems(userRole: UserRole): List<NavigationItem> =
             listOf(
                 NavigationItem("caregiver_dashboard", Icons.Default.Dashboard, "Home"),
                 NavigationItem("caregiver_tasks", Icons.Default.Task, "Tasks"),
-                NavigationItem("caregiver_progress", Icons.AutoMirrored.Filled.TrendingUp, "Progress"),
+                NavigationItem(
+                    "caregiver_progress",
+                    Icons.AutoMirrored.Filled.TrendingUp,
+                    "Progress",
+                ),
                 NavigationItem("caregiver_children", Icons.Default.Group, "Children"),
                 NavigationItem("caregiver_profile", Icons.Default.Person, "Profile"),
             )

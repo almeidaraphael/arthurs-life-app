@@ -26,6 +26,8 @@ constructor(
     override suspend fun deleteUser(userId: String) {
         // For in-memory implementation, we can't delete users
         // In a real database implementation, this would remove the user
-        throw UnsupportedOperationException("Delete operation not supported in current implementation")
+        throw UnsupportedOperationException(
+            "Delete operation not supported in current implementation",
+        )
     }
 }

@@ -40,7 +40,10 @@ interface AchievementRepository {
      * @param category Achievement category to filter by
      * @return List of achievements in the specified category
      */
-    suspend fun findByUserIdAndCategory(userId: String, category: AchievementCategory): List<Achievement>
+    suspend fun findByUserIdAndCategory(
+        userId: String,
+        category: AchievementCategory,
+    ): List<Achievement>
 
     /**
      * Retrieves a specific achievement type for a user.

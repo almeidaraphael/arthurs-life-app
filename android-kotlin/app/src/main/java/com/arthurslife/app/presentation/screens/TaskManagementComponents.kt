@@ -21,6 +21,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -253,7 +254,11 @@ fun TaskCreateEditDialog(
     onSave: (String, TaskCategory) -> Unit,
 ) {
     var title by remember { mutableStateOf(task?.title ?: "") }
-    var selectedCategory by remember { mutableStateOf(task?.category ?: TaskCategory.PERSONAL_CARE) }
+    var selectedCategory by remember {
+        mutableStateOf(
+            task?.category ?: TaskCategory.PERSONAL_CARE,
+        )
+    }
 
     val isEditing = task != null
     val dialogTitle = if (isEditing) "Edit Task" else "Create New Task"
@@ -336,7 +341,7 @@ private fun taskCategoryDropdown(
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             modifier = Modifier
                 .fillMaxWidth()
-                .menuAnchor(),
+                .menuAnchor(MenuAnchorType.PrimaryNotEditable, enabled = true),
         )
         ExposedDropdownMenu(
             expanded = expanded,

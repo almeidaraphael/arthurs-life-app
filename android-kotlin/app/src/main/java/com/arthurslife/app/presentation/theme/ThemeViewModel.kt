@@ -25,7 +25,11 @@ class ThemeViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _currentTheme = MutableStateFlow(AppTheme.MATERIAL_LIGHT)
-    val currentTheme: StateFlow<BaseAppTheme> = _currentTheme.asStateFlow().map { ThemeManager.getTheme(it) }.stateIn(
+    val currentTheme: StateFlow<BaseAppTheme> = _currentTheme.asStateFlow().map {
+        ThemeManager.getTheme(
+            it,
+        )
+    }.stateIn(
         viewModelScope,
         SharingStarted.Eagerly,
         ThemeManager.getTheme(_currentTheme.value),

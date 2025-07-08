@@ -44,7 +44,11 @@ data class Achievement(
     /**
      * Gets the progress percentage (0-100) toward completing this achievement.
      */
-    val progressPercentage: Int get() = if (target > 0) (progress * 100 / target).coerceAtMost(100) else 0
+    val progressPercentage: Int get() = if (target > 0) {
+        ((progress.toLong() * 100) / target).coerceAtMost(100L).toInt()
+    } else {
+        0
+    }
 
     /**
      * Checks if this achievement is ready to be unlocked.
@@ -57,7 +61,9 @@ data class Achievement(
      * @param newProgress The new progress value
      * @return Updated achievement with new progress
      */
-    fun updateProgress(newProgress: Int): Achievement = copy(progress = newProgress.coerceAtLeast(0))
+    fun updateProgress(
+        newProgress: Int,
+    ): Achievement = copy(progress = newProgress.coerceAtLeast(0))
 
     /**
      * Creates a copy of this achievement marked as unlocked.

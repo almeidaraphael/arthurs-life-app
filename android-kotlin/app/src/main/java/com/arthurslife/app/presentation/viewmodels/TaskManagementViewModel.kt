@@ -254,7 +254,9 @@ constructor(
                             append("Task completed! ")
                             append("Earned ${result.tokensAwarded} tokens. ")
                             if (result.newlyUnlockedAchievements.isNotEmpty()) {
-                                append("Unlocked ${result.newlyUnlockedAchievements.size} achievement(s)!")
+                                append(
+                                    "Unlocked ${result.newlyUnlockedAchievements.size} achievement(s)!",
+                                )
                             }
                         }
                         _uiState.value = _uiState.value.copy(

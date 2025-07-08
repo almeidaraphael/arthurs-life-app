@@ -66,7 +66,13 @@ object MarioTheme : BaseAppTheme {
         titleMedium = Typography().titleMedium.copy(fontFamily = FontFamily.Monospace),
         titleSmall = Typography().titleSmall.copy(fontFamily = FontFamily.Monospace),
     )
-    override val icons: @Composable (SemanticIconType) -> ImageVector = { type -> MarioThemeIcons.getIconForType(type) }
+    override val icons: @Composable (
+        SemanticIconType,
+    ) -> ImageVector = { type ->
+        MarioThemeIcons.getIconForType(
+            type,
+        )
+    }
     override val displayName: String = "Mario Classic"
     override val description: String = "A playful Mario-inspired theme with bold colors and pixel shapes."
     override val useOriginalIconColors: Boolean = true
@@ -86,7 +92,9 @@ object MarioTheme : BaseAppTheme {
     override val accessibilitySettingsText: String = "Castle Accessibility"
     override val switchToCaregiverText: String = "Switch to Castle Guardian Mode"
     override val pinRequiredText: String = "Castle code required for guardian access"
-    override fun motivationalMessage(streak: Int): String = "Keep collecting coins! You're on fire! 🔥"
+    override fun motivationalMessage(
+        streak: Int,
+    ): String = "Keep collecting coins! You're on fire! 🔥"
     override fun roleButtonText(role: UserRole): String = when (role) {
         UserRole.CHILD -> "Player"
         UserRole.CAREGIVER -> "Castle Guardian"

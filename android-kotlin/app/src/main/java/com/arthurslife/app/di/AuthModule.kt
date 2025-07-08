@@ -42,7 +42,9 @@ abstract class AuthModule {
 
     @Binds
     @Singleton
-    abstract fun bindAchievementDataSource(impl: InMemoryAchievementDataSource): AchievementDataSource
+    abstract fun bindAchievementDataSource(
+        impl: InMemoryAchievementDataSource,
+    ): AchievementDataSource
 
     @Binds
     @Singleton
@@ -54,5 +56,7 @@ abstract class AuthModule {
 
     @Binds
     @Singleton
-    abstract fun bindAuthenticationSessionService(impl: AuthenticationDomainService): AuthenticationSessionService
+    abstract fun bindAuthenticationSessionService(
+        impl: AuthenticationDomainService,
+    ): AuthenticationSessionService
 }
