@@ -77,6 +77,61 @@ enum class AchievementType(
         target = 50,
         category = AchievementCategory.ECONOMY,
     ),
+
+    /**
+     * Perfect week achievement.
+     * Unlocks when user completes at least one task for 7 consecutive days.
+     */
+    PERFECT_WEEK(
+        displayName = "Perfect Week Badge",
+        description = "Complete tasks for 7 consecutive days",
+        target = 7,
+        category = AchievementCategory.CONSISTENCY,
+    ),
+
+    /**
+     * Speed demon achievement.
+     * Unlocks when user completes 5 tasks in a single day.
+     */
+    SPEED_DEMON(
+        displayName = "Speed Demon Trophy",
+        description = "Complete 5 tasks in one day",
+        target = 5,
+        category = AchievementCategory.DAILY,
+    ),
+
+    /**
+     * Big spender achievement.
+     * Unlocks when user spends 100 total tokens on rewards.
+     */
+    BIG_SPENDER(
+        displayName = "Big Spender Badge",
+        description = "Spend 100 total tokens on rewards",
+        target = 100,
+        category = AchievementCategory.ECONOMY,
+    ),
+
+    /**
+     * Task champion achievement.
+     * Unlocks when user completes 25 total tasks.
+     */
+    TASK_CHAMPION(
+        displayName = "Task Champion Trophy",
+        description = "Complete 25 total tasks",
+        target = 25,
+        category = AchievementCategory.MILESTONE,
+    ),
+
+    /**
+     * Early bird achievement.
+     * Unlocks when user completes 3 tasks before noon.
+     */
+    EARLY_BIRD(
+        displayName = "Early Bird Badge",
+        description = "Complete 3 tasks before noon",
+        target = 3,
+        category = AchievementCategory.DAILY,
+    ),
 }
 
 /**

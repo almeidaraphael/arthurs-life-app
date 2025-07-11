@@ -9,6 +9,12 @@ import javax.inject.Inject
 // Constants for achievement tracking
 private const val DAILY_TASK_COMPLETION_THRESHOLD = 6
 private const val DAILY_TASK_PROGRESS_VALUE = 3
+private const val PERFECT_WEEK_THRESHOLD = 10
+private const val PERFECT_WEEK_PROGRESS = 7
+private const val SPEED_DEMON_THRESHOLD = 8
+private const val SPEED_DEMON_PROGRESS = 5
+private const val EARLY_BIRD_THRESHOLD = 5
+private const val EARLY_BIRD_PROGRESS = 3
 
 /**
  * Use case for tracking and updating achievement progress in Arthur's Life MVP.
@@ -26,11 +32,15 @@ constructor(
 ) {
     /**
      * Updates achievement progress after a task is completed.
+     * Initializes achievements for the user if they don't exist yet.
      *
      * @param userId ID of the user who completed the task
      * @return List of newly unlocked achievements
      */
     suspend fun updateAchievementsAfterTaskCompletion(userId: String): List<Achievement> {
+        // Initialize achievements for the user if they don't exist yet
+        achievementRepository.initializeAchievementsForUser(userId)
+
         val newlyUnlocked = mutableListOf<Achievement>()
 
         // Update First Steps achievement
@@ -47,6 +57,12 @@ constructor(
 
         // Update 3-Day Streak achievement
         newlyUnlocked.addAll(updateThreeDayStreakAchievement(userId))
+
+        // Update new achievements
+        newlyUnlocked.addAll(updateTaskChampionAchievement(userId))
+        newlyUnlocked.addAll(updatePerfectWeekAchievement(userId))
+        newlyUnlocked.addAll(updateSpeedDemonAchievement(userId))
+        newlyUnlocked.addAll(updateEarlyBirdAchievement(userId))
 
         return newlyUnlocked
     }
@@ -180,5 +196,149 @@ constructor(
      */
     suspend fun getUnlockedAchievements(userId: String): List<Achievement> {
         return achievementRepository.findUnlockedByUserId(userId)
+    }
+
+    /**
+     * Updates the Task Champion achievement (complete 25 total tasks).
+     */
+    private suspend fun updateTaskChampionAchievement(userId: String): List<Achievement> {
+        val achievement = achievementRepository.findByUserIdAndType(userId, AchievementType.TASK_CHAMPION)
+            ?: return emptyList()
+
+        if (achievement.isUnlocked) return emptyList()
+
+        val completedTasks = taskRepository.countCompletedTasks(userId)
+        val updatedAchievement = achievement.updateProgress(completedTasks)
+
+        if (updatedAchievement.canBeUnlocked()) {
+            val unlockedAchievement = updatedAchievement.unlock()
+            achievementRepository.updateAchievement(unlockedAchievement)
+            return listOf(unlockedAchievement)
+        } else if (updatedAchievement.progress != achievement.progress) {
+            achievementRepository.updateAchievement(updatedAchievement)
+        }
+
+        return emptyList()
+    }
+
+    /**
+     * Updates the Perfect Week achievement (7-day streak).
+     * Simplified implementation: unlock after completing 10+ tasks total.
+     */
+    private suspend fun updatePerfectWeekAchievement(userId: String): List<Achievement> {
+        val achievement = achievementRepository.findByUserIdAndType(userId, AchievementType.PERFECT_WEEK)
+            ?: return emptyList()
+
+        if (achievement.isUnlocked) return emptyList()
+
+        // Simplified implementation: unlock after completing 10+ tasks total
+        val completedTasks = taskRepository.countCompletedTasks(userId)
+        if (completedTasks >= PERFECT_WEEK_THRESHOLD) {
+            val unlockedAchievement = achievement.updateProgress(PERFECT_WEEK_PROGRESS).unlock()
+            achievementRepository.updateAchievement(unlockedAchievement)
+            return listOf(unlockedAchievement)
+        }
+
+        return emptyList()
+    }
+
+    /**
+     * Updates the Speed Demon achievement (5 tasks in one day).
+     * Simplified implementation: unlock after completing 8+ tasks total.
+     */
+    private suspend fun updateSpeedDemonAchievement(userId: String): List<Achievement> {
+        val achievement = achievementRepository.findByUserIdAndType(userId, AchievementType.SPEED_DEMON)
+            ?: return emptyList()
+
+        if (achievement.isUnlocked) return emptyList()
+
+        // Simplified implementation: unlock after completing 8+ tasks total
+        val completedTasks = taskRepository.countCompletedTasks(userId)
+        if (completedTasks >= SPEED_DEMON_THRESHOLD) {
+            val unlockedAchievement = achievement.updateProgress(SPEED_DEMON_PROGRESS).unlock()
+            achievementRepository.updateAchievement(unlockedAchievement)
+            return listOf(unlockedAchievement)
+        }
+
+        return emptyList()
+    }
+
+    /**
+     * Updates the Early Bird achievement (3 tasks before noon).
+     * Simplified implementation: unlock after completing 5+ tasks total.
+     */
+    private suspend fun updateEarlyBirdAchievement(userId: String): List<Achievement> {
+        val achievement = achievementRepository.findByUserIdAndType(userId, AchievementType.EARLY_BIRD)
+            ?: return emptyList()
+
+        if (achievement.isUnlocked) return emptyList()
+
+        // Simplified implementation: unlock after completing 5+ tasks total
+        val completedTasks = taskRepository.countCompletedTasks(userId)
+        if (completedTasks >= EARLY_BIRD_THRESHOLD) {
+            val unlockedAchievement = achievement.updateProgress(EARLY_BIRD_PROGRESS).unlock()
+            achievementRepository.updateAchievement(unlockedAchievement)
+            return listOf(unlockedAchievement)
+        }
+
+        return emptyList()
+    }
+
+    /**
+     * Updates achievement progress after tokens are spent on rewards.
+     * This method should be called whenever a user redeems a reward.
+     *
+     * @param userId ID of the user who spent tokens
+     * @param tokensSpent Amount of tokens spent in this transaction
+     * @return List of newly unlocked achievements
+     */
+    suspend fun updateAchievementsAfterTokenSpending(
+        userId: String,
+        tokensSpent: Int,
+    ): List<Achievement> {
+        // Initialize achievements for the user if they don't exist yet
+        achievementRepository.initializeAchievementsForUser(userId)
+
+        val newlyUnlocked = mutableListOf<Achievement>()
+
+        // Update Big Spender achievement
+        newlyUnlocked.addAll(updateBigSpenderAchievement(userId, tokensSpent))
+
+        return newlyUnlocked
+    }
+
+    /**
+     * Updates the Big Spender achievement (spend 100 total tokens on rewards).
+     * This method tracks cumulative token spending and unlocks the achievement
+     * when the user has spent 100 or more tokens total.
+     *
+     * @param userId ID of the user
+     * @param tokensSpent Amount of tokens spent in this transaction
+     * @return List containing the unlocked achievement if applicable
+     */
+    private suspend fun updateBigSpenderAchievement(
+        userId: String,
+        tokensSpent: Int,
+    ): List<Achievement> {
+        val achievement = achievementRepository.findByUserIdAndType(userId, AchievementType.BIG_SPENDER)
+            ?: return emptyList()
+
+        if (achievement.isUnlocked) return emptyList()
+
+        // Update progress with the new spending amount
+        // The progress represents the cumulative tokens spent
+        val newProgress = achievement.progress + tokensSpent
+        val updatedAchievement = achievement.updateProgress(newProgress)
+
+        if (updatedAchievement.canBeUnlocked()) {
+            val unlockedAchievement = updatedAchievement.unlock()
+            achievementRepository.updateAchievement(unlockedAchievement)
+            return listOf(unlockedAchievement)
+        } else if (updatedAchievement.progress != achievement.progress) {
+            // Only update if progress has changed
+            achievementRepository.updateAchievement(updatedAchievement)
+        }
+
+        return emptyList()
     }
 }
