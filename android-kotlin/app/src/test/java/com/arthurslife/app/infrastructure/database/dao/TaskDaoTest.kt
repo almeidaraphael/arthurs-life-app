@@ -64,6 +64,7 @@ class TaskDaoTest {
                 isCompleted = false,
                 assignedToUserId = "user-1",
                 createdAt = System.currentTimeMillis(),
+                completedAt = null,
             )
 
             // When
@@ -92,6 +93,7 @@ class TaskDaoTest {
                 isCompleted = true,
                 assignedToUserId = "user-1",
                 createdAt = System.currentTimeMillis(),
+                completedAt = System.currentTimeMillis(),
             )
 
             // When
@@ -115,6 +117,7 @@ class TaskDaoTest {
                 isCompleted = false,
                 assignedToUserId = "user-1",
                 createdAt = System.currentTimeMillis(),
+                completedAt = null,
             )
             val updatedTask = TaskEntity(
                 id = "task-1",
@@ -124,6 +127,7 @@ class TaskDaoTest {
                 isCompleted = false,
                 assignedToUserId = "user-1",
                 createdAt = System.currentTimeMillis(),
+                completedAt = null,
             )
 
             // When
@@ -631,6 +635,7 @@ class TaskDaoTest {
                 isCompleted = true,
                 assignedToUserId = "test-user",
                 createdAt = currentTime,
+                completedAt = currentTime,
             )
 
             // When

@@ -97,6 +97,7 @@ object DatabaseTestFactory {
                 isCompleted = false,
                 assignedToUserId = "user-child-1",
                 createdAt = System.currentTimeMillis(),
+                completedAt = null,
             ),
             TaskEntity(
                 id = "task-2",
@@ -106,6 +107,7 @@ object DatabaseTestFactory {
                 isCompleted = true,
                 assignedToUserId = "user-child-1",
                 createdAt = System.currentTimeMillis(),
+                completedAt = System.currentTimeMillis(),
             ),
             TaskEntity(
                 id = "task-3",
@@ -115,6 +117,7 @@ object DatabaseTestFactory {
                 isCompleted = false,
                 assignedToUserId = "user-child-1",
                 createdAt = System.currentTimeMillis(),
+                completedAt = null,
             ),
         )
 

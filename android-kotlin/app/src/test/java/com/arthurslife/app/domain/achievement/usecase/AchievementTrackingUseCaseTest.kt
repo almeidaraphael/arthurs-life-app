@@ -2,6 +2,7 @@ package com.arthurslife.app.domain.achievement.usecase
 
 import com.arthurslife.app.domain.TestCoroutineExtension
 import com.arthurslife.app.domain.TestDataFactory
+import com.arthurslife.app.domain.achievement.Achievement
 import com.arthurslife.app.domain.achievement.AchievementRepository
 import com.arthurslife.app.domain.achievement.AchievementType
 import com.arthurslife.app.domain.shouldBeUnlocked
@@ -48,6 +49,10 @@ class AchievementTrackingUseCaseTest {
     fun setup() {
         achievementRepository = mockk()
         taskRepository = mockk()
+
+        // Mock the initialize method for all tests
+        coEvery { achievementRepository.initializeAchievementsForUser(any()) } returns Unit
+
         achievementTrackingUseCase = AchievementTrackingUseCase(
             achievementRepository = achievementRepository,
             taskRepository = taskRepository,
@@ -68,11 +73,10 @@ class AchievementTrackingUseCaseTest {
                 userId,
             )
 
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.FIRST_STEPS) } returns firstStepsAchievement
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.CENTURY_CLUB) } returns null
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.TOKEN_COLLECTOR) } returns null
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.TASK_MASTER) } returns null
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.THREE_DAY_STREAK) } returns null
+            setupAllAchievementMocks(
+                userId = userId,
+                specificAchievements = mapOf(AchievementType.FIRST_STEPS to firstStepsAchievement),
+            )
             coEvery { taskRepository.countCompletedTasks(userId) } returns 1
             coEvery { achievementRepository.updateAchievement(any()) } returns Unit
 
@@ -106,11 +110,10 @@ class AchievementTrackingUseCaseTest {
                 userId,
             )
 
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.FIRST_STEPS) } returns unlockedFirstSteps
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.CENTURY_CLUB) } returns null
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.TOKEN_COLLECTOR) } returns null
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.TASK_MASTER) } returns null
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.THREE_DAY_STREAK) } returns null
+            setupAllAchievementMocks(
+                userId = userId,
+                specificAchievements = mapOf(AchievementType.FIRST_STEPS to unlockedFirstSteps),
+            )
 
             // When
             val result = achievementTrackingUseCase.updateAchievementsAfterTaskCompletion(userId)
@@ -135,13 +138,12 @@ class AchievementTrackingUseCaseTest {
                 userId,
             )
 
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.FIRST_STEPS) } returns null
-            coEvery {
-                achievementRepository.findByUserIdAndType(userId, AchievementType.CENTURY_CLUB)
-            } returns centuryClubAchievement
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.TOKEN_COLLECTOR) } returns null
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.TASK_MASTER) } returns null
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.THREE_DAY_STREAK) } returns null
+            setupAllAchievementMocks(
+                userId = userId,
+                specificAchievements = mapOf(
+                    AchievementType.CENTURY_CLUB to centuryClubAchievement,
+                ),
+            )
             coEvery { taskRepository.countCompletedTasks(userId) } returns 5
             coEvery { achievementRepository.updateAchievement(any()) } returns Unit
 
@@ -173,13 +175,12 @@ class AchievementTrackingUseCaseTest {
                 progress = 9,
             )
 
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.FIRST_STEPS) } returns null
-            coEvery {
-                achievementRepository.findByUserIdAndType(userId, AchievementType.CENTURY_CLUB)
-            } returns centuryClubAchievement
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.TOKEN_COLLECTOR) } returns null
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.TASK_MASTER) } returns null
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.THREE_DAY_STREAK) } returns null
+            setupAllAchievementMocks(
+                userId = userId,
+                specificAchievements = mapOf(
+                    AchievementType.CENTURY_CLUB to centuryClubAchievement,
+                ),
+            )
             coEvery { taskRepository.countCompletedTasks(userId) } returns 10
             coEvery { achievementRepository.updateAchievement(any()) } returns Unit
 
@@ -213,13 +214,12 @@ class AchievementTrackingUseCaseTest {
                 userId,
             )
 
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.FIRST_STEPS) } returns null
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.CENTURY_CLUB) } returns null
-            coEvery {
-                achievementRepository.findByUserIdAndType(userId, AchievementType.TOKEN_COLLECTOR)
-            } returns tokenCollectorAchievement
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.TASK_MASTER) } returns null
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.THREE_DAY_STREAK) } returns null
+            setupAllAchievementMocks(
+                userId = userId,
+                specificAchievements = mapOf(
+                    AchievementType.TOKEN_COLLECTOR to tokenCollectorAchievement,
+                ),
+            )
             coEvery { taskRepository.countTokensEarned(userId) } returns 25
             coEvery { achievementRepository.updateAchievement(any()) } returns Unit
 
@@ -251,13 +251,12 @@ class AchievementTrackingUseCaseTest {
                 progress = 45,
             )
 
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.FIRST_STEPS) } returns null
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.CENTURY_CLUB) } returns null
-            coEvery {
-                achievementRepository.findByUserIdAndType(userId, AchievementType.TOKEN_COLLECTOR)
-            } returns tokenCollectorAchievement
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.TASK_MASTER) } returns null
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.THREE_DAY_STREAK) } returns null
+            setupAllAchievementMocks(
+                userId = userId,
+                specificAchievements = mapOf(
+                    AchievementType.TOKEN_COLLECTOR to tokenCollectorAchievement,
+                ),
+            )
             coEvery { taskRepository.countTokensEarned(userId) } returns 50
             coEvery { achievementRepository.updateAchievement(any()) } returns Unit
 
@@ -291,11 +290,10 @@ class AchievementTrackingUseCaseTest {
                 userId,
             )
 
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.FIRST_STEPS) } returns null
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.CENTURY_CLUB) } returns null
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.TOKEN_COLLECTOR) } returns null
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.TASK_MASTER) } returns taskMasterAchievement
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.THREE_DAY_STREAK) } returns null
+            setupAllAchievementMocks(
+                userId = userId,
+                specificAchievements = mapOf(AchievementType.TASK_MASTER to taskMasterAchievement),
+            )
             coEvery { taskRepository.findIncompleteByUserId(userId) } returns emptyList<Task>()
             coEvery { achievementRepository.updateAchievement(any()) } returns Unit
 
@@ -330,11 +328,10 @@ class AchievementTrackingUseCaseTest {
             )
             val incompleteTasks = listOf(TestDataFactory.createTask(assignedToUserId = userId))
 
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.FIRST_STEPS) } returns null
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.CENTURY_CLUB) } returns null
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.TOKEN_COLLECTOR) } returns null
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.TASK_MASTER) } returns taskMasterAchievement
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.THREE_DAY_STREAK) } returns null
+            setupAllAchievementMocks(
+                userId = userId,
+                specificAchievements = mapOf(AchievementType.TASK_MASTER to taskMasterAchievement),
+            )
             coEvery { taskRepository.findIncompleteByUserId(userId) } returns incompleteTasks
 
             // When
@@ -359,13 +356,10 @@ class AchievementTrackingUseCaseTest {
                 userId,
             )
 
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.FIRST_STEPS) } returns null
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.CENTURY_CLUB) } returns null
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.TOKEN_COLLECTOR) } returns null
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.TASK_MASTER) } returns null
-            coEvery {
-                achievementRepository.findByUserIdAndType(userId, AchievementType.THREE_DAY_STREAK)
-            } returns streakAchievement
+            setupAllAchievementMocks(
+                userId = userId,
+                specificAchievements = mapOf(AchievementType.THREE_DAY_STREAK to streakAchievement),
+            )
             coEvery { taskRepository.countCompletedTasks(userId) } returns 6
             coEvery { achievementRepository.updateAchievement(any()) } returns Unit
 
@@ -404,13 +398,10 @@ class AchievementTrackingUseCaseTest {
                 userId,
             )
 
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.FIRST_STEPS) } returns null
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.CENTURY_CLUB) } returns null
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.TOKEN_COLLECTOR) } returns null
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.TASK_MASTER) } returns null
-            coEvery {
-                achievementRepository.findByUserIdAndType(userId, AchievementType.THREE_DAY_STREAK)
-            } returns streakAchievement
+            setupAllAchievementMocks(
+                userId = userId,
+                specificAchievements = mapOf(AchievementType.THREE_DAY_STREAK to streakAchievement),
+            )
             coEvery { taskRepository.countCompletedTasks(userId) } returns 5
 
             // When
@@ -445,15 +436,14 @@ class AchievementTrackingUseCaseTest {
                 progress = 45,
             )
 
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.FIRST_STEPS) } returns firstStepsAchievement
-            coEvery {
-                achievementRepository.findByUserIdAndType(userId, AchievementType.CENTURY_CLUB)
-            } returns centuryClubAchievement
-            coEvery {
-                achievementRepository.findByUserIdAndType(userId, AchievementType.TOKEN_COLLECTOR)
-            } returns tokenCollectorAchievement
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.TASK_MASTER) } returns null
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.THREE_DAY_STREAK) } returns null
+            setupAllAchievementMocks(
+                userId = userId,
+                specificAchievements = mapOf(
+                    AchievementType.FIRST_STEPS to firstStepsAchievement,
+                    AchievementType.CENTURY_CLUB to centuryClubAchievement,
+                    AchievementType.TOKEN_COLLECTOR to tokenCollectorAchievement,
+                ),
+            )
             coEvery { taskRepository.countCompletedTasks(userId) } returns 10
             coEvery { taskRepository.countTokensEarned(userId) } returns 50
             coEvery { achievementRepository.updateAchievement(any()) } returns Unit
@@ -518,13 +508,12 @@ class AchievementTrackingUseCaseTest {
                 userId,
             )
 
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.FIRST_STEPS) } returns null
-            coEvery {
-                achievementRepository.findByUserIdAndType(userId, AchievementType.CENTURY_CLUB)
-            } returns centuryClubAchievement
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.TOKEN_COLLECTOR) } returns null
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.TASK_MASTER) } returns null
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.THREE_DAY_STREAK) } returns null
+            setupAllAchievementMocks(
+                userId = userId,
+                specificAchievements = mapOf(
+                    AchievementType.CENTURY_CLUB to centuryClubAchievement,
+                ),
+            )
             coEvery { taskRepository.countCompletedTasks(userId) } returns completedTasks
             coEvery { achievementRepository.updateAchievement(any()) } returns Unit
 
@@ -569,13 +558,12 @@ class AchievementTrackingUseCaseTest {
                 userId,
             )
 
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.FIRST_STEPS) } returns null
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.CENTURY_CLUB) } returns null
-            coEvery {
-                achievementRepository.findByUserIdAndType(userId, AchievementType.TOKEN_COLLECTOR)
-            } returns tokenCollectorAchievement
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.TASK_MASTER) } returns null
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.THREE_DAY_STREAK) } returns null
+            setupAllAchievementMocks(
+                userId = userId,
+                specificAchievements = mapOf(
+                    AchievementType.TOKEN_COLLECTOR to tokenCollectorAchievement,
+                ),
+            )
             coEvery { taskRepository.countTokensEarned(userId) } returns tokensEarned
             coEvery { achievementRepository.updateAchievement(any()) } returns Unit
 
@@ -623,11 +611,10 @@ class AchievementTrackingUseCaseTest {
                 userId,
             )
 
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.FIRST_STEPS) } returns null
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.CENTURY_CLUB) } returns null
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.TOKEN_COLLECTOR) } returns null
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.TASK_MASTER) } returns unlockedTaskMaster
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.THREE_DAY_STREAK) } returns null
+            setupAllAchievementMocks(
+                userId = userId,
+                specificAchievements = mapOf(AchievementType.TASK_MASTER to unlockedTaskMaster),
+            )
             coEvery { taskRepository.findIncompleteByUserId(userId) } returns emptyList<Task>()
 
             // When
@@ -650,13 +637,10 @@ class AchievementTrackingUseCaseTest {
                 userId,
             )
 
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.FIRST_STEPS) } returns null
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.CENTURY_CLUB) } returns null
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.TOKEN_COLLECTOR) } returns null
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.TASK_MASTER) } returns null
-            coEvery {
-                achievementRepository.findByUserIdAndType(userId, AchievementType.THREE_DAY_STREAK)
-            } returns streakAchievement
+            setupAllAchievementMocks(
+                userId = userId,
+                specificAchievements = mapOf(AchievementType.THREE_DAY_STREAK to streakAchievement),
+            )
             coEvery { taskRepository.countCompletedTasks(userId) } returns completedTasks
             coEvery { achievementRepository.updateAchievement(any()) } returns Unit
 
@@ -819,13 +803,12 @@ class AchievementTrackingUseCaseTest {
             )
             val largeTaskCount = 1000
 
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.FIRST_STEPS) } returns null
-            coEvery {
-                achievementRepository.findByUserIdAndType(userId, AchievementType.CENTURY_CLUB)
-            } returns centuryClubAchievement
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.TOKEN_COLLECTOR) } returns null
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.TASK_MASTER) } returns null
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.THREE_DAY_STREAK) } returns null
+            setupAllAchievementMocks(
+                userId = userId,
+                specificAchievements = mapOf(
+                    AchievementType.CENTURY_CLUB to centuryClubAchievement,
+                ),
+            )
             coEvery { taskRepository.countCompletedTasks(userId) } returns largeTaskCount
             coEvery { achievementRepository.updateAchievement(any()) } returns Unit
 
@@ -863,11 +846,10 @@ class AchievementTrackingUseCaseTest {
                 userId,
             )
 
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.FIRST_STEPS) } returns null
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.CENTURY_CLUB) } returns null
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.TOKEN_COLLECTOR) } returns null
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.TASK_MASTER) } returns taskMasterAchievement
-            coEvery { achievementRepository.findByUserIdAndType(userId, AchievementType.THREE_DAY_STREAK) } returns null
+            setupAllAchievementMocks(
+                userId = userId,
+                specificAchievements = mapOf(AchievementType.TASK_MASTER to taskMasterAchievement),
+            )
             coEvery { taskRepository.findIncompleteByUserId(userId) } returns emptyList<Task>()
             coEvery { achievementRepository.updateAchievement(any()) } returns Unit
 
@@ -895,21 +877,16 @@ class AchievementTrackingUseCaseTest {
             )
 
             // Set up for multiple achievements to be unlocked
-            coEvery {
-                achievementRepository.findByUserIdAndType(userId, AchievementType.FIRST_STEPS)
-            } returns achievements.find { it.type == AchievementType.FIRST_STEPS }
-            coEvery {
-                achievementRepository.findByUserIdAndType(userId, AchievementType.CENTURY_CLUB)
-            } returns achievements.find { it.type == AchievementType.CENTURY_CLUB }?.updateProgress(9)
-            coEvery {
-                achievementRepository.findByUserIdAndType(userId, AchievementType.TOKEN_COLLECTOR)
-            } returns achievements.find { it.type == AchievementType.TOKEN_COLLECTOR }?.updateProgress(45)
-            coEvery {
-                achievementRepository.findByUserIdAndType(userId, AchievementType.TASK_MASTER)
-            } returns achievements.find { it.type == AchievementType.TASK_MASTER }
-            coEvery {
-                achievementRepository.findByUserIdAndType(userId, AchievementType.THREE_DAY_STREAK)
-            } returns achievements.find { it.type == AchievementType.THREE_DAY_STREAK }
+            setupAllAchievementMocks(
+                userId = userId,
+                specificAchievements = mapOf(
+                    AchievementType.FIRST_STEPS to achievements.find { it.type == AchievementType.FIRST_STEPS },
+                    AchievementType.CENTURY_CLUB to achievements.find { it.type == AchievementType.CENTURY_CLUB }?.updateProgress(9),
+                    AchievementType.TOKEN_COLLECTOR to achievements.find { it.type == AchievementType.TOKEN_COLLECTOR }?.updateProgress(45),
+                    AchievementType.TASK_MASTER to achievements.find { it.type == AchievementType.TASK_MASTER },
+                    AchievementType.THREE_DAY_STREAK to achievements.find { it.type == AchievementType.THREE_DAY_STREAK },
+                ),
+            )
 
             coEvery { taskRepository.countCompletedTasks(userId) } returns 10
             coEvery { taskRepository.countTokensEarned(userId) } returns 50
@@ -924,6 +901,33 @@ class AchievementTrackingUseCaseTest {
             result.forEach { it.shouldBeUnlocked() }
 
             coVerify(atLeast = 4) { achievementRepository.updateAchievement(any()) }
+        }
+    }
+
+    /**
+     * Helper method to set up mocks for all achievement types that the use case checks.
+     * This prevents MockKException errors when the use case tries to access unmocked achievement types.
+     */
+    private fun setupAllAchievementMocks(
+        userId: String,
+        specificAchievements: Map<AchievementType, Achievement?> = emptyMap(),
+    ) {
+        // Set up mocks for all achievement types that the use case checks
+        val allTypes = listOf(
+            AchievementType.FIRST_STEPS,
+            AchievementType.CENTURY_CLUB,
+            AchievementType.TOKEN_COLLECTOR,
+            AchievementType.TASK_MASTER,
+            AchievementType.THREE_DAY_STREAK,
+            AchievementType.TASK_CHAMPION,
+            AchievementType.PERFECT_WEEK,
+            AchievementType.SPEED_DEMON,
+            AchievementType.EARLY_BIRD,
+        )
+
+        allTypes.forEach { type ->
+            val mockValue = specificAchievements[type] ?: null
+            coEvery { achievementRepository.findByUserIdAndType(userId, type) } returns mockValue
         }
     }
 }

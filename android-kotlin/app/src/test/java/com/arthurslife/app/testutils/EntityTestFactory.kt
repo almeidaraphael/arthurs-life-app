@@ -35,6 +35,7 @@ object EntityTestFactory {
         isCompleted: Boolean = false,
         assignedToUserId: String = UUID.randomUUID().toString(),
         createdAt: Long = System.currentTimeMillis(),
+        completedAt: Long? = null,
     ): TaskEntity = TaskEntity(
         id = id,
         title = title,
@@ -43,5 +44,6 @@ object EntityTestFactory {
         isCompleted = isCompleted,
         assignedToUserId = assignedToUserId,
         createdAt = createdAt,
+        completedAt = completedAt,
     )
 }

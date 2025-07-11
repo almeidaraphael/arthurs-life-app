@@ -1,14 +1,17 @@
 package com.arthurslife.app.presentation.viewmodels
 
+import com.arthurslife.app.di.TaskUseCases
 import com.arthurslife.app.domain.TestDataFactory
 import com.arthurslife.app.domain.achievement.AchievementType
+import com.arthurslife.app.domain.achievement.usecase.AchievementTrackingUseCase
+import com.arthurslife.app.domain.auth.AuthenticationSessionService
+import com.arthurslife.app.domain.common.AchievementEventManager
 import com.arthurslife.app.domain.common.PresentationException
 import com.arthurslife.app.domain.task.TaskCategory
 import com.arthurslife.app.domain.task.usecase.CompleteTaskUseCase
 import com.arthurslife.app.domain.task.usecase.TaskManagementUseCases
 import com.arthurslife.app.domain.task.usecase.TaskStats
 import com.arthurslife.app.domain.task.usecase.UndoTaskUseCase
-import com.arthurslife.app.domain.user.UserRepository
 import com.arthurslife.app.domain.user.UserRole
 import io.mockk.clearMocks
 import io.mockk.coEvery
@@ -16,10 +19,10 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -45,10 +48,15 @@ import kotlin.OptIn
 @DisplayName("TaskManagementViewModel Tests")
 class TaskManagementViewModelTest {
 
+    private lateinit var mockTaskUseCases: TaskUseCases
     private lateinit var mockTaskManagementUseCases: TaskManagementUseCases
     private lateinit var mockCompleteTaskUseCase: CompleteTaskUseCase
     private lateinit var mockUndoTaskUseCase: UndoTaskUseCase
-    private lateinit var mockUserRepository: UserRepository
+    private lateinit var mockCalculateDailyProgressUseCase:
+        com.arthurslife.app.domain.task.usecase.CalculateDailyProgressUseCase
+    private lateinit var mockAchievementTrackingUseCase: AchievementTrackingUseCase
+    private lateinit var mockAuthenticationSessionService: AuthenticationSessionService
+    private lateinit var mockAchievementEventManager: AchievementEventManager
     private lateinit var viewModel: TaskManagementViewModel
 
     private val testDispatcher = UnconfinedTestDispatcher()
@@ -67,10 +75,24 @@ class TaskManagementViewModelTest {
         mockTaskManagementUseCases = mockk()
         mockCompleteTaskUseCase = mockk()
         mockUndoTaskUseCase = mockk()
-        mockUserRepository = mockk()
+        mockCalculateDailyProgressUseCase = mockk()
+        mockAchievementTrackingUseCase = mockk()
+        mockAuthenticationSessionService = mockk()
+        mockAchievementEventManager = mockk {
+            coEvery { emitAchievementUpdate(any<String>()) } returns Unit
+            coEvery { emitAchievementUpdate(any<String>(), any()) } returns Unit
+        }
 
-        // Default successful setup for child user
-        coEvery { mockUserRepository.findByRole(UserRole.CHILD) } returns testChild
+        // Create the TaskUseCases container
+        mockTaskUseCases = TaskUseCases(
+            taskManagementUseCases = mockTaskManagementUseCases,
+            completeTaskUseCase = mockCompleteTaskUseCase,
+            undoTaskUseCase = mockUndoTaskUseCase,
+            calculateDailyProgressUseCase = mockCalculateDailyProgressUseCase,
+        )
+
+        // Default successful setup for current user
+        coEvery { mockAuthenticationSessionService.getCurrentUser() } returns testChild
         coEvery { mockTaskManagementUseCases.getTasksForUser(testChild.id) } returns Result.success(testTasks)
         coEvery { mockTaskManagementUseCases.getIncompleteTasksForUser(testChild.id) } returns Result.success(
             testTasks.filter { !it.isCompleted },
@@ -84,8 +106,13 @@ class TaskManagementViewModelTest {
                 totalTokensEarned = 50,
                 incompleteTasks = testTasks.count { !it.isCompleted },
                 completionRate = 33,
+                currentStreak = 2,
             ),
         )
+
+        // Setup missing mocks for daily progress and achievements
+        coEvery { mockCalculateDailyProgressUseCase(testChild.id) } returns 0.75f
+        coEvery { mockAchievementTrackingUseCase.getUnlockedAchievements(testChild.id) } returns emptyList()
     }
 
     @AfterEach
@@ -94,12 +121,13 @@ class TaskManagementViewModelTest {
     }
 
     private fun createViewModel(): TaskManagementViewModel {
-        return TaskManagementViewModel(
-            taskManagementUseCases = mockTaskManagementUseCases,
-            completeTaskUseCase = mockCompleteTaskUseCase,
-            undoTaskUseCase = mockUndoTaskUseCase,
-            userRepository = mockUserRepository,
+        val dependencies = TaskManagementDependencies(
+            taskUseCases = mockTaskUseCases,
+            achievementTrackingUseCase = mockAchievementTrackingUseCase,
+            authenticationSessionService = mockAuthenticationSessionService,
+            achievementEventManager = mockAchievementEventManager,
         )
+        return TaskManagementViewModel(dependencies)
     }
 
     @Nested
@@ -110,7 +138,8 @@ class TaskManagementViewModelTest {
         fun `should initialize with correct default state`() = runTest {
             viewModel = createViewModel()
 
-            delay(100) // Allow initialization to complete
+            // Allow all coroutines to complete
+            advanceUntilIdle()
 
             val uiState = viewModel.uiState.first()
             assertEquals(false, uiState.isLoading)
@@ -122,10 +151,11 @@ class TaskManagementViewModelTest {
         fun `should load child user and tasks on initialization`() = runTest {
             viewModel = createViewModel()
 
-            delay(100) // Allow initialization to complete
+            // Allow all coroutines to complete
+            advanceUntilIdle()
 
             // Verify repositories were called
-            coVerify { mockUserRepository.findByRole(UserRole.CHILD) }
+            coVerify { mockAuthenticationSessionService.getCurrentUser() }
             coVerify { mockTaskManagementUseCases.getTasksForUser(testChild.id) }
             coVerify { mockTaskManagementUseCases.getIncompleteTasksForUser(testChild.id) }
             coVerify { mockTaskManagementUseCases.getCompletedTasksForUser(testChild.id) }
@@ -140,11 +170,12 @@ class TaskManagementViewModelTest {
 
         @Test
         fun `should handle missing child user gracefully`() = runTest {
-            coEvery { mockUserRepository.findByRole(UserRole.CHILD) } returns null
+            coEvery { mockAuthenticationSessionService.getCurrentUser() } returns null
 
             viewModel = createViewModel()
 
-            delay(100) // Allow initialization to complete
+            // Allow all coroutines to complete
+            advanceUntilIdle()
 
             // Should not attempt to load tasks
             coVerify(exactly = 0) { mockTaskManagementUseCases.getTasksForUser(any()) }
@@ -159,11 +190,12 @@ class TaskManagementViewModelTest {
         @Test
         fun `should handle child user loading error`() = runTest {
             val errorMessage = "Database connection failed"
-            coEvery { mockUserRepository.findByRole(UserRole.CHILD) } throws PresentationException(errorMessage)
+            coEvery { mockAuthenticationSessionService.getCurrentUser() } throws PresentationException(errorMessage)
 
             viewModel = createViewModel()
 
-            delay(100) // Allow initialization to complete
+            // Allow all coroutines to complete
+            advanceUntilIdle()
 
             val uiState = viewModel.uiState.first()
             assertEquals(errorMessage, uiState.error)
@@ -190,7 +222,8 @@ class TaskManagementViewModelTest {
 
             viewModel.createTask(taskTitle, taskCategory)
 
-            delay(100) // Allow operation to complete
+            // Allow all coroutines to complete
+            advanceUntilIdle()
 
             coVerify {
                 mockTaskManagementUseCases.createTask(
@@ -217,7 +250,8 @@ class TaskManagementViewModelTest {
 
             viewModel.createTask(taskTitle, taskCategory)
 
-            delay(100) // Allow operation to complete
+            // Allow all coroutines to complete
+            advanceUntilIdle()
 
             val uiState = viewModel.uiState.first()
             assertEquals("Failed to create task: $errorMessage", uiState.error)
@@ -237,7 +271,8 @@ class TaskManagementViewModelTest {
             viewModel.createTask(taskTitle, taskCategory)
 
             // Check that loading state is set (implementation may vary based on coroutine timing)
-            delay(100) // Allow operation to complete
+            // Allow all coroutines to complete
+            advanceUntilIdle()
 
             // After completion, loading should be false
             val uiState = viewModel.uiState.first()
@@ -255,7 +290,8 @@ class TaskManagementViewModelTest {
 
             viewModel.createTask(taskTitle, taskCategory)
 
-            delay(100) // Allow operation to complete
+            // Allow all coroutines to complete
+            advanceUntilIdle()
 
             val uiState = viewModel.uiState.first()
             assertEquals(errorMessage, uiState.error)
@@ -265,14 +301,16 @@ class TaskManagementViewModelTest {
         @Test
         fun `should not create task when child user ID is null`() = runTest {
             // Setup ViewModel with no child user
-            coEvery { mockUserRepository.findByRole(UserRole.CHILD) } returns null
+            coEvery { mockAuthenticationSessionService.getCurrentUser() } returns null
             viewModel = createViewModel()
 
-            delay(100) // Allow initialization to complete
+            // Allow all coroutines to complete
+            advanceUntilIdle()
 
             viewModel.createTask("Test Task", TaskCategory.HOUSEHOLD)
 
-            delay(100) // Allow operation to complete
+            // Allow all coroutines to complete
+            advanceUntilIdle()
 
             // Should not call the use case
             coVerify(exactly = 0) { mockTaskManagementUseCases.createTask(any(), any(), any()) }
@@ -299,7 +337,8 @@ class TaskManagementViewModelTest {
 
             viewModel.updateTask(taskId, newTitle, newCategory)
 
-            delay(100) // Allow operation to complete
+            // Allow all coroutines to complete
+            advanceUntilIdle()
 
             coVerify { mockTaskManagementUseCases.updateTask(taskId, newTitle, newCategory) }
 
@@ -320,7 +359,8 @@ class TaskManagementViewModelTest {
 
             viewModel.updateTask(taskId, newTitle, newCategory)
 
-            delay(100) // Allow operation to complete
+            // Allow all coroutines to complete
+            advanceUntilIdle()
 
             val uiState = viewModel.uiState.first()
             assertEquals("Failed to update task: $errorMessage", uiState.error)
@@ -344,7 +384,8 @@ class TaskManagementViewModelTest {
 
             viewModel.deleteTask(taskId)
 
-            delay(100) // Allow operation to complete
+            // Allow all coroutines to complete
+            advanceUntilIdle()
 
             coVerify { mockTaskManagementUseCases.deleteTask(taskId) }
 
@@ -361,7 +402,8 @@ class TaskManagementViewModelTest {
 
             viewModel.deleteTask(taskId)
 
-            delay(100) // Allow operation to complete
+            // Allow all coroutines to complete
+            advanceUntilIdle()
 
             val uiState = viewModel.uiState.first()
             assertEquals("Failed to delete task: $errorMessage", uiState.error)
@@ -390,7 +432,8 @@ class TaskManagementViewModelTest {
 
             viewModel.completeTask(taskId)
 
-            delay(100) // Allow operation to complete
+            // Allow all coroutines to complete
+            advanceUntilIdle()
 
             coVerify { mockCompleteTaskUseCase(taskId) }
 
@@ -418,7 +461,8 @@ class TaskManagementViewModelTest {
 
             viewModel.completeTask(taskId)
 
-            delay(100) // Allow operation to complete
+            // Allow all coroutines to complete
+            advanceUntilIdle()
 
             val uiState = viewModel.uiState.first()
             assertTrue(uiState.successMessage!!.contains("Task completed!"))
@@ -435,7 +479,8 @@ class TaskManagementViewModelTest {
 
             viewModel.completeTask(taskId)
 
-            delay(100) // Allow operation to complete
+            // Allow all coroutines to complete
+            advanceUntilIdle()
 
             val uiState = viewModel.uiState.first()
             assertEquals("Failed to complete task: $errorMessage", uiState.error)
@@ -465,7 +510,8 @@ class TaskManagementViewModelTest {
 
             viewModel.undoTask(taskId)
 
-            delay(100) // Allow operation to complete
+            // Allow all coroutines to complete
+            advanceUntilIdle()
 
             coVerify { mockUndoTaskUseCase(taskId) }
 
@@ -490,7 +536,8 @@ class TaskManagementViewModelTest {
 
             viewModel.undoTask(taskId)
 
-            delay(100) // Allow operation to complete
+            // Allow all coroutines to complete
+            advanceUntilIdle()
 
             val uiState = viewModel.uiState.first()
             assertTrue(uiState.successMessage!!.contains("Task undone!"))
@@ -506,7 +553,8 @@ class TaskManagementViewModelTest {
 
             viewModel.undoTask(taskId)
 
-            delay(100) // Allow operation to complete
+            // Allow all coroutines to complete
+            advanceUntilIdle()
 
             val uiState = viewModel.uiState.first()
             assertEquals("Failed to undo task: $errorMessage", uiState.error)
@@ -526,7 +574,8 @@ class TaskManagementViewModelTest {
             coEvery { mockTaskManagementUseCases.deleteTask(taskId) } returns Result.success(Unit)
             viewModel.deleteTask(taskId)
 
-            delay(100) // Allow operation to complete
+            // Allow all coroutines to complete
+            advanceUntilIdle()
 
             // Verify success message is set
             val stateWithMessage = viewModel.uiState.first()
@@ -545,7 +594,8 @@ class TaskManagementViewModelTest {
         @Test
         fun `should refresh tasks successfully`() = runTest {
             viewModel = createViewModel()
-            delay(100) // Allow initialization to complete
+            // Allow all coroutines to complete
+            advanceUntilIdle()
 
             // Clear verification calls from initialization
             coVerify { mockTaskManagementUseCases.getTasksForUser(testChild.id) }
@@ -556,7 +606,8 @@ class TaskManagementViewModelTest {
             // Call refresh
             viewModel.refresh()
 
-            delay(100) // Allow operation to complete
+            // Allow all coroutines to complete
+            advanceUntilIdle()
 
             // Verify all task loading methods are called again
             coVerify(atLeast = 2) { mockTaskManagementUseCases.getTasksForUser(testChild.id) }
@@ -572,17 +623,19 @@ class TaskManagementViewModelTest {
         @Test
         fun `should handle refresh when child user ID is null`() = runTest {
             // Clear any previous mock setups
-            clearMocks(mockUserRepository)
+            clearMocks(mockAuthenticationSessionService)
 
             // Setup ViewModel with no child user
-            coEvery { mockUserRepository.findByRole(UserRole.CHILD) } returns null
+            coEvery { mockAuthenticationSessionService.getCurrentUser() } returns null
             viewModel = createViewModel()
 
-            delay(100) // Allow initialization to complete
+            // Allow all coroutines to complete
+            advanceUntilIdle()
 
             viewModel.refresh()
 
-            delay(100) // Allow operation to complete
+            // Allow all coroutines to complete
+            advanceUntilIdle()
 
             // Should not call task loading methods
             coVerify(exactly = 0) { mockTaskManagementUseCases.getTasksForUser(any()) }
@@ -596,7 +649,7 @@ class TaskManagementViewModelTest {
         @Test
         fun `should handle task loading errors gracefully`() = runTest {
             val errorMessage = "Network connection failed"
-            coEvery { mockUserRepository.findByRole(UserRole.CHILD) } returns testChild
+            coEvery { mockAuthenticationSessionService.getCurrentUser() } returns testChild
             coEvery { mockTaskManagementUseCases.getTasksForUser(testChild.id) } returns Result.failure(Exception(errorMessage))
             coEvery { mockTaskManagementUseCases.getIncompleteTasksForUser(testChild.id) } returns Result.success(emptyList())
             coEvery { mockTaskManagementUseCases.getCompletedTasksForUser(testChild.id) } returns Result.success(emptyList())
@@ -606,12 +659,14 @@ class TaskManagementViewModelTest {
                     totalTokensEarned = 0,
                     incompleteTasks = 0,
                     completionRate = 0,
+                    currentStreak = 0,
                 ),
             )
 
             viewModel = createViewModel()
 
-            delay(100) // Allow initialization to complete
+            // Allow all coroutines to complete
+            advanceUntilIdle()
 
             val uiState = viewModel.uiState.first()
             assertEquals("Failed to load tasks: $errorMessage", uiState.error)
@@ -620,7 +675,7 @@ class TaskManagementViewModelTest {
 
         @Test
         fun `should handle multiple task loading errors`() = runTest {
-            coEvery { mockUserRepository.findByRole(UserRole.CHILD) } returns testChild
+            coEvery { mockAuthenticationSessionService.getCurrentUser() } returns testChild
             coEvery { mockTaskManagementUseCases.getTasksForUser(testChild.id) } returns Result.failure(Exception("Tasks error"))
             coEvery {
                 mockTaskManagementUseCases.getIncompleteTasksForUser(testChild.id)
@@ -632,7 +687,8 @@ class TaskManagementViewModelTest {
 
             viewModel = createViewModel()
 
-            delay(100) // Allow initialization to complete
+            // Allow all coroutines to complete
+            advanceUntilIdle()
 
             val uiState = viewModel.uiState.first()
             // Should show the first error encountered
@@ -652,7 +708,8 @@ class TaskManagementViewModelTest {
 
         @Test
         fun `should emit distinct states correctly`() = runTest {
-            delay(100) // Allow initialization to complete
+            // Allow all coroutines to complete
+            advanceUntilIdle()
 
             val states = mutableListOf<TaskManagementUiState>()
 
@@ -669,7 +726,8 @@ class TaskManagementViewModelTest {
 
             viewModel.createTask("Test Task", TaskCategory.HOUSEHOLD)
 
-            delay(100) // Allow operation to complete
+            // Allow all coroutines to complete
+            advanceUntilIdle()
             job.cancel()
 
             // Should have captured state changes
@@ -682,7 +740,8 @@ class TaskManagementViewModelTest {
 
         @Test
         fun `should maintain separate state flows for different data`() = runTest {
-            delay(100) // Allow initialization to complete
+            // Allow all coroutines to complete
+            advanceUntilIdle()
 
             // Verify initial state
             assertEquals(testTasks, viewModel.allTasks.first())

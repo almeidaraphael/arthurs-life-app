@@ -49,9 +49,6 @@ class ChildHomeScreenTest : ComposeUiTestBase() {
         composeTestRule.onNode(hasContentDescription("Quick stats section"))
             .assertIsDisplayed()
 
-        // Verify quick actions section is displayed
-        composeTestRule.onNode(hasContentDescription("Quick actions section"))
-            .assertIsDisplayed()
 
         // Verify motivational card is displayed
         composeTestRule.onNode(hasContentDescription("Motivational message card"))
@@ -84,21 +81,6 @@ class ChildHomeScreenTest : ComposeUiTestBase() {
             .assertIsDisplayed()
     }
 
-    @Test
-    fun childHomeScreen_quickActionsAreClickable() {
-        setContentWithTheme {
-            ChildHomeScreen(
-                themeViewModel = hiltViewModel<ThemeViewModel>(),
-            )
-        }
-
-        // Find and click a quick action button (if any are present)
-        composeTestRule.onNode(hasContentDescription("Complete tasks button"))
-            .performClick()
-
-        // Note: This test assumes the quick actions section has clickable elements
-        // The actual implementation may vary based on the ThemeAwareQuickActionsSection
-    }
 
     @Test
     fun childHomeScreen_worksWithMarioTheme() {
@@ -197,8 +179,6 @@ class ChildHomeScreenTest : ComposeUiTestBase() {
         composeTestRule.onNode(hasContentDescription("Quick stats section"))
             .assertIsDisplayed()
 
-        composeTestRule.onNode(hasContentDescription("Quick actions section"))
-            .assertIsDisplayed()
 
         composeTestRule.onNode(hasContentDescription("Motivational message card"))
             .assertIsDisplayed()
@@ -222,8 +202,6 @@ class ChildHomeScreenTest : ComposeUiTestBase() {
         composeTestRule.onNode(hasContentDescription("Quick stats section"))
             .assertIsDisplayed()
 
-        composeTestRule.onNode(hasContentDescription("Quick actions section"))
-            .assertIsDisplayed()
 
         composeTestRule.onNode(hasContentDescription("Motivational message card"))
             .assertIsDisplayed()

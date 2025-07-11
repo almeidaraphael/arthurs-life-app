@@ -799,6 +799,9 @@ class TaskManagementUseCasesTest {
             coEvery { taskRepository.countCompletedTasks(userId) } returns totalCompleted
             coEvery { taskRepository.countTokensEarned(userId) } returns totalTokensEarned
             coEvery { taskRepository.findIncompleteByUserId(userId) } returns incompleteTasks
+            coEvery { taskRepository.findCompletedByUserId(userId) } returns (1..totalCompleted).map {
+                TestDataFactory.createCompletedTask(assignedToUserId = userId)
+            }
 
             // When
             val result = taskManagementUseCases.getTaskStats(userId)
@@ -844,6 +847,9 @@ class TaskManagementUseCasesTest {
             coEvery { taskRepository.countCompletedTasks(userId) } returns totalCompleted
             coEvery { taskRepository.countTokensEarned(userId) } returns totalTokensEarned
             coEvery { taskRepository.findIncompleteByUserId(userId) } returns emptyList()
+            coEvery { taskRepository.findCompletedByUserId(userId) } returns (1..totalCompleted).map {
+                TestDataFactory.createCompletedTask(assignedToUserId = userId)
+            }
 
             // When
             val result = taskManagementUseCases.getTaskStats(userId)
@@ -874,6 +880,7 @@ class TaskManagementUseCasesTest {
             coEvery { taskRepository.countCompletedTasks(userId) } returns 0
             coEvery { taskRepository.countTokensEarned(userId) } returns 0
             coEvery { taskRepository.findIncompleteByUserId(userId) } returns incompleteTasks
+            coEvery { taskRepository.findCompletedByUserId(userId) } returns emptyList()
 
             // When
             val result = taskManagementUseCases.getTaskStats(userId)
@@ -926,6 +933,9 @@ class TaskManagementUseCasesTest {
             coEvery { taskRepository.countCompletedTasks(userId) } returns completedCount
             coEvery { taskRepository.countTokensEarned(userId) } returns completedCount * 10
             coEvery { taskRepository.findIncompleteByUserId(userId) } returns incompleteTasks
+            coEvery { taskRepository.findCompletedByUserId(userId) } returns (1..completedCount).map {
+                TestDataFactory.createCompletedTask(assignedToUserId = userId)
+            }
 
             // When
             val result = taskManagementUseCases.getTaskStats(userId)

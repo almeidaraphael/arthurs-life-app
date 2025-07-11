@@ -137,6 +137,19 @@ class AchievementTest {
             assertEquals(type.target, achievement.target, "Achievement target should match type")
 
             // Verify type-specific properties
+            verifyAchievementTypeSpecificProperties(type, achievement)
+        }
+
+        private fun verifyAchievementTypeSpecificProperties(type: AchievementType, achievement: Achievement) {
+            when (type.category) {
+                AchievementCategory.MILESTONE -> verifyMilestoneAchievement(type, achievement)
+                AchievementCategory.DAILY -> verifyDailyAchievement(type, achievement)
+                AchievementCategory.CONSISTENCY -> verifyConsistencyAchievement(type, achievement)
+                AchievementCategory.ECONOMY -> verifyEconomyAchievement(type, achievement)
+            }
+        }
+
+        private fun verifyMilestoneAchievement(type: AchievementType, achievement: Achievement) {
             when (type) {
                 AchievementType.FIRST_STEPS -> {
                     assertEquals("First Steps", achievement.name)
@@ -144,30 +157,79 @@ class AchievementTest {
                     assertEquals(1, achievement.target)
                     assertEquals(AchievementCategory.MILESTONE, type.category)
                 }
-                AchievementType.TASK_MASTER -> {
-                    assertEquals("Task Master", achievement.name)
-                    assertEquals("Complete all daily tasks", achievement.description)
-                    assertEquals(1, achievement.target)
-                    assertEquals(AchievementCategory.DAILY, type.category)
-                }
-                AchievementType.THREE_DAY_STREAK -> {
-                    assertEquals("3-Day Streak", achievement.name)
-                    assertEquals("Complete tasks for 3 consecutive days", achievement.description)
-                    assertEquals(3, achievement.target)
-                    assertEquals(AchievementCategory.CONSISTENCY, type.category)
-                }
                 AchievementType.CENTURY_CLUB -> {
                     assertEquals("Century Club", achievement.name)
                     assertEquals("Complete 10 total tasks", achievement.description)
                     assertEquals(10, achievement.target)
                     assertEquals(AchievementCategory.MILESTONE, type.category)
                 }
+                AchievementType.TASK_CHAMPION -> {
+                    assertEquals("Task Champion Trophy", achievement.name)
+                    assertEquals("Complete 25 total tasks", achievement.description)
+                    assertEquals(25, achievement.target)
+                    assertEquals(AchievementCategory.MILESTONE, type.category)
+                }
+                else -> error("Invalid milestone achievement type: $type")
+            }
+        }
+
+        private fun verifyDailyAchievement(type: AchievementType, achievement: Achievement) {
+            when (type) {
+                AchievementType.TASK_MASTER -> {
+                    assertEquals("Task Master", achievement.name)
+                    assertEquals("Complete all daily tasks", achievement.description)
+                    assertEquals(1, achievement.target)
+                    assertEquals(AchievementCategory.DAILY, type.category)
+                }
+                AchievementType.SPEED_DEMON -> {
+                    assertEquals("Speed Demon Trophy", achievement.name)
+                    assertEquals("Complete 5 tasks in one day", achievement.description)
+                    assertEquals(5, achievement.target)
+                    assertEquals(AchievementCategory.DAILY, type.category)
+                }
+                AchievementType.EARLY_BIRD -> {
+                    assertEquals("Early Bird Badge", achievement.name)
+                    assertEquals("Complete 3 tasks before noon", achievement.description)
+                    assertEquals(3, achievement.target)
+                    assertEquals(AchievementCategory.DAILY, type.category)
+                }
+                else -> error("Invalid daily achievement type: $type")
+            }
+        }
+
+        private fun verifyConsistencyAchievement(type: AchievementType, achievement: Achievement) {
+            when (type) {
+                AchievementType.THREE_DAY_STREAK -> {
+                    assertEquals("3-Day Streak", achievement.name)
+                    assertEquals("Complete tasks for 3 consecutive days", achievement.description)
+                    assertEquals(3, achievement.target)
+                    assertEquals(AchievementCategory.CONSISTENCY, type.category)
+                }
+                AchievementType.PERFECT_WEEK -> {
+                    assertEquals("Perfect Week Badge", achievement.name)
+                    assertEquals("Complete tasks for 7 consecutive days", achievement.description)
+                    assertEquals(7, achievement.target)
+                    assertEquals(AchievementCategory.CONSISTENCY, type.category)
+                }
+                else -> error("Invalid consistency achievement type: $type")
+            }
+        }
+
+        private fun verifyEconomyAchievement(type: AchievementType, achievement: Achievement) {
+            when (type) {
                 AchievementType.TOKEN_COLLECTOR -> {
                     assertEquals("Token Collector", achievement.name)
                     assertEquals("Earn 50 total tokens", achievement.description)
                     assertEquals(50, achievement.target)
                     assertEquals(AchievementCategory.ECONOMY, type.category)
                 }
+                AchievementType.BIG_SPENDER -> {
+                    assertEquals("Big Spender Badge", achievement.name)
+                    assertEquals("Spend 100 total tokens on rewards", achievement.description)
+                    assertEquals(100, achievement.target)
+                    assertEquals(AchievementCategory.ECONOMY, type.category)
+                }
+                else -> error("Invalid economy achievement type: $type")
             }
         }
 
@@ -423,7 +485,7 @@ class AchievementTest {
             val userId = UUID.randomUUID().toString()
             val achievements = TestDataFactory.createAchievementSet(userId = userId)
 
-            assertEquals(5, achievements.size, "Should create all 5 achievement types")
+            assertEquals(10, achievements.size, "Should create all 10 achievement types")
             achievements.shouldHaveUnlockedCount(1) // First Steps is unlocked by default
 
             // Verify all achievements belong to the user
@@ -511,10 +573,10 @@ class AchievementTest {
             val consistencyAchievements = achievements.filter { it.type.category == AchievementCategory.CONSISTENCY }
             val economyAchievements = achievements.filter { it.type.category == AchievementCategory.ECONOMY }
 
-            assertEquals(2, milestoneAchievements.size, "Should have 2 milestone achievements")
-            assertEquals(1, dailyAchievements.size, "Should have 1 daily achievement")
-            assertEquals(1, consistencyAchievements.size, "Should have 1 consistency achievement")
-            assertEquals(1, economyAchievements.size, "Should have 1 economy achievement")
+            assertEquals(3, milestoneAchievements.size, "Should have 3 milestone achievements")
+            assertEquals(3, dailyAchievements.size, "Should have 3 daily achievements")
+            assertEquals(2, consistencyAchievements.size, "Should have 2 consistency achievements")
+            assertEquals(2, economyAchievements.size, "Should have 2 economy achievements")
         }
 
         @Test

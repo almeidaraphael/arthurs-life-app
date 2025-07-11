@@ -1,17 +1,21 @@
 package com.arthurslife.app.presentation.viewmodels
 
 import com.arthurslife.app.domain.TestDataFactory
+import com.arthurslife.app.domain.achievement.AchievementRepository
 import com.arthurslife.app.domain.achievement.AchievementType
 import com.arthurslife.app.domain.achievement.usecase.AchievementTrackingUseCase
+import com.arthurslife.app.domain.common.AchievementEventManager
 import com.arthurslife.app.domain.common.PresentationException
 import com.arthurslife.app.domain.user.UserRepository
 import com.arthurslife.app.domain.user.UserRole
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
@@ -39,7 +43,9 @@ import kotlin.OptIn
 class AchievementViewModelTest {
 
     private lateinit var mockAchievementTrackingUseCase: AchievementTrackingUseCase
+    private lateinit var mockAchievementRepository: AchievementRepository
     private lateinit var mockUserRepository: UserRepository
+    private lateinit var mockAchievementEventManager: AchievementEventManager
     private lateinit var viewModel: AchievementViewModel
 
     private val testDispatcher = UnconfinedTestDispatcher()
@@ -68,10 +74,15 @@ class AchievementViewModelTest {
         Dispatchers.setMain(testDispatcher)
 
         mockAchievementTrackingUseCase = mockk()
+        mockAchievementRepository = mockk()
         mockUserRepository = mockk()
+        mockAchievementEventManager = mockk {
+            every { achievementUpdates } returns MutableSharedFlow()
+        }
 
         // Default successful setup
         coEvery { mockUserRepository.findByRole(UserRole.CHILD) } returns testChild
+        coEvery { mockAchievementRepository.initializeAchievementsForUser(testChild.id) } returns Unit
         coEvery { mockAchievementTrackingUseCase.getAllAchievements(testChild.id) } returns testAchievements
     }
 
@@ -83,7 +94,9 @@ class AchievementViewModelTest {
     private fun createViewModel(): AchievementViewModel {
         return AchievementViewModel(
             achievementTrackingUseCase = mockAchievementTrackingUseCase,
+            achievementRepository = mockAchievementRepository,
             userRepository = mockUserRepository,
+            achievementEventManager = mockAchievementEventManager,
         )
     }
 
@@ -110,6 +123,7 @@ class AchievementViewModelTest {
 
             // Verify repositories were called
             coVerify { mockUserRepository.findByRole(UserRole.CHILD) }
+            coVerify { mockAchievementRepository.initializeAchievementsForUser(testChild.id) }
             coVerify { mockAchievementTrackingUseCase.getAllAchievements(testChild.id) }
 
             // Verify state is updated
@@ -128,7 +142,8 @@ class AchievementViewModelTest {
 
             delay(100) // Allow initialization to complete
 
-            // Should not attempt to load achievements
+            // Should not attempt to initialize or load achievements
+            coVerify(exactly = 0) { mockAchievementRepository.initializeAchievementsForUser(any()) }
             coVerify(exactly = 0) { mockAchievementTrackingUseCase.getAllAchievements(any()) }
 
             // State should show error

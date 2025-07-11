@@ -209,12 +209,14 @@ object TestDataFactory {
         totalTokensEarned: Int = 75,
         incompleteTasks: Int = 3,
         completionRate: Int = 62,
+        currentStreak: Int = 3,
     ): com.arthurslife.app.domain.task.usecase.TaskStats =
         com.arthurslife.app.domain.task.usecase.TaskStats(
             totalCompletedTasks = totalCompletedTasks,
             totalTokensEarned = totalTokensEarned,
             incompleteTasks = incompleteTasks,
             completionRate = completionRate,
+            currentStreak = currentStreak,
         )
 
     /**
