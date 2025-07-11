@@ -21,7 +21,7 @@ constructor() : UserDataSource {
         private const val DEMO_PARENT_PIN = "1234"
         private const val DEMO_CHILD_PIN = "2468"
         private const val DEMO_PARENT_TOKENS = 1000
-        private const val DEMO_CHILD_TOKENS = 50
+        private const val DEMO_CHILD_TOKENS = 0
     }
 
     init {
