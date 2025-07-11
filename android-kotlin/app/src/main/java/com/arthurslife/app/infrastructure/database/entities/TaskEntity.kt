@@ -24,6 +24,7 @@ data class TaskEntity(
     val isCompleted: Boolean,
     val assignedToUserId: String,
     val createdAt: Long,
+    val completedAt: Long?,
 ) {
     /**
      * Converts this database entity to a domain Task model.
@@ -39,6 +40,7 @@ data class TaskEntity(
             isCompleted = isCompleted,
             assignedToUserId = assignedToUserId,
             createdAt = createdAt,
+            completedAt = completedAt,
         )
 
     companion object {
@@ -57,6 +59,7 @@ data class TaskEntity(
                 isCompleted = task.isCompleted,
                 assignedToUserId = task.assignedToUserId,
                 createdAt = task.createdAt,
+                completedAt = task.completedAt,
             )
     }
 }
