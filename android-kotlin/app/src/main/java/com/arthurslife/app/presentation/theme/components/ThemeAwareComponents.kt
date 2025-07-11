@@ -2,8 +2,11 @@ package com.arthurslife.app.presentation.theme.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ProgressIndicatorDefaults
@@ -102,6 +105,26 @@ fun ThemeAwareBackground(
         // Content layer
         content()
     }
+}
+
+// Theme-aware card component
+@Composable
+fun ThemeAwareCard(
+    theme: BaseAppTheme,
+    modifier: Modifier = Modifier,
+    containerColor: Color = theme.colorScheme.surface,
+    elevation: Dp = 1.dp,
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    Card(
+        modifier = modifier,
+        colors = CardDefaults.cardColors(
+            containerColor = containerColor,
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = elevation),
+        shape = theme.shapes.medium,
+        content = content,
+    )
 }
 
 // Removed: getIconForTheme, getDefaultTint, getAvatarShape (all AppTheme-based logic is now obsolete)

@@ -26,6 +26,7 @@ import com.arthurslife.app.presentation.theme.BaseAppTheme
 @Composable
 fun ThemeAwareChildSelectorHeader(
     currentTheme: BaseAppTheme,
+    childName: String = "Arthur", // Default for backward compatibility
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -42,14 +43,14 @@ fun ThemeAwareChildSelectorHeader(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            themeAwareChildSelectorSection(currentTheme = currentTheme)
+            themeAwareChildSelectorSection(currentTheme = currentTheme, childName = childName)
             themeAwareCaregiverRoleLabel(currentTheme = currentTheme)
         }
     }
 }
 
 @Composable
-private fun themeAwareChildSelectorSection(currentTheme: BaseAppTheme) {
+private fun themeAwareChildSelectorSection(currentTheme: BaseAppTheme, childName: String) {
     Column {
         Text(
             text = if (currentTheme.displayName.contains(
@@ -74,7 +75,7 @@ private fun themeAwareChildSelectorSection(currentTheme: BaseAppTheme) {
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = "Arthur",
+                text = childName,
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
                 color = currentTheme.colorScheme.onPrimaryContainer,
@@ -103,6 +104,10 @@ private fun themeAwareCaregiverRoleLabel(currentTheme: BaseAppTheme) {
 @Composable
 fun ThemeAwareChildOverviewCard(
     currentTheme: BaseAppTheme,
+    tokenBalance: Int = 85, // Default for backward compatibility
+    weeklyProgress: String = "+15%", // Default for backward compatibility
+    completedTasks: Int = 12,
+    totalTasks: Int = 15,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -130,28 +135,49 @@ fun ThemeAwareChildOverviewCard(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            themeAwareOverviewStatsRow(currentTheme = currentTheme)
+            themeAwareOverviewStatsRow(
+                currentTheme = currentTheme,
+                tokenBalance = tokenBalance,
+                weeklyProgress = weeklyProgress,
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            themeAwareTasksCompletionSection(currentTheme = currentTheme)
+            themeAwareTasksCompletionSection(
+                currentTheme = currentTheme,
+                completedTasks = completedTasks,
+                totalTasks = totalTasks,
+            )
         }
     }
 }
 
 @Composable
-private fun themeAwareOverviewStatsRow(currentTheme: BaseAppTheme) {
+private fun themeAwareOverviewStatsRow(
+    currentTheme: BaseAppTheme,
+    tokenBalance: Int,
+    weeklyProgress: String,
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        themeAwareTokenBalanceColumn(currentTheme = currentTheme)
-        themeAwareWeeklyProgressColumn(currentTheme = currentTheme)
+        themeAwareTokenBalanceColumn(
+            currentTheme = currentTheme,
+            tokenBalance = tokenBalance,
+        )
+        themeAwareWeeklyProgressColumn(
+            currentTheme = currentTheme,
+            weeklyProgress = weeklyProgress,
+        )
     }
 }
 
 @Composable
-private fun RowScope.themeAwareTokenBalanceColumn(currentTheme: BaseAppTheme) {
+private fun RowScope.themeAwareTokenBalanceColumn(
+    currentTheme: BaseAppTheme,
+    tokenBalance: Int,
+) {
     Column(
         modifier = Modifier.weight(1f),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -168,7 +194,7 @@ private fun RowScope.themeAwareTokenBalanceColumn(currentTheme: BaseAppTheme) {
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(
-                text = "85",
+                text = tokenBalance.toString(),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
             )
@@ -182,7 +208,10 @@ private fun RowScope.themeAwareTokenBalanceColumn(currentTheme: BaseAppTheme) {
 }
 
 @Composable
-private fun RowScope.themeAwareWeeklyProgressColumn(currentTheme: BaseAppTheme) {
+private fun RowScope.themeAwareWeeklyProgressColumn(
+    currentTheme: BaseAppTheme,
+    weeklyProgress: String,
+) {
     Column(
         modifier = Modifier.weight(1f),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -199,7 +228,7 @@ private fun RowScope.themeAwareWeeklyProgressColumn(currentTheme: BaseAppTheme) 
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(
-                text = "+15%",
+                text = weeklyProgress,
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
                 color = currentTheme.colorScheme.primary,
@@ -222,7 +251,13 @@ private fun RowScope.themeAwareWeeklyProgressColumn(currentTheme: BaseAppTheme) 
 }
 
 @Composable
-private fun themeAwareTasksCompletionSection(currentTheme: BaseAppTheme) {
+private fun themeAwareTasksCompletionSection(
+    currentTheme: BaseAppTheme,
+    completedTasks: Int,
+    totalTasks: Int,
+) {
+    val progress = if (totalTasks > 0) completedTasks.toFloat() / totalTasks else 0f
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -234,9 +269,9 @@ private fun themeAwareTasksCompletionSection(currentTheme: BaseAppTheme) {
                     ignoreCase = true,
                 )
             ) {
-                "Quests: 12/15"
+                "Quests: $completedTasks/$totalTasks"
             } else {
-                "Tasks: 12/15"
+                "Tasks: $completedTasks/$totalTasks"
             },
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Medium,
@@ -259,7 +294,7 @@ private fun themeAwareTasksCompletionSection(currentTheme: BaseAppTheme) {
     Spacer(modifier = Modifier.height(8.dp))
 
     ThemeAwareProgressIndicator(
-        progress = 0.8f,
+        progress = progress,
         theme = currentTheme,
         modifier = Modifier
             .fillMaxWidth()
@@ -436,6 +471,10 @@ private fun RowScope.caregiverSettingsButton(currentTheme: BaseAppTheme) {
 @Composable
 fun ThemeAwareWeeklyProgressCard(
     currentTheme: BaseAppTheme,
+    tokenBalance: Int = 85,
+    weeklyProgress: String = "+15%",
+    completedTasks: Int = 12,
+    totalTasks: Int = 15,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -450,47 +489,110 @@ fun ThemeAwareWeeklyProgressCard(
                 .fillMaxWidth()
                 .padding(20.dp),
         ) {
-            Text(
-                text = "Weekly Progress",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = currentTheme.colorScheme.onSecondaryContainer,
-            )
+            weeklyProgressHeader(currentTheme)
             Spacer(modifier = Modifier.height(12.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    text = "⭐ 85 tokens",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = currentTheme.colorScheme.onSecondaryContainer,
-                )
-                Text(
-                    text = "📈 +15% this week",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = currentTheme.colorScheme.primary,
-                )
-            }
+            weeklyProgressStatsRow(currentTheme, tokenBalance, weeklyProgress)
             Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    text = "✅ 12/15 tasks",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = currentTheme.colorScheme.onSecondaryContainer,
-                )
-                Text(
-                    text = "🎯 On track for weekly goal",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = currentTheme.colorScheme.primary,
-                )
-            }
+            weeklyProgressTasksRow(currentTheme, completedTasks, totalTasks)
         }
+    }
+}
+
+@Composable
+private fun weeklyProgressHeader(currentTheme: BaseAppTheme) {
+    Text(
+        text = if (currentTheme.displayName.contains(
+                "Mario",
+                ignoreCase = true,
+            )
+        ) {
+            "Adventure Progress"
+        } else {
+            "Weekly Progress"
+        },
+        style = MaterialTheme.typography.titleMedium,
+        fontWeight = FontWeight.Bold,
+        color = currentTheme.colorScheme.onSecondaryContainer,
+    )
+}
+
+@Composable
+private fun weeklyProgressStatsRow(
+    currentTheme: BaseAppTheme,
+    tokenBalance: Int,
+    weeklyProgress: String,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = if (currentTheme.displayName.contains(
+                    "Mario",
+                    ignoreCase = true,
+                )
+            ) {
+                "⭐ $tokenBalance coins"
+            } else {
+                "⭐ $tokenBalance tokens"
+            },
+            style = MaterialTheme.typography.bodyLarge,
+            color = currentTheme.colorScheme.onSecondaryContainer,
+        )
+        Text(
+            text = if (currentTheme.displayName.contains(
+                    "Mario",
+                    ignoreCase = true,
+                )
+            ) {
+                "📈 $weeklyProgress this adventure"
+            } else {
+                "📈 $weeklyProgress this week"
+            },
+            style = MaterialTheme.typography.bodyLarge,
+            color = currentTheme.colorScheme.primary,
+        )
+    }
+}
+
+@Composable
+private fun weeklyProgressTasksRow(
+    currentTheme: BaseAppTheme,
+    completedTasks: Int,
+    totalTasks: Int,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = if (currentTheme.displayName.contains(
+                    "Mario",
+                    ignoreCase = true,
+                )
+            ) {
+                "✅ $completedTasks/$totalTasks quests"
+            } else {
+                "✅ $completedTasks/$totalTasks tasks"
+            },
+            style = MaterialTheme.typography.bodyMedium,
+            color = currentTheme.colorScheme.onSecondaryContainer,
+        )
+        Text(
+            text = if (currentTheme.displayName.contains(
+                    "Mario",
+                    ignoreCase = true,
+                )
+            ) {
+                "🎯 On track for kingdom goal"
+            } else {
+                "🎯 On track for weekly goal"
+            },
+            style = MaterialTheme.typography.bodyMedium,
+            color = currentTheme.colorScheme.primary,
+        )
     }
 }
 

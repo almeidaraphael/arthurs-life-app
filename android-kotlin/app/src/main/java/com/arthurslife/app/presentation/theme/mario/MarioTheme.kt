@@ -80,6 +80,7 @@ object MarioTheme : BaseAppTheme {
 
     // Theme-specific content and labels
     override val taskLabel: String = "Quests"
+    override val tokenLabel: String = "Coins"
     override val achievementLabel: String = "Coins"
     override val actionSectionTitle: String = "Quest Actions"
     override val roleSelectionPrompt: String = "Choose Your Character!"

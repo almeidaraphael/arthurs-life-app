@@ -1,15 +1,18 @@
 package com.arthurslife.app.presentation.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.arthurslife.app.di.TaskUseCases
+import com.arthurslife.app.domain.achievement.Achievement
+import com.arthurslife.app.domain.achievement.usecase.AchievementTrackingUseCase
+import com.arthurslife.app.domain.auth.AuthenticationSessionService
+import com.arthurslife.app.domain.common.AchievementEventManager
 import com.arthurslife.app.domain.common.DomainException
 import com.arthurslife.app.domain.task.Task
 import com.arthurslife.app.domain.task.TaskCategory
-import com.arthurslife.app.domain.task.usecase.CompleteTaskUseCase
-import com.arthurslife.app.domain.task.usecase.TaskManagementUseCases
 import com.arthurslife.app.domain.task.usecase.TaskStats
-import com.arthurslife.app.domain.task.usecase.UndoTaskUseCase
-import com.arthurslife.app.domain.user.UserRepository
+import com.arthurslife.app.domain.user.TokenBalance
 import com.arthurslife.app.domain.user.UserRole
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,6 +20,16 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+/**
+ * Dependencies container for TaskManagementViewModel to reduce parameter count.
+ */
+data class TaskManagementDependencies(
+    val taskUseCases: com.arthurslife.app.di.TaskUseCases,
+    val achievementTrackingUseCase: AchievementTrackingUseCase,
+    val authenticationSessionService: AuthenticationSessionService,
+    val achievementEventManager: AchievementEventManager,
+)
 
 /**
  * ViewModel for task management operations in Arthur's Life MVP.
@@ -29,10 +42,7 @@ import javax.inject.Inject
 class TaskManagementViewModel
 @Inject
 constructor(
-    private val taskManagementUseCases: TaskManagementUseCases,
-    private val completeTaskUseCase: CompleteTaskUseCase,
-    private val undoTaskUseCase: UndoTaskUseCase,
-    private val userRepository: UserRepository,
+    private val dependencies: TaskManagementDependencies,
 ) : ViewModel() {
 
     // UI State
@@ -53,85 +63,173 @@ constructor(
     private val _taskStats = MutableStateFlow<TaskStats?>(null)
     val taskStats: StateFlow<TaskStats?> = _taskStats.asStateFlow()
 
-    // Child user ID (for MVP single-child family)
-    private var childUserId: String? = null
+    // Current user token balance
+    private val _currentTokenBalance = MutableStateFlow<TokenBalance?>(null)
+    val currentTokenBalance: StateFlow<TokenBalance?> = _currentTokenBalance.asStateFlow()
+
+    // Daily progress (0.0 to 1.0)
+    private val _dailyProgress = MutableStateFlow(0.0f)
+    val dailyProgress: StateFlow<Float> = _dailyProgress.asStateFlow()
+
+    // Recent achievements (for new badges display)
+    private val _recentAchievements = MutableStateFlow<List<Achievement>>(emptyList())
+    val recentAchievements: StateFlow<List<Achievement>> = _recentAchievements.asStateFlow()
+
+    // Current authenticated user ID
+    private var currentUserId: String? = null
 
     init {
-        loadChildUser()
+        // Load current user asynchronously to avoid blocking initialization
+        viewModelScope.launch {
+            loadCurrentUser()
+        }
     }
 
     /**
-     * Loads the child user from the repository.
+     * Refreshes the current user data and tasks.
      */
-    private fun loadChildUser() {
+    fun refreshCurrentUser() {
         viewModelScope.launch {
-            try {
-                val child = userRepository.findByRole(UserRole.CHILD)
-                childUserId = child?.id
-                child?.let { loadTasksForUser(it.id) }
-            } catch (e: DomainException) {
-                _uiState.value = _uiState.value.copy(error = e.message)
-            }
+            loadCurrentUser()
+        }
+    }
+
+    /**
+     * Clears the recent achievements list (when user acknowledges them).
+     */
+    fun clearRecentAchievements() {
+        _recentAchievements.value = emptyList()
+    }
+
+    /**
+     * Loads the current authenticated user and their tasks.
+     */
+    private suspend fun loadCurrentUser() {
+        try {
+            val currentUser = dependencies.authenticationSessionService.getCurrentUser()
+            currentUserId = currentUser?.id
+            _currentTokenBalance.value = currentUser?.tokenBalance
+            currentUser?.let { loadTasksForUser(it.id) }
+        } catch (e: DomainException) {
+            _uiState.value = _uiState.value.copy(error = e.message)
+        }
+    }
+
+    /**
+     * Refreshes the current user's token balance from the authentication service.
+     * @return true if refresh was successful, false otherwise
+     */
+    private suspend fun refreshCurrentUserTokenBalance(): Boolean {
+        return try {
+            val currentUser = dependencies.authenticationSessionService.getCurrentUser()
+            _currentTokenBalance.value = currentUser?.tokenBalance
+            true
+        } catch (e: DomainException) {
+            Log.w("TaskManagementVM", "Failed to refresh token balance: ${e.message}")
+            // Show a warning message to the user
+            _uiState.value = _uiState.value.copy(
+                error = "Token balance may not be up to date. Please refresh the app if needed.",
+            )
+            false
         }
     }
 
     /**
      * Loads all tasks for the specified user.
      */
-    private fun loadTasksForUser(userId: String) {
-        viewModelScope.launch {
-            try {
-                _uiState.value = _uiState.value.copy(isLoading = true)
+    private suspend fun loadTasksForUser(userId: String) {
+        try {
+            _uiState.value = _uiState.value.copy(isLoading = true)
 
-                // Load all tasks
-                taskManagementUseCases.getTasksForUser(userId).fold(
-                    onSuccess = { tasks ->
-                        _allTasks.value = tasks
-                    },
-                    onFailure = { error ->
-                        _uiState.value = _uiState.value.copy(error = "Failed to load tasks: ${error.message}")
-                    },
-                )
+            loadUserTasks(userId)
+            loadTaskStatistics(userId)
+            loadDailyProgress(userId)
+            loadRecentAchievements(userId)
 
-                // Load incomplete tasks
-                taskManagementUseCases.getIncompleteTasksForUser(userId).fold(
-                    onSuccess = { tasks ->
-                        _incompleteTasks.value = tasks
-                    },
-                    onFailure = { error ->
-                        _uiState.value = _uiState.value.copy(
-                            error = "Failed to load incomplete tasks: ${error.message}",
-                        )
-                    },
-                )
+            _uiState.value = _uiState.value.copy(isLoading = false)
+        } catch (e: DomainException) {
+            _uiState.value = _uiState.value.copy(
+                isLoading = false,
+                error = e.message,
+            )
+        }
+    }
 
-                // Load completed tasks
-                taskManagementUseCases.getCompletedTasksForUser(userId).fold(
-                    onSuccess = { tasks ->
-                        _completedTasks.value = tasks
-                    },
-                    onFailure = { error ->
-                        _uiState.value = _uiState.value.copy(error = "Failed to load completed tasks: ${error.message}")
-                    },
-                )
+    private suspend fun loadUserTasks(userId: String) {
+        // Load all tasks
+        dependencies.taskUseCases.taskManagementUseCases.getTasksForUser(userId).fold(
+            onSuccess = { tasks ->
+                _allTasks.value = tasks
+            },
+            onFailure = { error ->
+                _uiState.value = _uiState.value.copy(error = "Failed to load tasks: ${error.message}")
+            },
+        )
 
-                // Load task statistics
-                taskManagementUseCases.getTaskStats(userId).fold(
-                    onSuccess = { stats ->
-                        _taskStats.value = stats
-                    },
-                    onFailure = { error ->
-                        _uiState.value = _uiState.value.copy(error = "Failed to load task stats: ${error.message}")
-                    },
-                )
-
-                _uiState.value = _uiState.value.copy(isLoading = false)
-            } catch (e: DomainException) {
+        // Load incomplete tasks
+        dependencies.taskUseCases.taskManagementUseCases.getIncompleteTasksForUser(userId).fold(
+            onSuccess = { tasks ->
+                _incompleteTasks.value = tasks
+            },
+            onFailure = { error ->
                 _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    error = e.message,
+                    error = "Failed to load incomplete tasks: ${error.message}",
                 )
-            }
+            },
+        )
+
+        // Load completed tasks
+        dependencies.taskUseCases.taskManagementUseCases.getCompletedTasksForUser(userId).fold(
+            onSuccess = { tasks ->
+                _completedTasks.value = tasks
+            },
+            onFailure = { error ->
+                _uiState.value = _uiState.value.copy(error = "Failed to load completed tasks: ${error.message}")
+            },
+        )
+    }
+
+    private suspend fun loadTaskStatistics(userId: String) {
+        dependencies.taskUseCases.taskManagementUseCases.getTaskStats(userId).fold(
+            onSuccess = { stats ->
+                _taskStats.value = stats
+            },
+            onFailure = { error ->
+                _uiState.value = _uiState.value.copy(error = "Failed to load task stats: ${error.message}")
+            },
+        )
+    }
+
+    private suspend fun loadDailyProgress(userId: String) {
+        try {
+            val progress = dependencies.taskUseCases.calculateDailyProgressUseCase(userId)
+            _dailyProgress.value = progress
+        } catch (e: IllegalArgumentException) {
+            // Daily progress calculation failed, keep previous value or default to 0
+            Log.w(TAG, "Daily progress calculation failed", e)
+            _dailyProgress.value = 0.0f
+        } catch (e: IllegalStateException) {
+            // Daily progress calculation failed, keep previous value or default to 0
+            Log.w(TAG, "Daily progress calculation failed", e)
+            _dailyProgress.value = 0.0f
+        }
+    }
+
+    private suspend fun loadRecentAchievements(userId: String) {
+        try {
+            val recentAchievements = dependencies.achievementTrackingUseCase.getUnlockedAchievements(
+                userId,
+            )
+                .filter { it.unlockedAt != null && it.unlockedAt > (System.currentTimeMillis() - RECENT_ACHIEVEMENT_WINDOW) }
+            _recentAchievements.value = recentAchievements
+        } catch (e: IllegalArgumentException) {
+            // Recent achievements loading failed, set to empty
+            Log.w(TAG, "Recent achievements loading failed", e)
+            _recentAchievements.value = emptyList()
+        } catch (e: IllegalStateException) {
+            // Recent achievements loading failed, set to empty
+            Log.w(TAG, "Recent achievements loading failed", e)
+            _recentAchievements.value = emptyList()
         }
     }
 
@@ -139,13 +237,17 @@ constructor(
      * Creates a new task.
      */
     fun createTask(title: String, category: TaskCategory) {
-        val userId = childUserId ?: return
+        val userId = currentUserId ?: return
 
         viewModelScope.launch {
             try {
                 _uiState.value = _uiState.value.copy(isLoading = true)
 
-                taskManagementUseCases.createTask(title, category, userId).fold(
+                dependencies.taskUseCases.taskManagementUseCases.createTask(
+                    title,
+                    category,
+                    userId,
+                ).fold(
                     onSuccess = {
                         loadTasksForUser(userId) // Refresh the task list
                         _uiState.value = _uiState.value.copy(
@@ -173,13 +275,17 @@ constructor(
      * Updates an existing task.
      */
     fun updateTask(taskId: String, title: String, category: TaskCategory) {
-        val userId = childUserId ?: return
+        val userId = currentUserId ?: return
 
         viewModelScope.launch {
             try {
                 _uiState.value = _uiState.value.copy(isLoading = true)
 
-                taskManagementUseCases.updateTask(taskId, title, category).fold(
+                dependencies.taskUseCases.taskManagementUseCases.updateTask(
+                    taskId,
+                    title,
+                    category,
+                ).fold(
                     onSuccess = {
                         loadTasksForUser(userId) // Refresh the task list
                         _uiState.value = _uiState.value.copy(
@@ -207,13 +313,13 @@ constructor(
      * Deletes a task.
      */
     fun deleteTask(taskId: String) {
-        val userId = childUserId ?: return
+        val userId = currentUserId ?: return
 
         viewModelScope.launch {
             try {
                 _uiState.value = _uiState.value.copy(isLoading = true)
 
-                taskManagementUseCases.deleteTask(taskId).fold(
+                dependencies.taskUseCases.taskManagementUseCases.deleteTask(taskId).fold(
                     onSuccess = {
                         loadTasksForUser(userId) // Refresh the task list
                         _uiState.value = _uiState.value.copy(
@@ -241,18 +347,39 @@ constructor(
      * Completes a task (for child users).
      */
     fun completeTask(taskId: String) {
-        val userId = childUserId ?: return
+        val userId = currentUserId ?: return
 
         viewModelScope.launch {
             try {
                 _uiState.value = _uiState.value.copy(isLoading = true)
 
-                completeTaskUseCase(taskId).fold(
+                dependencies.taskUseCases.completeTaskUseCase(taskId).fold(
                     onSuccess = { result ->
+                        // Update recent achievements if any new ones were unlocked
+                        if (result.newlyUnlockedAchievements.isNotEmpty()) {
+                            val currentRecent = _recentAchievements.value.toMutableList()
+                            currentRecent.addAll(result.newlyUnlockedAchievements)
+                            _recentAchievements.value = currentRecent
+
+                            // Emit achievement update event for real-time updates
+                            dependencies.achievementEventManager.emitAchievementUpdate(
+                                userId = userId,
+                                newlyUnlockedAchievements = result.newlyUnlockedAchievements,
+                            )
+                        } else {
+                            // Even if no new achievements were unlocked, emit an update
+                            // to refresh progress for existing achievements
+                            dependencies.achievementEventManager.emitAchievementUpdate(userId)
+                        }
+
                         loadTasksForUser(userId) // Refresh the task list
+                        val tokenRefreshSuccess = refreshCurrentUserTokenBalance() // Refresh the token balance
                         val message = buildString {
                             append("Task completed! ")
                             append("Earned ${result.tokensAwarded} tokens. ")
+                            if (!tokenRefreshSuccess) {
+                                append("(Token balance may need manual refresh) ")
+                            }
                             if (result.newlyUnlockedAchievements.isNotEmpty()) {
                                 append(
                                     "Unlocked ${result.newlyUnlockedAchievements.size} achievement(s)!",
@@ -285,18 +412,22 @@ constructor(
      * This allows children to undo their own tasks or caregivers to undo any task.
      */
     fun undoTask(taskId: String) {
-        val userId = childUserId ?: return
+        val userId = currentUserId ?: return
 
         viewModelScope.launch {
             try {
                 _uiState.value = _uiState.value.copy(isLoading = true)
 
-                undoTaskUseCase(taskId).fold(
+                dependencies.taskUseCases.undoTaskUseCase(taskId).fold(
                     onSuccess = { result ->
                         loadTasksForUser(userId) // Refresh the task list
+                        val tokenRefreshSuccess = refreshCurrentUserTokenBalance() // Refresh the token balance
                         val message = buildString {
                             append("Task undone! ")
                             append("${result.tokensDeducted} tokens were deducted. ")
+                            if (!tokenRefreshSuccess) {
+                                append("(Token balance may need manual refresh) ")
+                            }
                             append("New balance: ${result.newTokenBalance} tokens.")
 
                             // Add role-specific context
@@ -341,7 +472,14 @@ constructor(
      * Refreshes all task data.
      */
     fun refresh() {
-        childUserId?.let { loadTasksForUser(it) }
+        viewModelScope.launch {
+            currentUserId?.let { loadTasksForUser(it) }
+        }
+    }
+
+    companion object {
+        private const val TAG = "TaskManagementViewModel"
+        private const val RECENT_ACHIEVEMENT_WINDOW = 24 * 60 * 60 * 1000L // 24 hours in milliseconds
     }
 }
 

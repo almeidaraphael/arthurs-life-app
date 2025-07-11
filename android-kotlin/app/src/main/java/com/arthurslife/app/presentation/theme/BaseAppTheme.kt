@@ -25,6 +25,7 @@ interface BaseAppTheme {
 
     // Theme-specific content and labels
     val taskLabel: String // "Tasks" vs "Quests"
+    val tokenLabel: String // "Tokens" vs "Coins"
     val achievementLabel: String // "Badges" vs "Coins"
     val actionSectionTitle: String // "Quick Actions" vs "Quest Actions"
     val roleSelectionPrompt: String // "Who are you?" vs "Choose Your Character!"

@@ -18,14 +18,19 @@ import androidx.compose.ui.unit.dp
 import com.arthurslife.app.presentation.theme.BaseAppTheme
 
 @Composable
-fun ThemeAwareQuickStatsRow(theme: BaseAppTheme) {
+fun ThemeAwareQuickStatsRow(
+    theme: BaseAppTheme,
+    completedTasks: Int = 0,
+    totalTasks: Int = 0,
+    newAchievements: Int = 0,
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         themeAwareStatCard(
             theme = theme,
-            value = "3/5",
+            value = "$completedTasks/$totalTasks",
             label = "${theme.taskLabel} Done",
             containerColor = theme.colorScheme.secondaryContainer,
             contentColor = theme.colorScheme.onSecondaryContainer,
@@ -34,7 +39,7 @@ fun ThemeAwareQuickStatsRow(theme: BaseAppTheme) {
 
         themeAwareStatCard(
             theme = theme,
-            value = "2",
+            value = "$newAchievements",
             label = "New ${theme.achievementLabel}",
             containerColor = theme.colorScheme.tertiaryContainer,
             contentColor = theme.colorScheme.onTertiaryContainer,

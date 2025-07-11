@@ -39,6 +39,7 @@ object MaterialDarkTheme : BaseAppTheme {
 
     // Theme-specific content and labels
     override val taskLabel: String = "Tasks"
+    override val tokenLabel: String = "Tokens"
     override val achievementLabel: String = "Badges"
     override val actionSectionTitle: String = "Quick Actions"
     override val roleSelectionPrompt: String = "Who are you?"

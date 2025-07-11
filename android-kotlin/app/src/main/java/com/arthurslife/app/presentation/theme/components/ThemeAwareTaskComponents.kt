@@ -589,6 +589,7 @@ fun ThemeAwareTokenBalanceCard(
     currentTheme: BaseAppTheme,
     tokensEarned: Int,
     completedTasks: Int,
+    currentTokenBalance: Int = 0,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -598,44 +599,82 @@ fun ThemeAwareTokenBalanceCard(
         ),
         shape = currentTheme.shapes.medium,
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(STATS_PADDING),
-            horizontalArrangement = Arrangement.SpaceAround,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Text(
-                    text = tokensEarned.toString(),
-                    style = currentTheme.typography.displaySmall,
-                    fontWeight = FontWeight.Bold,
-                    color = currentTheme.colorScheme.primary,
-                )
-                Text(
-                    text = "Tokens Earned",
-                    style = currentTheme.typography.bodyMedium,
-                    color = currentTheme.colorScheme.onSecondaryContainer,
-                )
-            }
+        tokenBalanceCardContent(
+            currentTheme = currentTheme,
+            tokensEarned = tokensEarned,
+            completedTasks = completedTasks,
+            currentTokenBalance = currentTokenBalance,
+        )
+    }
+}
 
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Text(
-                    text = completedTasks.toString(),
-                    style = currentTheme.typography.displaySmall,
-                    fontWeight = FontWeight.Bold,
-                    color = currentTheme.colorScheme.tertiary,
-                )
-                Text(
-                    text = "Tasks Done",
-                    style = currentTheme.typography.bodyMedium,
-                    color = currentTheme.colorScheme.onSecondaryContainer,
-                )
-            }
-        }
+/**
+ * Content section for the token balance card with three statistics.
+ */
+@Composable
+private fun tokenBalanceCardContent(
+    currentTheme: BaseAppTheme,
+    tokensEarned: Int,
+    completedTasks: Int,
+    currentTokenBalance: Int,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(STATS_PADDING),
+        horizontalArrangement = Arrangement.SpaceAround,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        tokenBalanceStatColumn(
+            value = currentTokenBalance,
+            label = if (currentTheme.taskLabel == "Quests") "Coins" else "Token Balance",
+            valueColor = currentTheme.colorScheme.secondary,
+            labelColor = currentTheme.colorScheme.onSecondaryContainer,
+            currentTheme = currentTheme,
+        )
+
+        tokenBalanceStatColumn(
+            value = tokensEarned,
+            label = if (currentTheme.taskLabel == "Quests") "Coins Earned" else "Tokens Earned",
+            valueColor = currentTheme.colorScheme.primary,
+            labelColor = currentTheme.colorScheme.onSecondaryContainer,
+            currentTheme = currentTheme,
+        )
+
+        tokenBalanceStatColumn(
+            value = completedTasks,
+            label = if (currentTheme.taskLabel == "Quests") "Quests Done" else "Tasks Done",
+            valueColor = currentTheme.colorScheme.tertiary,
+            labelColor = currentTheme.colorScheme.onSecondaryContainer,
+            currentTheme = currentTheme,
+        )
+    }
+}
+
+/**
+ * Individual statistic column for the token balance card.
+ */
+@Composable
+private fun tokenBalanceStatColumn(
+    value: Int,
+    label: String,
+    valueColor: androidx.compose.ui.graphics.Color,
+    labelColor: androidx.compose.ui.graphics.Color,
+    currentTheme: BaseAppTheme,
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            text = value.toString(),
+            style = currentTheme.typography.displaySmall,
+            fontWeight = FontWeight.Bold,
+            color = valueColor,
+        )
+        Text(
+            text = label,
+            style = currentTheme.typography.bodyMedium,
+            color = labelColor,
+        )
     }
 }
