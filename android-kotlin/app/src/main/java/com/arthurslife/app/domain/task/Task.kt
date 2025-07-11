@@ -20,6 +20,7 @@ import java.util.UUID
  * @property isCompleted Whether the task has been completed
  * @property assignedToUserId ID of the child assigned to this task
  * @property createdAt Timestamp when task was created
+ * @property completedAt Timestamp when task was completed (null if not completed)
  */
 @Serializable
 data class Task(
@@ -30,20 +31,27 @@ data class Task(
     val isCompleted: Boolean = false,
     val assignedToUserId: String,
     val createdAt: Long = System.currentTimeMillis(),
+    val completedAt: Long? = null,
 ) {
     /**
      * Creates a completed copy of this task with tokens awarded.
      *
      * @return A new Task instance marked as completed
      */
-    fun markCompleted(): Task = copy(isCompleted = true)
+    fun markCompleted(): Task = copy(
+        isCompleted = true,
+        completedAt = System.currentTimeMillis(),
+    )
 
     /**
      * Creates an uncompleted copy of this task.
      *
      * @return A new Task instance marked as not completed
      */
-    fun markIncomplete(): Task = copy(isCompleted = false)
+    fun markIncomplete(): Task = copy(
+        isCompleted = false,
+        completedAt = null,
+    )
 
     /**
      * Checks if this task can be completed (not already completed).
