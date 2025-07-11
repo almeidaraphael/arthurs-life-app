@@ -23,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -49,6 +50,11 @@ fun ChildAchievementScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val achievements by viewModel.achievements.collectAsState()
+
+    // Refresh achievements whenever this screen becomes visible
+    LaunchedEffect(Unit) {
+        viewModel.refresh()
+    }
 
     Scaffold { paddingValues ->
         achievementScreenContent(
@@ -258,12 +264,7 @@ private fun achievementsList(achievements: List<Achievement>) {
             }
         }
 
-        // Achievement Cards
-        items(achievements) { achievement ->
-            AchievementCard(achievement = achievement)
-        }
-
-        // Empty state
+        // Achievement Cards or Empty state
         if (achievements.isEmpty()) {
             item {
                 Card(
@@ -292,6 +293,10 @@ private fun achievementsList(achievements: List<Achievement>) {
                         )
                     }
                 }
+            }
+        } else {
+            items(achievements) { achievement ->
+                AchievementCard(achievement = achievement)
             }
         }
     }

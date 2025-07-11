@@ -1,11 +1,14 @@
 package com.arthurslife.app.presentation.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -28,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.arthurslife.app.domain.task.Task
 import com.arthurslife.app.domain.task.usecase.TaskStats
+import com.arthurslife.app.domain.user.TokenBalance
 import com.arthurslife.app.presentation.theme.BaseAppTheme
 import com.arthurslife.app.presentation.theme.components.ThemeAwareChildTaskCard
 import com.arthurslife.app.presentation.theme.components.ThemeAwareCompletedTaskCard
@@ -42,6 +46,7 @@ data class ChildTaskUiState(
     val incompleteTasks: List<Task>,
     val completedTasks: List<Task>,
     val taskStats: TaskStats?,
+    val currentTokenBalance: TokenBalance?,
     val isLoading: Boolean,
 )
 
@@ -53,12 +58,14 @@ data class ChildTaskActions(
 @Composable
 fun ChildTaskScreen(
     currentTheme: BaseAppTheme,
+    onNavigateBack: () -> Unit,
     viewModel: TaskManagementViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val incompleteTasks by viewModel.incompleteTasks.collectAsState()
     val completedTasks by viewModel.completedTasks.collectAsState()
     val taskStats by viewModel.taskStats.collectAsState()
+    val currentTokenBalance by viewModel.currentTokenBalance.collectAsState()
 
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -67,6 +74,7 @@ fun ChildTaskScreen(
         incompleteTasks = incompleteTasks,
         completedTasks = completedTasks,
         taskStats = taskStats,
+        currentTokenBalance = currentTokenBalance,
         isLoading = uiState.isLoading,
     )
 
@@ -76,6 +84,11 @@ fun ChildTaskScreen(
     )
 
     childTaskScreenEffects(uiState, snackbarHostState, viewModel)
+
+    // Handle back navigation
+    BackHandler {
+        onNavigateBack()
+    }
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -145,7 +158,7 @@ private fun childTaskList(
         verticalArrangement = Arrangement.spacedBy(DEFAULT_PADDING.dp),
     ) {
         taskScreenHeader(uiState.currentTheme)
-        tokenBalanceSection(uiState.currentTheme, uiState.taskStats)
+        tokenBalanceSection(uiState.currentTheme, uiState.taskStats, uiState.currentTokenBalance)
         incompleteTasksSection(uiState, actions)
         completedTasksSection(uiState, actions)
         emptyStateSection(uiState)
@@ -154,18 +167,32 @@ private fun childTaskList(
 
 private fun LazyListScope.taskScreenHeader(currentTheme: BaseAppTheme) {
     item {
-        Text(
-            text = "Today's ${currentTheme.taskLabel}",
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary,
-        )
+        Column {
+            Text(
+                text = if (currentTheme.taskLabel == "Quests") "Quests" else "Tasks",
+                style = currentTheme.typography.headlineLarge.copy(
+                    fontWeight = FontWeight.Bold,
+                ),
+                color = currentTheme.colorScheme.onBackground,
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = if (currentTheme.taskLabel == "Quests") {
+                    "Complete your quests to earn coins and level up!"
+                } else {
+                    "Complete your tasks to earn tokens and unlock rewards!"
+                },
+                style = currentTheme.typography.bodyLarge,
+                color = currentTheme.colorScheme.onBackground.copy(alpha = 0.8f),
+            )
+        }
     }
 }
 
 private fun LazyListScope.tokenBalanceSection(
     currentTheme: BaseAppTheme,
     taskStats: TaskStats?,
+    currentTokenBalance: TokenBalance?,
 ) {
     item {
         taskStats?.let { stats ->
@@ -173,6 +200,7 @@ private fun LazyListScope.tokenBalanceSection(
                 currentTheme = currentTheme,
                 tokensEarned = stats.totalTokensEarned,
                 completedTasks = stats.totalCompletedTasks,
+                currentTokenBalance = currentTokenBalance?.getValue() ?: 0,
             )
         }
     }

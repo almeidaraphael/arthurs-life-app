@@ -1,30 +1,20 @@
 package com.arthurslife.app.presentation.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MenuAnchorType
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,67 +23,75 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.arthurslife.app.domain.task.Task
 import com.arthurslife.app.domain.task.TaskCategory
 import com.arthurslife.app.domain.task.usecase.TaskStats
+import com.arthurslife.app.presentation.theme.BaseAppTheme
+import com.arthurslife.app.presentation.theme.components.ThemeAwareProgressIndicator
+import com.arthurslife.app.presentation.theme.components.themeAwareAlertDialog
+import com.arthurslife.app.presentation.theme.components.themeAwareButton
+import com.arthurslife.app.presentation.theme.components.themeAwareDialogTextButton
+import com.arthurslife.app.presentation.theme.components.themeAwareIconButton
+import com.arthurslife.app.presentation.theme.components.themeAwareOutlinedTextField
 
 /**
  * Card component displaying task completion statistics.
  */
 @Composable
-fun TaskStatsCard(
+fun themeAwareTaskStatsCard(
     stats: TaskStats,
+    theme: BaseAppTheme,
     modifier: Modifier = Modifier,
 ) {
-    Card(
+    com.arthurslife.app.presentation.theme.components.ThemeAwareCard(
+        theme = theme,
         modifier = modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-        ),
+        containerColor = theme.colorScheme.primaryContainer,
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(
-                text = "Task Statistics",
-                style = MaterialTheme.typography.titleMedium,
+                text = "${theme.taskLabel} Statistics",
+                style = theme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                color = theme.colorScheme.onPrimaryContainer,
             )
 
-            taskStatsRow(stats)
-            taskCompletionRate(stats)
+            themeAwareTaskStatsRow(stats, theme)
+            themeAwareTaskCompletionRate(stats, theme)
         }
     }
 }
 
 @Composable
-private fun taskStatsRow(stats: TaskStats) {
+private fun themeAwareTaskStatsRow(stats: TaskStats, theme: BaseAppTheme) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        StatItem(
+        themeAwareStatItem(
             label = "Completed",
             value = stats.totalCompletedTasks.toString(),
+            theme = theme,
         )
-        StatItem(
-            label = "Tokens Earned",
+        themeAwareStatItem(
+            label = "${theme.tokenLabel} Earned",
             value = stats.totalTokensEarned.toString(),
+            theme = theme,
         )
-        StatItem(
+        themeAwareStatItem(
             label = "Incomplete",
             value = stats.incompleteTasks.toString(),
+            theme = theme,
         )
     }
 }
 
 @Composable
-private fun taskCompletionRate(stats: TaskStats) {
-    // Completion Rate Progress Bar
+private fun themeAwareTaskCompletionRate(stats: TaskStats, theme: BaseAppTheme) {
     Column {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -101,21 +99,21 @@ private fun taskCompletionRate(stats: TaskStats) {
         ) {
             Text(
                 text = "Completion Rate",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                style = theme.typography.bodyMedium,
+                color = theme.colorScheme.onPrimaryContainer,
             )
             Text(
                 text = "${stats.completionRate}%",
-                style = MaterialTheme.typography.bodyMedium,
+                style = theme.typography.bodyMedium,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                color = theme.colorScheme.onPrimaryContainer,
             )
         }
-        LinearProgressIndicator(
-            progress = { stats.completionRate / 100f },
+        ThemeAwareProgressIndicator(
+            progress = stats.completionRate / 100f,
+            theme = theme,
             modifier = Modifier.fillMaxWidth(),
-            color = MaterialTheme.colorScheme.primary,
-            trackColor = MaterialTheme.colorScheme.surfaceVariant,
+            color = theme.colorScheme.primary,
         )
     }
 }
@@ -124,23 +122,24 @@ private fun taskCompletionRate(stats: TaskStats) {
  * Individual statistic item component.
  */
 @Composable
-private fun StatItem(
+private fun themeAwareStatItem(
     label: String,
     value: String,
+    theme: BaseAppTheme,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
             text = value,
-            style = MaterialTheme.typography.titleLarge,
+            style = theme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onPrimaryContainer,
+            color = theme.colorScheme.onPrimaryContainer,
         )
         Text(
             text = label,
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f),
+            style = theme.typography.bodySmall,
+            color = theme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f),
         )
     }
 }
@@ -149,22 +148,22 @@ private fun StatItem(
  * Card component for displaying individual tasks.
  */
 @Composable
-fun TaskCard(
+fun themeAwareTaskCard(
     task: Task,
+    theme: BaseAppTheme,
     onEdit: () -> Unit,
     onDelete: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Card(
+    com.arthurslife.app.presentation.theme.components.ThemeAwareCard(
+        theme = theme,
         modifier = modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = if (task.isCompleted) {
-                MaterialTheme.colorScheme.secondaryContainer
-            } else {
-                MaterialTheme.colorScheme.surface
-            },
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        containerColor = if (task.isCompleted) {
+            theme.colorScheme.secondaryContainer
+        } else {
+            theme.colorScheme.surface
+        },
+        elevation = 2.dp,
     ) {
         Row(
             modifier = Modifier
@@ -173,51 +172,61 @@ fun TaskCard(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            taskCardContent(
+            themeAwareTaskCardContent(
                 task = task,
+                theme = theme,
                 modifier = Modifier.weight(1f),
             )
-            taskCardActions(onEdit, onDelete)
+            themeAwareTaskCardActions(
+                theme = theme,
+                onEdit = onEdit,
+                onDelete = onDelete,
+            )
         }
     }
 }
 
 @Composable
-private fun taskCardContent(task: Task, modifier: Modifier = Modifier) {
+private fun themeAwareTaskCardContent(
+    task: Task,
+    theme: BaseAppTheme,
+    modifier: Modifier = Modifier,
+) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         Text(
             text = task.title,
-            style = MaterialTheme.typography.titleMedium,
+            style = theme.typography.titleMedium,
             fontWeight = FontWeight.Medium,
+            color = theme.colorScheme.onSurface,
         )
         Text(
             text = task.category.displayName,
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.primary,
+            style = theme.typography.bodySmall,
+            color = theme.colorScheme.primary,
         )
-        taskCardMetrics(task)
+        themeAwareTaskCardMetrics(task, theme)
     }
 }
 
 @Composable
-private fun taskCardMetrics(task: Task) {
+private fun themeAwareTaskCardMetrics(task: Task, theme: BaseAppTheme) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
-            text = "${task.tokenReward} tokens",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            text = "${task.tokenReward} ${theme.tokenLabel.lowercase()}",
+            style = theme.typography.bodySmall,
+            color = theme.colorScheme.onSurfaceVariant,
         )
         if (task.isCompleted) {
             Text(
                 text = "✓ Completed",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.tertiary,
+                style = theme.typography.bodySmall,
+                color = theme.colorScheme.tertiary,
                 fontWeight = FontWeight.Medium,
             )
         }
@@ -225,22 +234,32 @@ private fun taskCardMetrics(task: Task) {
 }
 
 @Composable
-private fun taskCardActions(onEdit: () -> Unit, onDelete: () -> Unit) {
+private fun themeAwareTaskCardActions(
+    theme: BaseAppTheme,
+    onEdit: () -> Unit,
+    onDelete: () -> Unit,
+) {
     Row {
-        IconButton(onClick = onEdit) {
-            Icon(
-                imageVector = Icons.Default.Edit,
-                contentDescription = "Edit Task",
-                tint = MaterialTheme.colorScheme.primary,
-            )
-        }
-        IconButton(onClick = onDelete) {
-            Icon(
-                imageVector = Icons.Default.Delete,
-                contentDescription = "Delete Task",
-                tint = MaterialTheme.colorScheme.error,
-            )
-        }
+        themeAwareIconButton(
+            onClick = onEdit,
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.Edit,
+                    contentDescription = "Edit ${theme.taskLabel.dropLast(1)}",
+                    tint = theme.colorScheme.primary,
+                )
+            },
+        )
+        themeAwareIconButton(
+            onClick = onDelete,
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Delete ${theme.taskLabel.dropLast(1)}",
+                    tint = theme.colorScheme.error,
+                )
+            },
+        )
     }
 }
 
@@ -248,7 +267,8 @@ private fun taskCardActions(onEdit: () -> Unit, onDelete: () -> Unit) {
  * Dialog for creating or editing tasks.
  */
 @Composable
-fun TaskCreateEditDialog(
+fun themeAwareTaskCreateEditDialog(
+    theme: BaseAppTheme,
     task: Task? = null,
     onDismiss: () -> Unit,
     onSave: (String, TaskCategory) -> Unit,
@@ -261,89 +281,101 @@ fun TaskCreateEditDialog(
     }
 
     val isEditing = task != null
-    val dialogTitle = if (isEditing) "Edit Task" else "Create New Task"
+    val dialogTitle = if (isEditing) {
+        "Edit ${theme.taskLabel.dropLast(
+            1,
+        )}"
+    } else {
+        "Create New ${theme.taskLabel.dropLast(1)}"
+    }
 
-    AlertDialog(
+    themeAwareAlertDialog(
         onDismissRequest = onDismiss,
+        confirmButton = {
+            themeAwareTaskDialogConfirmButton(
+                title = title,
+                isEditing = isEditing,
+                selectedCategory = selectedCategory,
+                theme = theme,
+                onSave = onSave,
+            )
+        },
+        theme = theme,
+        dismissButton = {
+            themeAwareDialogTextButton(
+                text = "Cancel",
+                onClick = onDismiss,
+                theme = theme,
+            )
+        },
         title = {
             Text(
                 text = dialogTitle,
-                style = MaterialTheme.typography.titleLarge,
+                style = theme.typography.titleLarge,
+                color = theme.colorScheme.onSurface,
             )
         },
         text = {
-            taskDialogContent(
+            themeAwareTaskDialogContent(
                 title = title,
                 onTitleChange = { title = it },
                 selectedCategory = selectedCategory,
                 onCategoryChange = { selectedCategory = it },
+                theme = theme,
             )
-        },
-        confirmButton = {
-            taskDialogConfirmButton(
-                title = title,
-                isEditing = isEditing,
-                selectedCategory = selectedCategory,
-                onSave = onSave,
-            )
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text("Cancel")
-            }
         },
     )
 }
 
 @Composable
-private fun taskDialogContent(
+private fun themeAwareTaskDialogContent(
     title: String,
     onTitleChange: (String) -> Unit,
     selectedCategory: TaskCategory,
     onCategoryChange: (TaskCategory) -> Unit,
+    theme: BaseAppTheme,
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        OutlinedTextField(
+        themeAwareOutlinedTextField(
             value = title,
             onValueChange = onTitleChange,
-            label = { Text("Task Title") },
-            modifier = Modifier.fillMaxWidth(),
+            theme = theme,
+            label = "${theme.taskLabel.dropLast(1)} Title",
             singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+            modifier = Modifier.fillMaxWidth(),
         )
 
-        taskCategoryDropdown(
+        themeAwareTaskCategoryDropdown(
             selectedCategory = selectedCategory,
             onCategoryChange = onCategoryChange,
+            theme = theme,
         )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun taskCategoryDropdown(
+private fun themeAwareTaskCategoryDropdown(
     selectedCategory: TaskCategory,
     onCategoryChange: (TaskCategory) -> Unit,
+    theme: BaseAppTheme,
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = { expanded = !expanded },
-    ) {
-        OutlinedTextField(
+    Box {
+        themeAwareOutlinedTextField(
             value = selectedCategory.displayName,
             onValueChange = { },
+            theme = theme,
+            label = "Category",
             readOnly = true,
-            label = { Text("Category") },
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             modifier = Modifier
                 .fillMaxWidth()
-                .menuAnchor(MenuAnchorType.PrimaryNotEditable, enabled = true),
+                .clickable { expanded = true },
         )
-        ExposedDropdownMenu(
+        DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
         ) {
@@ -351,11 +383,14 @@ private fun taskCategoryDropdown(
                 DropdownMenuItem(
                     text = {
                         Column {
-                            Text(category.displayName)
                             Text(
-                                text = "${category.defaultTokenReward} tokens - ${category.description}",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                text = category.displayName,
+                                color = theme.colorScheme.onSurface,
+                            )
+                            Text(
+                                text = "${category.defaultTokenReward} ${theme.tokenLabel.lowercase()} - ${category.description}",
+                                style = theme.typography.bodySmall,
+                                color = theme.colorScheme.onSurfaceVariant,
                             )
                         }
                     },
@@ -370,20 +405,21 @@ private fun taskCategoryDropdown(
 }
 
 @Composable
-private fun taskDialogConfirmButton(
+private fun themeAwareTaskDialogConfirmButton(
     title: String,
     isEditing: Boolean,
     selectedCategory: TaskCategory,
+    theme: BaseAppTheme,
     onSave: (String, TaskCategory) -> Unit,
 ) {
-    Button(
+    themeAwareButton(
+        text = if (isEditing) "Update" else "Create",
         onClick = {
             if (title.isNotBlank()) {
                 onSave(title.trim(), selectedCategory)
             }
         },
+        theme = theme,
         enabled = title.isNotBlank(),
-    ) {
-        Text(if (isEditing) "Update" else "Create")
-    }
+    )
 }

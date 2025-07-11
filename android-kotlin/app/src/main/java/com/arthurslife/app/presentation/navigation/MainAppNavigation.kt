@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.Group
@@ -39,6 +38,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.arthurslife.app.domain.user.UserRole
+import com.arthurslife.app.presentation.screens.CaregiverChildrenManagementScreen
 import com.arthurslife.app.presentation.screens.CaregiverDashboardScreen
 import com.arthurslife.app.presentation.screens.CaregiverProfileScreen
 import com.arthurslife.app.presentation.screens.CaregiverTaskManagementScreen
@@ -46,9 +46,10 @@ import com.arthurslife.app.presentation.screens.ChildAchievementScreen
 import com.arthurslife.app.presentation.screens.ChildHomeScreen
 import com.arthurslife.app.presentation.screens.ChildProfileScreen
 import com.arthurslife.app.presentation.screens.ChildTaskScreen
-import com.arthurslife.app.presentation.screens.PlaceholderScreen
 import com.arthurslife.app.presentation.screens.RoleSwitchingDialog
 import com.arthurslife.app.presentation.screens.ThemeSettingsScreen
+import com.arthurslife.app.presentation.screens.caregiverRewardManagementScreen
+import com.arthurslife.app.presentation.screens.childRewardScreen
 import com.arthurslife.app.presentation.theme.ThemeViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
@@ -216,17 +217,18 @@ private fun NavGraphBuilder.setupChildScreens(
     onRequestRoleSwitch: (UserRole) -> Unit,
 ) {
     composable("child_home") {
-        ChildHomeScreen(themeViewModel = themeViewModel)
-    }
-    composable("child_tasks") {
-        ChildTaskScreen(currentTheme = themeViewModel.currentTheme.collectAsState().value)
-    }
-    composable("child_rewards") {
-        PlaceholderScreen(
-            "Rewards",
-            "Spend your tokens on rewards",
+        ChildHomeScreen(
             themeViewModel = themeViewModel,
         )
+    }
+    composable("child_tasks") {
+        ChildTaskScreen(
+            currentTheme = themeViewModel.currentTheme.collectAsState().value,
+            onNavigateBack = { navController.popBackStack() },
+        )
+    }
+    composable("child_rewards") {
+        childRewardScreen(currentTheme = themeViewModel.currentTheme.collectAsState().value)
     }
     composable("child_achievements") {
         ChildAchievementScreen()
@@ -256,17 +258,13 @@ private fun NavGraphBuilder.setupCaregiverScreens(
         )
     }
     composable("caregiver_progress") {
-        PlaceholderScreen(
-            "Progress",
-            "View progress and analytics",
-            themeViewModel = themeViewModel,
+        caregiverRewardManagementScreen(
+            currentTheme = themeViewModel.currentTheme.collectAsState().value,
         )
     }
     composable("caregiver_children") {
-        PlaceholderScreen(
-            "Children",
-            "Manage your children and their settings",
-            themeViewModel = themeViewModel,
+        CaregiverChildrenManagementScreen(
+            currentTheme = themeViewModel.currentTheme.collectAsState().value,
         )
     }
     composable("caregiver_profile") {
@@ -312,8 +310,8 @@ private fun getNavigationItems(userRole: UserRole): List<NavigationItem> =
                 NavigationItem("caregiver_tasks", Icons.Default.Task, "Tasks"),
                 NavigationItem(
                     "caregiver_progress",
-                    Icons.AutoMirrored.Filled.TrendingUp,
-                    "Progress",
+                    Icons.Default.ShoppingCart,
+                    "Rewards",
                 ),
                 NavigationItem("caregiver_children", Icons.Default.Group, "Children"),
                 NavigationItem("caregiver_profile", Icons.Default.Person, "Profile"),

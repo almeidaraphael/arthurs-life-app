@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -40,28 +39,28 @@ fun PlaceholderScreen(
             theme = theme,
             contentDescription = null,
             modifier = Modifier.size(64.dp),
-            tint = MaterialTheme.colorScheme.primary,
+            tint = theme.colorScheme.primary,
         )
 
         Text(
             text = title,
-            style = MaterialTheme.typography.headlineLarge,
+            style = theme.typography.headlineLarge,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurface,
+            color = theme.colorScheme.onSurface,
         )
 
         Text(
             text = description,
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            style = theme.typography.bodyLarge,
+            color = theme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(top = 8.dp),
         )
 
         Text(
             text = "Coming Soon!",
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.primary,
+            style = theme.typography.titleMedium,
+            color = theme.colorScheme.primary,
             modifier = Modifier.padding(top = 16.dp),
         )
     }

@@ -9,18 +9,24 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.arthurslife.app.presentation.theme.ThemeViewModel
 import com.arthurslife.app.presentation.theme.components.ThemeAwareCaregiverQuickActions
 import com.arthurslife.app.presentation.theme.components.ThemeAwareChildOverviewCard
 import com.arthurslife.app.presentation.theme.components.ThemeAwareChildSelectorHeader
 import com.arthurslife.app.presentation.theme.components.ThemeAwareWeeklyProgressCard
 import com.arthurslife.app.presentation.theme.components.ThemeAwareWishlistInsightsCard
+import com.arthurslife.app.presentation.viewmodels.TaskManagementViewModel
 
 @Composable
 fun CaregiverDashboardScreen(
     themeViewModel: ThemeViewModel,
+    taskManagementViewModel: TaskManagementViewModel = hiltViewModel(),
 ) {
     val currentTheme by themeViewModel.currentTheme.collectAsState()
+    val taskStats by taskManagementViewModel.taskStats.collectAsState()
+    val incompleteTasks by taskManagementViewModel.incompleteTasks.collectAsState()
+    val completedTasks by taskManagementViewModel.completedTasks.collectAsState()
 
     LazyColumn(
         modifier = Modifier
@@ -30,17 +36,41 @@ fun CaregiverDashboardScreen(
     ) {
         item {
             // Header with child selector
-            ThemeAwareChildSelectorHeader(currentTheme = currentTheme)
+            // TODO: Replace with actual child name from selected child
+            ThemeAwareChildSelectorHeader(
+                currentTheme = currentTheme,
+                childName = "Arthur", // Will come from selected child in future
+            )
         }
 
         item {
             // Child overview stats
-            ThemeAwareChildOverviewCard(currentTheme = currentTheme)
+            val totalTasks = incompleteTasks.size + completedTasks.size
+            val completedTasksCount = completedTasks.size
+            val tokenBalance = taskStats?.totalTokensEarned ?: 0
+
+            ThemeAwareChildOverviewCard(
+                currentTheme = currentTheme,
+                tokenBalance = tokenBalance,
+                weeklyProgress = "+${((completedTasksCount.toFloat() / totalTasks.coerceAtLeast(1)) * 100).toInt()}%",
+                completedTasks = completedTasksCount,
+                totalTasks = totalTasks,
+            )
         }
 
         item {
             // Weekly progress
-            ThemeAwareWeeklyProgressCard(currentTheme = currentTheme)
+            val totalTasks = incompleteTasks.size + completedTasks.size
+            val completedTasksCount = completedTasks.size
+            val tokenBalance = taskStats?.totalTokensEarned ?: 0
+
+            ThemeAwareWeeklyProgressCard(
+                currentTheme = currentTheme,
+                tokenBalance = tokenBalance,
+                weeklyProgress = "+${((completedTasksCount.toFloat() / totalTasks.coerceAtLeast(1)) * 100).toInt()}%",
+                completedTasks = completedTasksCount,
+                totalTasks = totalTasks,
+            )
         }
 
         item {

@@ -7,22 +7,36 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.arthurslife.app.presentation.theme.ThemeViewModel
 import com.arthurslife.app.presentation.theme.components.ThemeAwareMotivationalCard
 import com.arthurslife.app.presentation.theme.components.ThemeAwareProgressCard
-import com.arthurslife.app.presentation.theme.components.ThemeAwareQuickActionsSection
 import com.arthurslife.app.presentation.theme.components.ThemeAwareQuickStatsRow
 import com.arthurslife.app.presentation.theme.components.ThemeAwareTokenCard
+import com.arthurslife.app.presentation.viewmodels.TaskManagementViewModel
 
 @Composable
 fun ChildHomeScreen(
     themeViewModel: ThemeViewModel,
+    taskManagementViewModel: TaskManagementViewModel = hiltViewModel(),
 ) {
     val theme by themeViewModel.currentTheme.collectAsState()
+    val taskStats by taskManagementViewModel.taskStats.collectAsState()
+    val incompleteTasks by taskManagementViewModel.incompleteTasks.collectAsState()
+    val completedTasks by taskManagementViewModel.completedTasks.collectAsState()
+    val currentTokenBalance by taskManagementViewModel.currentTokenBalance.collectAsState()
+    val dailyProgress by taskManagementViewModel.dailyProgress.collectAsState()
+    val recentAchievements by taskManagementViewModel.recentAchievements.collectAsState()
+
+    // Refresh data when screen becomes visible to ensure real-time updates
+    LaunchedEffect(Unit) {
+        taskManagementViewModel.refreshCurrentUser()
+    }
 
     Column(
         modifier = Modifier
@@ -34,30 +48,29 @@ fun ChildHomeScreen(
         // Header with token balance and progress
         ThemeAwareTokenCard(
             theme = theme,
-            tokenBalance = 100,
+            tokenBalance = currentTokenBalance?.getValue() ?: 0,
         )
 
         // Daily progress section
         ThemeAwareProgressCard(
             theme = theme,
-            progress = 0.7f,
+            progress = dailyProgress,
         )
 
         // Quick stats section
-        ThemeAwareQuickStatsRow(theme = theme)
-
-        // Quick actions section
-        ThemeAwareQuickActionsSection(
+        val completedTasksCount = completedTasks.size
+        val totalTasksCount = completedTasks.size + incompleteTasks.size
+        ThemeAwareQuickStatsRow(
             theme = theme,
-            onStartTaskClick = { /* Navigate to tasks */ },
-            onRewardsClick = { /* Navigate to rewards */ },
-            onAchievementsClick = { /* Navigate to achievements */ },
+            completedTasks = completedTasksCount,
+            totalTasks = totalTasksCount,
+            newAchievements = recentAchievements.size,
         )
 
         // Motivational message
         ThemeAwareMotivationalCard(
             theme = theme,
-            streak = 5,
+            streak = taskStats?.currentStreak ?: 0,
         )
     }
 }

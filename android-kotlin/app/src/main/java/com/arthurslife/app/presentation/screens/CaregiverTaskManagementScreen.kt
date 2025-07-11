@@ -10,12 +10,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -36,8 +32,10 @@ import com.arthurslife.app.domain.task.Task
 import com.arthurslife.app.domain.task.TaskCategory
 import com.arthurslife.app.domain.task.usecase.TaskStats
 import com.arthurslife.app.presentation.theme.BaseAppTheme
+import com.arthurslife.app.presentation.theme.components.ThemeAwareCard
 import com.arthurslife.app.presentation.theme.components.ThemeAwareTaskCard
 import com.arthurslife.app.presentation.theme.components.ThemeAwareTaskStatsCard
+import com.arthurslife.app.presentation.theme.components.themeAwareFloatingActionButton
 import com.arthurslife.app.presentation.viewmodels.TaskManagementUiState
 import com.arthurslife.app.presentation.viewmodels.TaskManagementViewModel
 
@@ -77,6 +75,7 @@ fun CaregiverTaskManagementScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         floatingActionButton = {
             TaskManagementFab(
+                theme = currentTheme,
                 onCreateTask = { showCreateDialog = true },
             )
         },
@@ -110,6 +109,7 @@ fun CaregiverTaskManagementScreen(
                 editingTask = null
             },
         ),
+        currentTheme = currentTheme,
     )
 }
 
@@ -142,16 +142,17 @@ private fun HandleSnackbarMessages(
  */
 @Composable
 private fun TaskManagementFab(
+    theme: BaseAppTheme,
     onCreateTask: () -> Unit,
 ) {
-    FloatingActionButton(
+    themeAwareFloatingActionButton(
         onClick = onCreateTask,
-        containerColor = MaterialTheme.colorScheme.primary,
+        theme = theme,
     ) {
         Icon(
             imageVector = Icons.Default.Add,
-            contentDescription = "Add Task",
-            tint = MaterialTheme.colorScheme.onPrimary,
+            contentDescription = "Add ${theme.taskLabel.dropLast(1)}",
+            tint = theme.colorScheme.onPrimary,
         )
     }
 }
@@ -239,16 +240,17 @@ private fun TaskList(
         // Task List Header
         item {
             Text(
-                text = "All Tasks (${params.allTasks.size})",
-                style = MaterialTheme.typography.headlineSmall,
+                text = "All ${params.currentTheme.taskLabel} (${params.allTasks.size})",
+                style = params.currentTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
+                color = params.currentTheme.colorScheme.onBackground,
             )
         }
 
         // Task List
         if (params.allTasks.isEmpty()) {
             item {
-                EmptyTasksCard()
+                EmptyTasksCard(params.currentTheme)
             }
         } else {
             items(params.allTasks) { task ->
@@ -272,18 +274,19 @@ private fun TaskList(
  * Empty state card when no tasks exist.
  */
 @Composable
-private fun EmptyTasksCard() {
-    Card(
+private fun EmptyTasksCard(theme: BaseAppTheme) {
+    ThemeAwareCard(
+        theme = theme,
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant,
-        ),
+        containerColor = theme.colorScheme.surfaceVariant,
     ) {
         Text(
-            text = "No tasks yet. Create your first task!",
+            text = "No ${theme.taskLabel.lowercase()} yet. Create your first ${theme.taskLabel.dropLast(
+                1,
+            ).lowercase()}!",
             modifier = Modifier.padding(24.dp),
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            style = theme.typography.bodyLarge,
+            color = theme.colorScheme.onSurfaceVariant,
         )
     }
 }
@@ -306,9 +309,11 @@ private data class TaskDialogsParams(
 @Composable
 private fun TaskDialogs(
     params: TaskDialogsParams,
+    currentTheme: BaseAppTheme,
 ) {
     if (params.showCreateDialog) {
-        TaskCreateEditDialog(
+        themeAwareTaskCreateEditDialog(
+            theme = currentTheme,
             task = null,
             onDismiss = params.onDismissCreateDialog,
             onSave = params.onCreateTask,
@@ -316,7 +321,8 @@ private fun TaskDialogs(
     }
 
     params.editingTask?.let { task ->
-        TaskCreateEditDialog(
+        themeAwareTaskCreateEditDialog(
+            theme = currentTheme,
             task = task,
             onDismiss = params.onDismissEditDialog,
             onSave = { title, category ->

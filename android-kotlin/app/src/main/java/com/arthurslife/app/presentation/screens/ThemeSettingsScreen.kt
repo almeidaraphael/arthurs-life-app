@@ -2,6 +2,7 @@ package com.arthurslife.app.presentation.screens
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -9,8 +10,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -24,11 +23,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.arthurslife.app.domain.user.UserRole
+import com.arthurslife.app.presentation.theme.BaseAppTheme
 import com.arthurslife.app.presentation.theme.ThemeManager
 import com.arthurslife.app.presentation.theme.ThemeViewModel
 import com.arthurslife.app.presentation.theme.components.SemanticIconType
 import com.arthurslife.app.presentation.theme.components.ThemeAwareIcon
 import com.arthurslife.app.presentation.theme.components.ThemeSelector
+import com.arthurslife.app.presentation.theme.components.themeAwareIconButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,52 +49,82 @@ fun ThemeSettingsScreen(
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        text = "Theme & Display",
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold,
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        ThemeAwareIcon(
-                            semanticType = SemanticIconType.BACK_ARROW,
-                            theme = currentTheme,
-                            contentDescription = "Back",
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                ),
+            themeSettingsTopBar(
+                currentTheme = currentTheme,
+                onBackClick = onBackClick,
             )
         },
     ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .verticalScroll(rememberScrollState())
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
+        themeSettingsContent(
+            currentTheme = currentTheme,
+            availableThemes = availableThemes,
+            paddingValues = paddingValues,
+            onThemeSelected = { theme ->
+                ThemeManager.getAppThemeKey(theme)?.let { appTheme ->
+                    themeViewModel.saveTheme(appTheme)
+                }
+            },
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun themeSettingsTopBar(
+    currentTheme: BaseAppTheme,
+    onBackClick: () -> Unit,
+) {
+    CenterAlignedTopAppBar(
+        title = {
+            Text(
+                text = "Theme & Display",
+                style = currentTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+                color = currentTheme.colorScheme.onSurface,
+            )
+        },
+        navigationIcon = {
+            themeAwareIconButton(
+                onClick = onBackClick,
             ) {
-                ThemeSelector(
-                    currentTheme = currentTheme,
-                    availableThemes = availableThemes,
-                    onThemeSelected = { theme ->
-                        ThemeManager.getAppThemeKey(theme)?.let { appTheme ->
-                            themeViewModel.saveTheme(appTheme)
-                        }
-                    },
-                    modifier = Modifier.fillMaxWidth(),
+                ThemeAwareIcon(
+                    semanticType = SemanticIconType.BACK_ARROW,
+                    theme = currentTheme,
+                    contentDescription = "Back",
                 )
             }
+        },
+        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+            containerColor = currentTheme.colorScheme.surface,
+        ),
+    )
+}
+
+@Composable
+private fun themeSettingsContent(
+    currentTheme: BaseAppTheme,
+    availableThemes: List<BaseAppTheme>,
+    paddingValues: PaddingValues,
+    onThemeSelected: (BaseAppTheme) -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues),
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            ThemeSelector(
+                currentTheme = currentTheme,
+                availableThemes = availableThemes,
+                onThemeSelected = onThemeSelected,
+                modifier = Modifier.fillMaxWidth(),
+            )
         }
     }
 }
