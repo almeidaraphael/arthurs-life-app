@@ -1,232 +1,262 @@
-# Arthur's Life App - Claude Agent Context
+# Arthur's Life App - Claude Code Agent Instructions
 
-## Project Overview
+## Project Context
 
-**Arthur's Life** is a family task management Android app built with Kotlin and Jetpack Compose. It uses a gamified token-based reward system to help families organize daily tasks with role-based access for Children, Caregivers, and Admins.
+**Arthur's Life** is a family task management Android app built with Kotlin and Jetpack Compose. It uses a gamified token-based reward system with role-based access for Children, Caregivers, and Admins.
 
-### Current Implementation Status (as of git status)
-- ✅ **Theme System**: Role-based theming with Mario Classic and Material Dark/Light themes
-- ✅ **Authentication**: PIN-based role switching between Child/Caregiver/Admin modes
-- ✅ **Navigation**: Basic navigation structure with role-specific screens
-- ✅ **Architecture Foundation**: Domain-driven design with clean architecture layers
-- ❌ **Core Features**: Task management, token economy, rewards, achievements (NOT YET IMPLEMENTED)
+### Implementation Status
+- ✅ **Implemented**: Theme system, authentication, navigation, architecture foundation
+- ❌ **TODO**: Task management, token economy, rewards, achievements
+
+### AI Decision Tree: What to implement first?
+1. **Task Management** (core business logic)
+2. **Token Economy** (depends on tasks)
+3. **Reward System** (depends on tokens)
+4. **Achievement System** (depends on tasks/tokens)
 
 ## Technology Stack
 
-- **Platform**: Native Android (API 24+, Target SDK 35)
+- **Platform**: Android (API 24+, Target SDK 35)
 - **Language**: Kotlin 2.1.0 with Java 21
 - **UI**: Jetpack Compose with Material Design 3
-- **Architecture**: Domain-Driven Design (DDD) with Clean Architecture
-- **Database**: Room with SQLite (offline-first)
+- **Architecture**: Domain-Driven Design with Clean Architecture
+- **Database**: Room with SQLite
 - **DI**: Hilt
-- **Static Analysis**: Detekt (replaces KtLint)
-- **Testing**: JUnit, Espresso
+- **Static Analysis**: Detekt
 
 ## Project Structure
 
 ```
 android-kotlin/app/src/main/java/com/arthurslife/app/
 ├── domain/              # Business logic and entities
-│   ├── user/           # User roles and authentication
-│   ├── task/           # Task domain (basic structure exists)
-│   ├── achievement/    # Achievement domain (basic structure exists)
-│   ├── auth/           # Authentication domain
-│   ├── theme/          # Theme domain models
-│   └── common/         # Shared domain models and exceptions
-├── infrastructure/     # Data layer implementation
-│   ├── database/       # Room entities and DAOs
-│   ├── preferences/    # DataStore implementations
-│   ├── auth/           # Auth repository implementations
-│   ├── task/           # Task repository implementations
-│   ├── achievement/    # Achievement repository implementations
-│   └── user/           # User repository implementations
-├── presentation/       # UI layer with Compose
-│   ├── screens/        # Screen composables (Home, Profile, Task Management, etc)
-│   ├── theme/          # Theme system and theme-aware components
-│   ├── navigation/     # Navigation configuration
-│   └── viewmodels/     # ViewModels (Auth, Task, Achievement)
+├── infrastructure/     # Data layer (repositories, database, preferences)
+├── presentation/       # UI layer (screens, theme, navigation, viewmodels)
 ├── data/               # Data layer helpers
-│   └── theme/          # Theme preferences data store
-└── di/                 # Hilt dependency injection modules
+└── di/                 # Dependency injection modules
 ```
 
-## Key Commands
+## AI Workflow Commands - ZERO TOLERANCE POLICY
 
-### Development Workflow
 ```bash
-# Navigate to Android project
-cd android-kotlin
+# 1. After ANY code change, run:
+./gradlew detektFormat && ./gradlew detekt
 
-# Build project
+# 2. Before completing tasks:
 ./gradlew build
-
-# Format code with Detekt
-./gradlew detektFormat
-
-# Run static analysis
-./gradlew detekt
-
-# Run tests
 ./gradlew test
-
-# Install on device
-./gradlew installDebug
+./gradlew installDebug  # Verify app can be installed
 ```
+
+**AI Pattern**: Every code generation task MUST follow this sequence:
+1. Generate code → 2. Format & analyze → 3. Build & test → 4. Fix any failing tests
+
+**ZERO TOLERANCE POLICY**: Implementation is NEVER complete with ANY failures:
+- Detekt violations = INCOMPLETE implementation
+- Build failures = INCOMPLETE implementation  
+- Test failures = INCOMPLETE implementation
+- Installation failures = INCOMPLETE implementation
+- No exceptions, no excuses, no compromises
+- Run `./gradlew test` to verify all tests pass before proceeding
 
 ## Architecture Principles
 
-### Domain-Driven Design (DDD)
-- **Aggregates**: User, Task, Achievement, Token, Reward
-- **Value Objects**: UserRole, TaskCategory, TaskDifficulty, AchievementType
-- **Domain Events**: TaskCompleted, TokensEarned, RewardRedeemed, AchievementUnlocked
-- **Repository Pattern**: Clean separation between domain and infrastructure
+- **Domain-Driven Design**: Aggregates (User, Task, Achievement, Token), Value Objects, Domain Events
+- **Clean Architecture**: Domain → Infrastructure → Presentation
+- **SOLID Principles**: Single responsibility, dependency inversion, interface segregation
+- **Repository Pattern**: Clean separation between domain and data layers
 
-### SOLID Principles Applied
-- **Single Responsibility**: Each class has one clear purpose
-- **Open/Closed**: Extensible design for new features
-- **Liskov Substitution**: Proper inheritance hierarchies
-- **Interface Segregation**: Focused, cohesive interfaces
-- **Dependency Inversion**: Depend on abstractions, not concretions
+## Theme Context for AI
 
-## User Roles & Implementation
+### Role-Based Theme Mapping
+- **Child Role** → Mario Classic theme → Use game terminology (Quests, Coins, Power-ups)
+- **Caregiver Role** → Material Light/Dark → Use standard terminology (Tasks, Tokens, Rewards)
+- **Admin Role** → Material Light/Dark → Use admin terminology (Management, Settings, Reports)
 
-### Child Role
-- **Primary Theme**: Mario Classic (gamified experience)
-- **Screens**: Home, Tasks, Rewards, Achievements, Profile
-- **Capabilities**: View and complete tasks, see token balance, browse/redeem rewards
+### AI Theme Decision Rules
+- **When creating Child screens** → Use Mario Classic components and terminology
+- **When creating Caregiver screens** → Use Material Design components
+- **When creating shared components** → Support both themes with semantic mapping
 
-### Caregiver Role
-- **Primary Theme**: Material Light/Dark (professional interface)
-- **Screens**: Dashboard, Task Management, Progress, Children, Profile
-- **Capabilities**: Create/manage tasks, set rewards, monitor children's progress
-
-### Admin Role
-- **Access**: Full system administration
-- **Capabilities**: Manage family structure, assign permissions, system settings
-
-## Current File Status (from git status)
-
-### Modified Files
-- `AuthModule.kt` - Authentication dependency injection
-- `MainAppNavigation.kt` - Navigation structure
-- `MaterialThemeIcons.kt` & `SemanticIconType.kt` - Theme icon system
-- `MarioThemeIcons.kt` - Mario theme specific icons
-
-### New Untracked Files (Need Implementation)
-- Domain layer: `domain/achievement/`, `domain/common/`, `domain/task/`
-- Infrastructure: `infrastructure/achievement/`, `infrastructure/task/`
-- Database: `dao/TaskDao.kt`, `entities/TaskEntity.kt`
-- Presentation: Multiple new screens and components
-- ViewModels: `AchievementViewModel.kt`, `TaskManagementViewModel.kt`
 
 ## Implementation Guidelines
 
-### When Adding New Features
-1. **Start with Domain**: Define entities, value objects, and business rules in `domain/`
-2. **Create Use Cases**: Implement business logic as use cases
-3. **Add Infrastructure**: Repository implementations in `infrastructure/`
-4. **Build UI**: Theme-aware Compose screens in `presentation/screens/`
-5. **Add DI**: Wire dependencies in `di/` modules
-6. **Test**: Comprehensive unit and integration tests
+### Feature Development Flow
+1. **Domain** → Define entities, value objects, business rules
+2. **Infrastructure** → Repository implementations
+3. **Presentation** → Theme-aware Compose screens
+4. **DI** → Wire dependencies
+5. **Test** → Unit and integration tests
 
 ### Code Quality Standards
-- Use Detekt for formatting: `./gradlew detektFormat`
-- Pass static analysis: `./gradlew detekt`
-- Follow DRY principles with shared components
-- Maintain clear separation between layers
-- All business logic in domain layer
+- **Kotlin 2.1.0** with explicit null safety
+- **Detekt compliance** (format after every change)
+- **80%+ test coverage** for domain layer
+- **DRY principles** with shared components
+- **Clear layer separation** (business logic in domain only)
 
-### Theme System
+### Critical Code Rules
+
+**Detekt Compliance (MANDATORY)**
+- **camelCase functions** (including @Composable)
+- **No wildcard imports** (use specific imports)
+- **No magic numbers** (use named constants)
+- **Group 7+ parameters** into data classes
+- **Run `./gradlew detektFormat`** after every change
+
+**Naming Conventions**
+- Classes: `PascalCase`
+- Functions/Composables: `camelCase`
+- Constants: `SCREAMING_SNAKE_CASE`
+
+**Theme System**
 - All UI components must support theme switching
-- Use semantic icon mapping for theme-specific icons
-- Mario Classic theme uses game terminology (Quests, Coins, etc.)
-- Material themes use standard terminology (Tasks, Tokens, etc.)
+- Mario Classic theme: game terminology (Quests, Coins)
+- Material themes: standard terminology (Tasks, Tokens)
 
-## Development Priorities
+## AI Task Prioritization
 
-### Immediate Next Steps (MVP)
-1. **Task Management System**
-    - Implement task creation, assignment, completion
-    - Build TaskRepository and TaskDao
-    - Create task management screens
+### When asked to implement features, prioritize in this order:
+1. **Task Management** - Core business logic foundation
+2. **Token Economy** - Depends on task completion events
+3. **Reward System** - Depends on token balance
+4. **Achievement System** - Depends on task/token data
 
-2. **Token Economy**
-    - Implement token earning through task completion
-    - Build token balance tracking
-    - Create spending mechanisms
+### AI Decision Matrix:
+- **User asks for "tasks"** → Start with domain/task/ then infrastructure/task/
+- **User asks for "rewards"** → Check if tasks/tokens exist first
+- **User asks for "achievements"** → Check if tasks exist first
+- **User asks for "screens"** → Check if underlying domain logic exists first
 
-3. **Basic Reward System**
-    - Implement reward catalog
-    - Build token redemption system
-    - Create reward management screens
+## AI Code Generation Standards
 
-4. **Achievement System**
-    - Implement basic achievement tracking
-    - Build achievement unlock logic
-    - Create achievement display screens
+### Automatic Code Patterns
+**Testing** (Generate automatically)
+- Domain tests with MockK
+- Given-When-Then naming
+- Happy path + error scenarios
 
-### Testing Strategy
-- **Domain Logic**: Comprehensive unit tests (80%+ coverage)
-- **Repository Layer**: Integration tests with Room
-- **UI Components**: Compose testing for screens
-- **Theme System**: Test theme switching and component rendering
+**Security** (Always include)
+- Input validation for all user inputs
+- Explicit nullability declarations
+- Secure storage for sensitive data
 
-## Known Issues & Technical Debt
+**Performance** (Default patterns)proceed
+- `remember` for expensive calculations
+- `LazyColumn` for lists
+- `derivedStateOf` for computed values
 
-### Current Limitations
-- Task management not implemented (domain exists but no business logic)
-- Token economy system missing entirely
-- Achievement system has structure but no implementation
-- Many screens are placeholder implementations
+**Accessibility** (Required for all UI)
+- `contentDescription` for images
+- Semantic roles for interactive elements
+- Proper color contrast
+
+## Known Issues
+
+- Task management, token economy, achievements not implemented
+- Many screens are placeholders
 - Database schema incomplete
+- Need proper error handling and validation
 
-### Architecture Improvements Needed
-- Complete repository implementations
-- Add proper error handling throughout
-- Implement domain events system
-- Add comprehensive validation
-- Complete theme system integration
+## AI Implementation Protocol
 
-## Best Practices for Claude
+### MANDATORY: Follow this exact sequence for ANY code generation:
 
-### File Editing
-- Always use Edit/MultiEdit tools for code changes
-- Include sufficient context (3-5 lines) for unique string matching
-- Run `./gradlew detektFormat` after code changes
-- Verify changes applied correctly
+**Step 1: Analysis**
+- Use Task tool to search existing patterns
+- Check theme system implementation for UI patterns
+- Verify domain structure exists before adding infrastructure
 
-### Implementation Approach
-1. Check existing patterns in implemented features (theme system, navigation)
-2. Follow DDD structure: domain → infrastructure → presentation
-3. Maintain theme compatibility across all new UI
-4. Add proper error handling and validation
-5. Write tests for new business logic
+**Step 2: Implementation Order (NEVER deviate)**
+1. **Domain** → entities, value objects, use cases
+2. **Infrastructure** → repositories, DAOs, entities
+3. **Presentation** → screens, viewmodels
+4. **DI** → wire everything together
 
-### Code Style
-- Follow Detekt rules (configured in `config/detekt/detekt.yml`)
-- Use meaningful names reflecting domain concepts
-- Implement proper error handling with domain exceptions
-- Maintain immutability where possible
-- Add comprehensive documentation
+**Step 3: Code Generation Rules (CRITICAL)**
+- **camelCase @Composable functions** - `taskScreen()` not `TaskScreen()`
+- **No wildcard imports** - import specific classes only
+- **No magic numbers** - use named constants
+- **No nullable platform types** - explicit nullability
+- **No business logic in composables** - domain logic only in domain layer
+- **Theme compatibility** - support Mario Classic and Material themes
 
-## Quick Reference
+**Step 4: Validation (MANDATORY)**
+```bash
+# Run after EVERY code change
+./gradlew detektFormat && ./gradlew detekt
+```
 
-### Key Files to Understand
-- `planning/requirements.md` - Current implementation status and roadmap
-- `docs/architecture.md` - Detailed architecture documentation
-- `android-kotlin/app/build.gradle.kts` - Dependencies and build configuration
-- `presentation/theme/` - Theme system implementation patterns
-- `presentation/navigation/MainAppNavigation.kt` - Navigation structure
+**Step 5: Build & Test Verification (CRITICAL)**
+```bash
+# ALWAYS ensure these pass before marking implementation complete:
+./gradlew build
+./gradlew test
+```
 
-### Common Patterns
-- Domain interfaces in `domain/[feature]/`
-- Repository implementations in `infrastructure/[feature]/`
-- ViewModels in `presentation/viewmodels/`
-- Theme-aware components in `presentation/theme/components/`
-- DI modules in `di/`
+**ABSOLUTE REQUIREMENTS - ZERO TOLERANCE**:
+- ❌ **NEVER** mark tasks as completed with ANY detekt violations
+- ❌ **NEVER** leave implementations with ANY build failures
+- ❌ **NEVER** finish without running FULL build verification
+- ❌ **NEVER** leave ANY detekt violations - they are ALL critical
+- ❌ **NEVER** rationalize, excuse, or defer detekt violations
+- ❌ **NEVER** consider implementation "complete" if ANY gradle command fails
+- ❌ **NEVER** submit code that cannot build and install successfully
+- ❌ **NEVER** accept "it's just a minor violation" - ALL violations are blocking
+- ✅ **ALWAYS** fix ALL detekt violations immediately - no exceptions
+- ✅ **ALWAYS** ensure app builds, tests pass, and installs successfully
+- ✅ **ALWAYS** verify complete build pipeline before marking complete
+- ✅ **ALWAYS** treat code quality as non-negotiable requirement
 
-### When to Ask for Clarification
-- Business logic unclear from domain models
-- UI patterns don't match existing theme system
-- Database schema conflicts with domain model
-- Testing approach for complex features
+**CRITICAL BUILD REQUIREMENT - ZERO FAILURES ACCEPTED**: 
+ALL of these commands MUST pass with zero failures or implementation is INCOMPLETE:
+```bash
+./gradlew detektFormat  # Must format successfully
+./gradlew detekt        # Must have ZERO violations
+./gradlew build         # Must build successfully
+./gradlew test          # Must have ZERO test failures  
+./gradlew installDebug  # Must install successfully
+```
+
+**ABSOLUTE ZERO TOLERANCE**: Every detekt violation BLOCKS completion, regardless of:
+- How "trivial" it appears
+- Whether it "impacts functionality"
+- Personal preference about the rule
+- Time pressure or deadlines
+- Implementation complexity
+- Any other justification
+
+Build success is the ONLY acceptable outcome - failures mean the work is not done.
+
+### AI Error Recovery
+If Detekt fails:
+1. **WildcardImport** → Replace with specific imports
+2. **MagicNumber** → Create named constants
+3. **LongParameterList** → Group into data classes
+4. **FunctionNaming** → Ensure camelCase for @Composable
+
+## AI Quick Reference
+
+### File Pattern Recognition
+- **Domain interfaces**: `domain/[feature]/` (business logic)
+- **Repository implementations**: `infrastructure/[feature]/` (data access)
+- **ViewModels**: `presentation/viewmodels/` (UI state)
+- **Theme-aware components**: `presentation/theme/components/` (UI)
+- **DI modules**: `di/` (dependency injection)
+
+### AI Search Strategy
+1. **For UI patterns** → Search `presentation/theme/` first
+2. **For business logic** → Search `domain/` first
+3. **For data access** → Search `infrastructure/` first
+4. **For existing features** → Use Task tool for comprehensive search
+
+### AI Decision Points
+- **User asks for new feature** → Check if domain exists, then infrastructure, then presentation
+- **User asks for UI changes** → Check theme compatibility first
+- **User asks for database changes** → Check domain model alignment first
+- **Detekt errors** → Apply standard fixes (see AI Error Recovery above)
+
+### AI Workflow Optimization
+- **Use TodoWrite tool** for multi-step tasks
+- **Use Task tool** for comprehensive codebase searches
+- **Use MultiEdit** for multiple related changes
+- **Run commands in parallel** when possible (multiple Bash calls)
