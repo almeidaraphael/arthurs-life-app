@@ -1,6 +1,7 @@
 [versions]
-agp = "8.7.2"
+agp = "8.11.0"
 kotlin = "2.1.0"
+ksp = "2.1.0-1.0.29"
 coreKtx = "1.15.0"
 lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.9.3"
@@ -12,13 +13,21 @@ room = "2.6.1"
 datastorePreferences = "1.1.1"
 kotlinxSerializationJson = "1.7.3"
 bcrypt = "0.10.2"
+timber = "5.0.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
-ktlint = "1.5.0"
-ktlintPlugin = "12.1.2"
-detekt = "1.23.7"
+detekt = "1.23.8"
 javaCompatibility = "21"
+# Testing versions
+junitJupiter = "5.10.1"
+mockk = "1.13.8"
+coroutinesTest = "1.9.0"
+kotlinTest = "2.1.0"
+androidxTestCore = "1.6.1"
+robolectric = "4.14.1"
+roomTesting = "2.6.1"
+jacoco = "0.8.12"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -32,9 +41,11 @@ androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-toolin
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
+hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hilt" }
 androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
@@ -42,20 +53,37 @@ androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = 
 androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastorePreferences" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 bcrypt = { group = "at.favre.lib", name = "bcrypt", version.ref = "bcrypt" }
+timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+# Testing libraries
+junit-jupiter-api = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "junitJupiter" }
+junit-jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junitJupiter" }
+junit-jupiter-params = { group = "org.junit.jupiter", name = "junit-jupiter-params", version.ref = "junitJupiter" }
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutinesTest" }
+kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlinTest" }
+kotlin-test-junit5 = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit5", version.ref = "kotlinTest" }
+androidx-test-core = { group = "androidx.test", name = "core", version.ref = "androidxTestCore" }
+androidx-test-core-ktx = { group = "androidx.test", name = "core-ktx", version.ref = "androidxTestCore" }
+robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
+androidx-room-testing = { group = "androidx.room", name = "room-testing", version.ref = "roomTesting" }
+detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlintPlugin" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+jacoco = { id = "jacoco" }
 
 [bundles]
-compose = ["androidx-ui", "androidx-ui-graphics", "androidx-ui-tooling-preview", "androidx-material3"]
+compose = ["androidx-ui", "androidx-ui-graphics", "androidx-ui-tooling-preview", "androidx-material3", "androidx-material-icons-extended"]
 room = ["androidx-room-runtime", "androidx-room-ktx"]
 testing = ["junit", "androidx-junit", "androidx-espresso-core"]
+junit-jupiter = ["junit-jupiter-api", "junit-jupiter-engine", "junit-jupiter-params"]
+testing-unit = ["junit-jupiter-api", "junit-jupiter-params", "mockk", "coroutines-test", "kotlin-test", "kotlin-test-junit5", "androidx-test-core", "androidx-test-core-ktx", "robolectric", "androidx-room-testing"]

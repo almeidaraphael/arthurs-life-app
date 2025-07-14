@@ -1,24 +1,28 @@
-# KtLint configuration for Arthur's Life App
-# See: https://pinterest.github.io/ktlint/latest/rules/configuration-ktlint/
+# EditorConfig configuration for Arthur's Life App
+# Detekt handles all Kotlin-specific formatting rules
 
-# Enable Android Kotlin Style Guide rules
-android=true
+# Top-most EditorConfig file
+root = true
 
-# Disable specific rules if needed (uncomment to use)
-# disabled_rules=import-ordering,no-wildcard-imports
+[*.{kt,kts}]
+charset = utf-8
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+max_line_length = 120
+trim_trailing_whitespace = true
 
-# Maximum line length
-max_line_length=120
+# Note: Kotlin formatting is handled by detekt-formatting plugin
+# These are basic IDE preferences only
 
-# Insert final newline
-insert_final_newline=true
+# File-specific overrides
+[*.xml]
+indent_size = 4
 
-# Charset
-charset=utf-8
+[*.gradle]
+indent_size = 4
 
-# Indentation
-indent_style=space
-indent_size=4
+[*.md]
+trim_trailing_whitespace = false
+insert_final_newline = true
 
-# Trim trailing whitespace
-trim_trailing_whitespace=true
