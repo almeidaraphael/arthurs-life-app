@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- Trophy shadow -->
+    <path
+        android:fillColor="#666666"
+        android:pathData="M7.3,18.3H17.3C17.85,18.3 18.3,18.75 18.3,19.3V19.3C18.3,19.85 17.85,20.3 17.3,20.3H7.3C6.75,20.3 6.3,19.85 6.3,19.3V19.3C6.3,18.75 6.75,18.3 7.3,18.3Z" />
+
+    <!-- Trophy cup shadow -->
+    <path
+        android:fillColor="#B8860B"
+        android:pathData="M8.2,5.2H16.2V11.2C16.2,13.41 14.41,15.2 12.2,15.2C9.99,15.2 8.2,13.41 8.2,11.2V5.2Z" />
+
+    <!-- Left handle shadow -->
+    <path
+        android:fillColor="#B8860B"
+        android:pathData="M6.2,7.2H8.2V9.2C8.2,10.3 7.3,11.2 6.2,11.2C5.1,11.2 4.2,10.3 4.2,9.2C4.2,8.1 5.1,7.2 6.2,7.2Z" />
+
+    <!-- Right handle shadow -->
+    <path
+        android:fillColor="#B8860B"
+        android:pathData="M16.2,7.2H18.2C19.3,7.2 20.2,8.1 20.2,9.2C20.2,10.3 19.3,11.2 18.2,11.2C17.1,11.2 16.2,10.3 16.2,9.2V7.2Z" />
+
+    <!-- Trophy cup border -->
+    <path
+        android:fillColor="#E6C200"
+        android:pathData="M7.8,4.8H16.2V10.8C16.2,13.01 14.41,14.8 12.2,14.8C9.99,14.8 7.8,13.01 7.8,10.8V4.8Z" />
+
+    <!-- Trophy cup -->
+    <path
+        android:fillColor="#FFD700"
+        android:pathData="M8,5H16V11C16,13.21 14.21,15 12,15C9.79,15 8,13.21 8,11V5Z" />
+
+    <!-- Cup top highlight -->
+    <path
+        android:fillColor="#FFEB3B"
+        android:pathData="M8.5,5H15.5V6.5C15.5,6.8 15.2,7 14.9,7H9.1C8.8,7 8.5,6.8 8.5,6.5V5Z" />
+
+    <!-- Cup left highlight -->
+    <path
+        android:fillColor="#FFB300"
+        android:pathData="M8,5H10V11C10,12.1 10.4,13.1 11,13.8C9.79,14.3 8,13.21 8,11V5Z" />
+
+    <!-- Left trophy handle border -->
+    <path
+        android:fillColor="#E6C200"
+        android:pathData="M5.8,6.8H8.2V9C8.2,10.2 7.2,11.2 6,11.2C4.8,11.2 3.8,10.2 3.8,9C3.8,7.8 4.8,6.8 6,6.8H5.8Z" />
+
+    <!-- Left trophy handle -->
+    <path
+        android:fillColor="#FFD700"
+        android:pathData="M6,7H8V9C8,10.1 7.1,11 6,11C4.9,11 4,10.1 4,9C4,7.9 4.9,7 6,7Z" />
+
+    <!-- Left handle highlight -->
+    <path
+        android:fillColor="#FFEB3B"
+        android:pathData="M6,7H7.5V8C7.5,8.8 6.8,9.5 6,9.5C5.2,9.5 4.5,8.8 4.5,8C4.5,7.2 5.2,7 6,7Z" />
+
+    <!-- Right trophy handle border -->
+    <path
+        android:fillColor="#E6C200"
+        android:pathData="M16.2,6.8H18.2C19.4,6.8 20.2,7.8 20.2,9C20.2,10.2 19.4,11.2 18.2,11.2C17,11.2 16.2,10.2 16.2,9V6.8Z" />
+
+    <!-- Right trophy handle -->
+    <path
+        android:fillColor="#FFD700"
+        android:pathData="M16,7H18C19.1,7 20,7.9 20,9C20,10.1 19.1,11 18,11C16.9,11 16,10.1 16,9V7Z" />
+
+    <!-- Right handle highlight -->
+    <path
+        android:fillColor="#FFEB3B"
+        android:pathData="M16.5,7H18C18.8,7 19.5,7.7 19.5,8.5C19.5,9.3 18.8,10 18,10C17.2,10 16.5,9.3 16.5,8.5V7Z" />
+
+    <!-- Trophy base shadow -->
+    <path
+        android:fillColor="#8B7355"
+        android:pathData="M10.2,15.2H14.2V18.2H10.2V15.2Z" />
+
+    <!-- Trophy base border -->
+    <path
+        android:fillColor="#D4AF37"
+        android:pathData="M9.8,14.8H14.2V18H9.8V14.8Z" />
+
+    <!-- Trophy base -->
+    <path
+        android:fillColor="#FFD700"
+        android:pathData="M10,15H14V18H10V15Z" />
+
+    <!-- Base highlight -->
+    <path
+        android:fillColor="#FFEB3B"
+        android:pathData="M10.5,15H13.5V15.8H10.5V15Z" />
+
+    <!-- Base depth lines -->
+    <path
+        android:fillColor="#B8860B"
+        android:pathData="M10.2,16.5H13.8V16.8H10.2V16.5Z" />
+    <path
+        android:fillColor="#B8860B"
+        android:pathData="M10.2,17.2H13.8V17.5H10.2V17.2Z" />
+
+    <!-- Trophy stand border -->
+    <path
+        android:fillColor="#704A2E"
+        android:pathData="M6.8,17.8H17.2C17.77,17.8 18.2,18.23 18.2,18.8V19.2C18.2,19.77 17.77,20.2 17.2,20.2H6.8C6.23,20.2 5.8,19.77 5.8,19.2V18.8C5.8,18.23 6.23,17.8 6.8,17.8Z" />
+
+    <!-- Trophy stand -->
+    <path
+        android:fillColor="#8B7355"
+        android:pathData="M7,18H17C17.55,18 18,18.45 18,19V19C18,19.55 17.55,20 17,20H7C6.45,20 6,19.55 6,19V19C6,18.45 6.45,18 7,18Z" />
+
+    <!-- Stand highlight -->
+    <path
+        android:fillColor="#A0785A"
+        android:pathData="M7.5,18.2H16.5V18.6H7.5V18.2Z" />
+
+    <!-- Star background glow -->
+    <path
+        android:fillColor="#FFB300"
+        android:pathData="M12,6.7L12.8,8.6L14.2,8.6L13.1,9.4L13.6,10.8L12,10L10.4,10.8L10.9,9.4L9.8,8.6L11.2,8.6L12,6.7Z" />
+
+    <!-- Star on cup -->
+    <path
+        android:fillColor="#FFD700"
+        android:pathData="M12,7L12.6,8.4L14,8.4L13,9.2L13.4,10.6L12,9.8L10.6,10.6L11,9.2L10,8.4L11.4,8.4L12,7Z" />
+
+    <!-- Star highlight -->
+    <path
+        android:fillColor="#FFEB3B"
+        android:pathData="M12,7.3L12.4,8.2L13.3,8.2L12.7,8.7L12.9,9.6L12,9.2L11.1,9.6L11.3,8.7L10.7,8.2L11.6,8.2L12,7.3Z" />
+
+    <!-- Decorative gems on cup -->
+    <path
+        android:fillColor="#FF4444"
+        android:pathData="M9.5,8.5C9.8,8.5 10,8.7 10,9C10,9.3 9.8,9.5 9.5,9.5C9.2,9.5 9,9.3 9,9C9,8.7 9.2,8.5 9.5,8.5Z" />
+
+    <path
+        android:fillColor="#44FF44"
+        android:pathData="M14.5,8.5C14.8,8.5 15,8.7 15,9C15,9.3 14.8,9.5 14.5,9.5C14.2,9.5 14,9.3 14,9C14,8.7 14.2,8.5 14.5,8.5Z" />
+
+    <path
+        android:fillColor="#4444FF"
+        android:pathData="M12,12C12.3,12 12.5,12.2 12.5,12.5C12.5,12.8 12.3,13 12,13C11.7,13 11.5,12.8 11.5,12.5C11.5,12.2 11.7,12 12,12Z" />
+</vector>

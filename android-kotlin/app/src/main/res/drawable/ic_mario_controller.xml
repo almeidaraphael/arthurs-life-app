@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- Controller shadow -->
+    <path
+        android:fillColor="#333333"
+        android:pathData="M18.2,8.2H6.2C3.99,8.2 2.2,9.99 2.2,12.2C2.2,14.41 3.99,16.2 6.2,16.2H18.2C20.41,16.2 22.2,14.41 22.2,12.2C22.2,9.99 20.41,8.2 18.2,8.2Z" />
+
+    <!-- Controller body border -->
+    <path
+        android:fillColor="#4A4A4A"
+        android:pathData="M18,7.8H6C3.59,7.8 1.8,9.59 1.8,12C1.8,14.41 3.59,16.2 6,16.2H18C20.41,16.2 22.2,14.41 22.2,12C22.2,9.59 20.41,7.8 18,7.8Z" />
+
+    <!-- Controller body -->
+    <path
+        android:fillColor="#666666"
+        android:pathData="M18,8H6C3.79,8 2,9.79 2,12C2,14.21 3.79,16 6,16H18C20.21,16 22,14.21 22,12C22,9.79 20.21,8 18,8Z" />
+
+    <!-- Controller highlight -->
+    <path
+        android:fillColor="#888888"
+        android:pathData="M18,8.5H6C4.07,8.5 2.5,10.07 2.5,12C2.5,12.8 2.8,13.5 3.3,14H20.7C21.2,13.5 21.5,12.8 21.5,12C21.5,10.07 19.93,8.5 18,8.5Z" />
+
+    <!-- D-pad background -->
+    <path
+        android:fillColor="#1A1A1A"
+        android:pathData="M4.5,9H8.5V13H4.5Z" />
+
+    <!-- D-pad horizontal -->
+    <path
+        android:fillColor="#333333"
+        android:pathData="M4.8,10.3H8.2V11.7H4.8Z" />
+
+    <!-- D-pad vertical -->
+    <path
+        android:fillColor="#333333"
+        android:pathData="M5.8,9.3H7.2V12.7H5.8Z" />
+
+    <!-- D-pad highlight -->
+    <path
+        android:fillColor="#555555"
+        android:pathData="M5,10.5H7.5V11H5Z" />
+    <path
+        android:fillColor="#555555"
+        android:pathData="M6,9.5H6.5V11.5H6Z" />
+
+    <!-- Action button background area -->
+    <path
+        android:fillColor="#1A1A1A"
+        android:pathData="M14.5,8.5H20V14.5H14.5Z" />
+
+    <!-- Action button A shadow -->
+    <path
+        android:fillColor="#CC2222"
+        android:pathData="M17.1,9.3C17.54,9.3 17.9,9.66 17.9,10.1C17.9,10.54 17.54,10.9 17.1,10.9C16.66,10.9 16.3,10.54 16.3,10.1C16.3,9.66 16.66,9.3 17.1,9.3Z" />
+
+    <!-- Action button A (red) -->
+    <path
+        android:fillColor="#FF4444"
+        android:pathData="M17,9.2C17.44,9.2 17.8,9.56 17.8,10C17.8,10.44 17.44,10.8 17,10.8C16.56,10.8 16.2,10.44 16.2,10C16.2,9.56 16.56,9.2 17,9.2Z" />
+
+    <!-- Button A highlight -->
+    <path
+        android:fillColor="#FF6666"
+        android:pathData="M16.7,9.5C16.9,9.5 17.1,9.7 17.1,9.9C17.1,10.1 16.9,10.3 16.7,10.3C16.5,10.3 16.3,10.1 16.3,9.9C16.3,9.7 16.5,9.5 16.7,9.5Z" />
+
+    <!-- Action button B shadow -->
+    <path
+        android:fillColor="#2222CC"
+        android:pathData="M18.6,11.3C19.04,11.3 19.4,11.66 19.4,12.1C19.4,12.54 19.04,12.9 18.6,12.9C18.16,12.9 17.8,12.54 17.8,12.1C17.8,11.66 18.16,11.3 18.6,11.3Z" />
+
+    <!-- Action button B (blue) -->
+    <path
+        android:fillColor="#4444FF"
+        android:pathData="M18.5,11.2C18.94,11.2 19.3,11.56 19.3,12C19.3,12.44 18.94,12.8 18.5,12.8C18.06,12.8 17.7,12.44 17.7,12C17.7,11.56 18.06,11.2 18.5,11.2Z" />
+
+    <!-- Button B highlight -->
+    <path
+        android:fillColor="#6666FF"
+        android:pathData="M18.2,11.5C18.4,11.5 18.6,11.7 18.6,11.9C18.6,12.1 18.4,12.3 18.2,12.3C18,12.3 17.8,12.1 17.8,11.9C17.8,11.7 18,11.5 18.2,11.5Z" />
+
+    <!-- Action button Y shadow -->
+    <path
+        android:fillColor="#22CC22"
+        android:pathData="M17.1,13.3C17.54,13.3 17.9,13.66 17.9,14.1C17.9,14.54 17.54,14.9 17.1,14.9C16.66,14.9 16.3,14.54 16.3,14.1C16.3,13.66 16.66,13.3 17.1,13.3Z" />
+
+    <!-- Action button Y (green) -->
+    <path
+        android:fillColor="#44FF44"
+        android:pathData="M17,13.2C17.44,13.2 17.8,13.56 17.8,14C17.8,14.44 17.44,14.8 17,14.8C16.56,14.8 16.2,14.44 16.2,14C16.2,13.56 16.56,13.2 17,13.2Z" />
+
+    <!-- Button Y highlight -->
+    <path
+        android:fillColor="#66FF66"
+        android:pathData="M16.7,13.5C16.9,13.5 17.1,13.7 17.1,13.9C17.1,14.1 16.9,14.3 16.7,14.3C16.5,14.3 16.3,14.1 16.3,13.9C16.3,13.7 16.5,13.5 16.7,13.5Z" />
+
+    <!-- Action button X shadow -->
+    <path
+        android:fillColor="#CCCC22"
+        android:pathData="M15.6,11.3C16.04,11.3 16.4,11.66 16.4,12.1C16.4,12.54 16.04,12.9 15.6,12.9C15.16,12.9 14.8,12.54 14.8,12.1C14.8,11.66 15.16,11.3 15.6,11.3Z" />
+
+    <!-- Action button X (yellow) -->
+    <path
+        android:fillColor="#FFFF44"
+        android:pathData="M15.5,11.2C15.94,11.2 16.3,11.56 16.3,12C16.3,12.44 15.94,12.8 15.5,12.8C15.06,12.8 14.7,12.44 14.7,12C14.7,11.56 15.06,11.2 15.5,11.2Z" />
+
+    <!-- Button X highlight -->
+    <path
+        android:fillColor="#FFFF66"
+        android:pathData="M15.2,11.5C15.4,11.5 15.6,11.7 15.6,11.9C15.6,12.1 15.4,12.3 15.2,12.3C15,12.3 14.8,12.1 14.8,11.9C14.8,11.7 15,11.5 15.2,11.5Z" />
+
+    <!-- Center button shadow -->
+    <path
+        android:fillColor="#666666"
+        android:pathData="M12.1,11.1C12.65,11.1 13.1,11.55 13.1,12.1C13.1,12.65 12.65,13.1 12.1,13.1C11.55,13.1 11.1,12.65 11.1,12.1C11.1,11.55 11.55,11.1 12.1,11.1Z" />
+
+    <!-- Center button -->
+    <path
+        android:fillColor="#999999"
+        android:pathData="M12,11C12.55,11 13,11.45 13,12C13,12.55 12.55,13 12,13C11.45,13 11,12.55 11,12C11,11.45 11.45,11 12,11Z" />
+
+    <!-- Center button highlight -->
+    <path
+        android:fillColor="#BBBBBB"
+        android:pathData="M11.7,11.3C12.05,11.3 12.3,11.55 12.3,11.9C12.3,12.25 12.05,12.5 11.7,12.5C11.35,12.5 11.1,12.25 11.1,11.9C11.1,11.55 11.35,11.3 11.7,11.3Z" />
+</vector>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Toad's mushroom cap -->
+    <path
+        android:fillColor="#E53E3E"
+        android:pathData="M12,2c-4,0 -7,3 -7,7 0,1 1,2 2,2h10c1,0 2,-1 2,-2 0,-4 -3,-7 -7,-7z"/>
+    <!-- Toad's spots -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M9,6m-1,0a1,1 0,1 1,2 0a1,1 0,1 1,-2 0"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M15,6m-1,0a1,1 0,1 1,2 0a1,1 0,1 1,-2 0"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M12,5m-1,0a1,1 0,1 1,2 0a1,1 0,1 1,-2 0"/>
+    <!-- Toad's face -->
+    <path
+        android:fillColor="#FFE4C4"
+        android:pathData="M12,11c3.31,0 6,2.69 6,6s-2.69,6 -6,6 -6,-2.69 -6,-6 2.69,-6 6,-6z"/>
+    <!-- Toad's eyes -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M10,14m-1,0a1,1 0,1 1,2 0a1,1 0,1 1,-2 0"/>
+    <path
+        android:fillColor="#000000"
+        android:pathData="M14,14m-1,0a1,1 0,1 1,2 0a1,1 0,1 1,-2 0"/>
+</vector>

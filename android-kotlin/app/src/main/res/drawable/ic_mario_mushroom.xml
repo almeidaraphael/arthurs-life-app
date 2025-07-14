@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- Mushroom shadow -->
+    <path
+        android:fillColor="#CC2222"
+        android:pathData="M12.2,4.2C17.17,4.2 21.2,8.23 21.2,13.2C21.2,15.2 19.7,16.7 17.7,16.7H6.7C4.7,16.7 3.2,15.2 3.2,13.2C3.2,8.23 7.23,4.2 12.2,4.2Z" />
+
+    <!-- Mushroom cap border -->
+    <path
+        android:fillColor="#DD3333"
+        android:pathData="M12,3.8C17.07,3.8 21.2,7.93 21.2,12.8C21.2,14.8 19.7,16.3 17.7,16.3H6.3C4.3,16.3 2.8,14.8 2.8,12.8C2.8,7.93 6.93,3.8 12,3.8Z" />
+
+    <!-- Mushroom cap -->
+    <path
+        android:fillColor="#FF4444"
+        android:pathData="M12,4C16.97,4 21,8.03 21,13C21,15 19.5,16.5 17.5,16.5H6.5C4.5,16.5 3,15 3,13C3,8.03 7.03,4 12,4Z" />
+
+    <!-- Cap highlight -->
+    <path
+        android:fillColor="#FF6666"
+        android:pathData="M12,4.5C15.5,4.5 18.5,6.8 19.8,10C20.5,11.5 20.5,13 19.5,14.5H6.5C5.5,13 5.5,11.5 6.2,10C7.5,6.8 10.5,4.5 12,4.5Z" />
+
+    <!-- Top shine -->
+    <path
+        android:fillColor="#FF8888"
+        android:pathData="M12,5C15,5 17.5,6.5 18.5,9C18.8,9.8 18.8,10.6 18.5,11.4C17.5,8.5 15,7 12,7C9,7 6.5,8.5 5.5,11.4C5.2,10.6 5.2,9.8 5.5,9C6.5,6.5 9,5 12,5Z" />
+
+    <!-- White spot 1 shadow -->
+    <path
+        android:fillColor="#E6E6E6"
+        android:pathData="M9.1,8.6C9.93,8.6 10.6,9.27 10.6,10.1C10.6,10.93 9.93,11.6 9.1,11.6C8.27,11.6 7.6,10.93 7.6,10.1C7.6,9.27 8.27,8.6 9.1,8.6Z" />
+
+    <!-- White spot 1 -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M9,8.5C9.83,8.5 10.5,9.17 10.5,10C10.5,10.83 9.83,11.5 9,11.5C8.17,11.5 7.5,10.83 7.5,10C7.5,9.17 8.17,8.5 9,8.5Z" />
+
+    <!-- Spot 1 highlight -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M8.5,9C8.8,9 9,9.2 9,9.5C9,9.8 8.8,10 8.5,10C8.2,10 8,9.8 8,9.5C8,9.2 8.2,9 8.5,9Z" />
+
+    <!-- White spot 2 shadow -->
+    <path
+        android:fillColor="#E6E6E6"
+        android:pathData="M15.1,7.9C15.76,7.9 16.3,8.44 16.3,9.1C16.3,9.76 15.76,10.3 15.1,10.3C14.44,10.3 13.9,9.76 13.9,9.1C13.9,8.44 14.44,7.9 15.1,7.9Z" />
+
+    <!-- White spot 2 -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M15,7.8C15.66,7.8 16.2,8.34 16.2,9C16.2,9.66 15.66,10.2 15,10.2C14.34,10.2 13.8,9.66 13.8,9C13.8,8.34 14.34,7.8 15,7.8Z" />
+
+    <!-- Spot 2 highlight -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M14.6,8.2C14.8,8.2 15,8.4 15,8.6C15,8.8 14.8,9 14.6,9C14.4,9 14.2,8.8 14.2,8.6C14.2,8.4 14.4,8.2 14.6,8.2Z" />
+
+    <!-- White spot 3 shadow -->
+    <path
+        android:fillColor="#E6E6E6"
+        android:pathData="M12.1,11.1C12.65,11.1 13.1,11.55 13.1,12.1C13.1,12.65 12.65,13.1 12.1,13.1C11.55,13.1 11.1,12.65 11.1,12.1C11.1,11.55 11.55,11.1 12.1,11.1Z" />
+
+    <!-- White spot 3 -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M12,11C12.55,11 13,11.45 13,12C13,12.55 12.55,13 12,13C11.45,13 11,12.55 11,12C11,11.45 11.45,11 12,11Z" />
+
+    <!-- Spot 3 highlight -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M11.7,11.3C11.9,11.3 12.1,11.5 12.1,11.7C12.1,11.9 11.9,12.1 11.7,12.1C11.5,12.1 11.3,11.9 11.3,11.7C11.3,11.5 11.5,11.3 11.7,11.3Z" />
+
+    <!-- Stem shadow -->
+    <path
+        android:fillColor="#E0E0C0"
+        android:pathData="M10.2,16.7H14.2V20.2C14.2,20.75 13.75,21.2 13.2,21.2H11.2C10.65,21.2 10.2,20.75 10.2,20.2V16.7Z" />
+
+    <!-- Mushroom stem border -->
+    <path
+        android:fillColor="#F0F0D0"
+        android:pathData="M9.8,16.3H14.2V20C14.2,20.65 13.65,21.2 13,21.2H11C10.35,21.2 9.8,20.65 9.8,20V16.3Z" />
+
+    <!-- Mushroom stem -->
+    <path
+        android:fillColor="#F5F5DC"
+        android:pathData="M10,16.5H14V20C14,20.55 13.55,21 13,21H11C10.45,21 10,20.55 10,20V16.5Z" />
+
+    <!-- Stem highlight -->
+    <path
+        android:fillColor="#FFFFEE"
+        android:pathData="M10.5,16.7H13.5V17.2H10.5V16.7Z" />
+
+    <!-- Stem texture lines -->
+    <path
+        android:fillColor="#E8E8D0"
+        android:pathData="M10.2,18H13.8V18.2H10.2V18Z" />
+    <path
+        android:fillColor="#E8E8D0"
+        android:pathData="M10.2,19H13.8V19.2H10.2V19Z" />
+</vector>
