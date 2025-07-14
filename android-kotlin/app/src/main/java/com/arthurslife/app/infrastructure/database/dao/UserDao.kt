@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 import com.arthurslife.app.infrastructure.database.entities.UserEntity
 
@@ -12,14 +13,18 @@ interface UserDao {
     @Query("SELECT * FROM users WHERE id = :id")
     suspend fun getUserById(id: String): UserEntity?
 
-    @Query("SELECT * FROM users WHERE pin = :pin")
-    suspend fun getUserByPin(pin: String): UserEntity?
+    @Query("SELECT * FROM users WHERE pinHash = :pinHash")
+    suspend fun getUserByPinHash(pinHash: String): UserEntity?
 
     @Query("SELECT * FROM users WHERE role = :role")
     suspend fun getUsersByRole(role: String): List<UserEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUser(user: UserEntity)
+
+    @Transaction
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertUsers(users: List<UserEntity>)
 
     @Update
     suspend fun updateUser(user: UserEntity)

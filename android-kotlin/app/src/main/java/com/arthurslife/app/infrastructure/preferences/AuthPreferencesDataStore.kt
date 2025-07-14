@@ -15,7 +15,9 @@ class AuthPreferencesDataStore(
     private val context: Context,
 ) {
     companion object {
-        private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "auth_preferences")
+        private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
+            name = "auth_preferences",
+        )
 
         private val CURRENT_USER_ID = stringPreferencesKey("current_user_id")
         private val CURRENT_ROLE = stringPreferencesKey("current_role")
