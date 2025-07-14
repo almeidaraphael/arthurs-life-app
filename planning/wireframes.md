@@ -2,9 +2,114 @@
 
 Visual wireframes and screen layouts using ASCII art to demonstrate the user interface design across all modes and major screens.
 
+## 🚧 Implementation Status Legend
+- ✅ **Implemented**: Screen exists and is functional
+- ⏳ **Partially Implemented**: Basic layout exists, missing features
+- ❌ **Not Implemented**: Planned screen, not yet built
+- 📋 **Navigation Only**: Screen accessible but placeholder content
+
+## 🎯 Currently Implemented Screens
+
+### PIN Entry Screen ✅ **Implemented**
+*Role switching with PIN authentication*
+
+```
++---------------------------------------------------+
+|               [< Back]  PIN Entry                 |
+|                                                   |
+|              Please enter your PIN                |
+|                 to switch roles                   |
+|                                                   |
+|                  [●] [●] [●] [●]                  |
+|                                                   |
+|               [1] [2] [3]                         |
+|               [4] [5] [6]                         |
+|               [7] [8] [9]                         |
+|                   [0]                             |
+|                                                   |
+|               [Clear]   [Submit]                  |
+|                                                   |
++---------------------------------------------------+
+```
+
+### Child Home Screen ✅ **Implemented**
+*Basic layout with theme-aware navigation*
+
+```
++---------------------------------------------------+
+|  [🍄]     Arthur's Quests      [Profile] [⚙️]    |
+|                                                   |
+|     Welcome back, [Child Name]! 🎮               |
+|                                                   |
+|  🟡🟡🟡 Your Coins: 0 (placeholder) 🟡🟡🟡       |
+|                                                   |
+|              [Start Quest] (disabled)            |
+|                                                   |
+|    📋 Quests    🏆 Power-ups   🎯 Achievements    |
+|                                                   |
+|         Coming soon: Task management!             |
+|                                                   |
+|                                                   |
+|   [Home] [Quests] [Rewards] [Achievements] [👤]  |
+|                                                   |
++---------------------------------------------------+
+```
+
+### Caregiver Dashboard ✅ **Implemented** 
+*Basic management interface with Material theme*
+
+```
++---------------------------------------------------+
+|  [👤]    Family Dashboard     [Profile] [⚙️]     |
+|                                                   |
+|     Welcome, [Caregiver Name]                    |
+|                                                   |
+|          📊 Family Overview (placeholder)        |
+|                                                   |
+|              [Manage Children] (disabled)        |
+|                                                   |
+|   📋 Tasks    📈 Progress   👨‍👩‍👧‍👦 Children    |
+|                                                   |
+|         Coming soon: Family management!          |
+|                                                   |
+|                                                   |
+|  [Home] [Tasks] [Progress] [Children] [👤]       |
+|                                                   |
++---------------------------------------------------+
+```
+
+### Theme Selection Screen ✅ **Implemented**
+*Role-based theme customization*
+
+```
++---------------------------------------------------+
+|            [< Back]  Choose Theme                 |
+|                                                   |
+|              🍄 Mario Classic (Current)           |
+|  ┌─────────────────────────────────────────────┐  |
+|  │  🟡 Quests • 🔵 Coins • 🟢 Power-ups       │  |
+|  │  Retro gaming style with pixel-perfect fun │  |
+|  └─────────────────────────────────────────────┘  |
+|                                                   |
+|              ⚪ Material Light                    |
+|  ┌─────────────────────────────────────────────┐  |
+|  │  📋 Tasks • 🏅 Badges • 🎁 Rewards          │  |
+|  │  Clean, professional Material Design       │  |
+|  └─────────────────────────────────────────────┘  |
+|                                                   |
+|              🌙 Material Dark                     |
+|                                                   |
+|                [Apply Changes]                    |
+|                                                   |
++---------------------------------------------------+
+```
+
+## 📋 Planned Screens (Not Implemented)
+
 ## App Launch & Local Setup Wireframes
 
-### Splash Screen
+### Splash Screen ✅ **Implemented**
+*Basic app launch screen exists*
 
 ```
 +---------------------------------------------------+
@@ -22,7 +127,8 @@ Visual wireframes and screen layouts using ASCII art to demonstrate the user int
 +---------------------------------------------------+
 ```
 
-### First Launch - Family Setup
+### First Launch - Family Setup ❌ **Not Implemented**
+*Planned comprehensive family setup wizard*
 
 ```
 +---------------------------------------------------+

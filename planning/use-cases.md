@@ -1,33 +1,48 @@
 # Use Cases & User Flows
 
-Detailed use cases and user flows organized by role, covering all major user interactions and system capabilities.
+Detailed use cases and user flows organized by role, with implementation status indicators showing current vs. planned functionality.
+
+## 🚧 Implementation Status Legend
+- ✅ **Implemented**: Feature is available in current app version
+- ⏳ **Partially Implemented**: Some functionality exists, more planned
+- ❌ **Not Implemented**: Planned feature, not yet available
+- 📋 **Architecture Only**: Supporting structures exist, UI/features missing
 
 ## 🧒 CHILD ROLE - Core Use Cases
 
-### UC-C1: Daily Task Completion Flow
+### UC-C0: Theme Customization Flow ✅ **Implemented**
+**Primary Actor:** Child  
+**Goal:** Customize app appearance and experience  
+**Current Status:** Fully implemented with Mario Classic default for children
+**Flow:**
+1. ✅ Opens app → sees Mario Classic theme by default *(Implemented)*
+2. ✅ Navigates to Profile/Settings → accesses theme selection *(Implemented)*
+3. ✅ Views available themes: Mario Classic, Material Light, Material Dark *(Implemented)*
+4. ✅ Selects preferred theme → sees immediate visual changes *(Implemented)*
+5. ✅ Theme preferences saved → persists across app sessions *(Implemented)*
+6. ✅ UI terminology adapts: "Quests" vs "Tasks", "Coins" vs "Badges" *(Implemented)*
+
+### UC-C1: Daily Task Completion Flow ❌ **Not Implemented**
 **Primary Actor:** Child  
 **Goal:** Complete daily tasks and earn tokens  
+**Current Status:** Home screen exists, but task management system not implemented
 **Flow:**
-1. Opens app → sees Home screen with today's tasks
-2. Taps task → starts timer/activity tracker
-3. Completes task → celebrates with animation
-4. Earns tokens → sees balance update
-5. **Achievement system checks for triggers:**
-   - First task completion (First Steps achievement)
-   - All daily tasks completed (Task Master achievement)  
-   - Consecutive day streaks (3, 7, 14, 30, 60-day achievements)
-   - Speed completions (Quick Starter, Speedy Gonzales)
-   - Category-specific achievements (Helper, Creative)
-6. Views progress bar fill up
-7. Achievement celebration triggers if milestone reached
+1. ⏳ Opens app → sees Home screen *(Basic home screen implemented)*
+2. ❌ Taps task → starts timer/activity tracker *(No task system)*
+3. ❌ Completes task → celebrates with animation *(No tasks to complete)*
+4. ❌ Earns tokens → sees balance update *(No token system)*
+5. ❌ **Achievement system checks for triggers:** *(Achievement system not implemented)*
+6. ❌ Views progress bar fill up *(No progress tracking)*
+7. ❌ Achievement celebration triggers if milestone reached *(No achievements)*
 
-### UC-C2: Token Redemption & Wishlist Flow
+### UC-C2: Token Redemption & Wishlist Flow ❌ **Not Implemented**
 **Primary Actor:** Child  
 **Goal:** Exchange tokens for rewards or manage wishlist items  
+**Current Status:** Navigation structure exists, but no reward system implemented
 **Flow:**
-1. Rewards tab → browses available rewards
-2. Selects reward → checks token balance
-3. If affordable: confirms redemption → tokens deducted
+1. ❌ Rewards tab → browses available rewards *(No reward system)*
+2. ❌ Selects reward → checks token balance *(No tokens or rewards)*
+3. ❌ If affordable: confirms redemption → tokens deducted *(No redemption system)*
 4. If not affordable: adds to wishlist → saves for later
 5. Views wishlist progress and savings goals
 
@@ -231,15 +246,16 @@ Detailed use cases and user flows organized by role, covering all major user int
 
 ## 🔄 CROSS-ROLE FLOWS - Shared Use Cases
 
-### UC-X1: Mode Switching Flow
-**Primary Actor:** Caregiver/Admin user  
-**Goal:** Switch between child view and management view  
+### UC-X1: Mode Switching Flow ✅ **Implemented**
+**Primary Actor:** All users  
+**Goal:** Switch between Child, Caregiver, and Admin modes  
+**Current Status:** Fully implemented with PIN security and role-appropriate interfaces
 **Flow:**
-1. Profile screen → "Switch Mode" button
-2. PIN authentication (security)
-3. Role verification → navigation updates to target mode
-4. Dashboard opens with appropriate interface
-5. Can switch between available modes anytime
+1. ✅ Profile screen → "Switch Mode" button *(Implemented)*
+2. ✅ PIN authentication (security) *(Implemented)*
+3. ✅ Role verification → navigation updates to target mode *(Implemented)*
+4. ✅ Dashboard opens with appropriate interface *(Implemented)*
+5. ✅ Can switch between available modes anytime *(Implemented)*
 
 ### UC-X2: Emergency Task Override
 **Primary Actor:** Caregiver (immediate), Child (affected)  

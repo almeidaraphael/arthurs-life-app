@@ -1,28 +1,36 @@
-# Testing Guide
+# Testing Guide - Technical Documentation
 
-[🏠 Back to Main README](../README.md)
+[🏠 Back to Docs Hub](README.md) | [🏠 Main README](../README.md)
 
 Comprehensive guide to testing strategies, practices, and implementation for Arthur's Life Android Kotlin application.
 
-## 📋 Page Navigation
+## 📋 Document Overview
 
-| Section | Description |
-|---------|-------------|
-| [Testing Philosophy](#testing-philosophy) | Our approach to testing |
-| [Testing Strategy](#testing-strategy) | Testing pyramid and coverage |
-| [Unit Testing](#unit-testing) | Domain and service layer tests |
-| [Integration Testing](#integration-testing) | Repository and database tests |
-| [UI Testing](#ui-testing) | Compose UI testing |
-| [Testing Tools](#testing-tools) | Frameworks and utilities |
+### Purpose
+Provide comprehensive guidance on testing strategies, implementation patterns, and quality assurance practices to ensure reliable, maintainable code with high test coverage.
 
-## 🔗 Related Documentation
+### Audience
+- **Primary**: Developers implementing and maintaining test suites
+- **Secondary**: QA engineers and technical leads
+- **Prerequisites**: Understanding of Android development, Kotlin, and testing frameworks
 
-| Topic | Link |
-|-------|------|
-| **Setup Guide** | [getting-started.md](getting-started.md) |
-| **Contributing** | [contributing.md](contributing.md) |
-| **Architecture** | [architecture.md](architecture.md) |
-| **Development** | [development.md](development.md) |
+### Scope
+Covers unit testing, integration testing, UI testing, accessibility testing, and CI/CD integration. Includes specific patterns for domain-driven design testing.
+
+## 🎯 Quick Reference
+
+### Key Information
+- **Summary**: Comprehensive testing strategy with 80%+ coverage requirements
+- **Status**: Complete - actively maintained
+- **Last Updated**: 2025-01-06
+- **Related**: [Architecture](architecture.md), [Development Guide](development.md)
+
+### Common Tasks
+- [Running Tests](#testing-commands)
+- [Unit Testing Patterns](#unit-testing)
+- [Integration Testing](#integration-testing)
+- [UI Testing with Compose](#ui-testing)
+- [Accessibility Testing](#accessibility-testing)
 
 ## Testing Philosophy
 
@@ -31,6 +39,7 @@ Arthur's Life app prioritizes reliability and maintainability, making comprehens
 - **Business Logic Integrity**: Domain services and use cases work correctly
 - **Token Economy Accuracy**: Precise calculations for token earnings and spending
 - **Child Safety**: Secure authentication and data protection
+- **Accessibility Compliance**: TalkBack and accessibility features function properly
 - **Offline Functionality**: App works reliably without internet connection
 - **Code Quality**: Maintainable codebase through comprehensive test coverage
 
@@ -75,583 +84,532 @@ Arthur's Life app prioritizes reliability and maintainability, making comprehens
 - **User Workflows**: Complete task completion flows
 - **Role Switching**: Authentication and permission validation
 - **Data Persistence**: Cross-session data integrity
-            /   Unit Tests   \
-           /________________\
-```
 
-1. **Unit Tests (70%)**: Domain entities, services, and utility functions
-2. **Integration Tests (20%)**: Component interactions and data flow
-3. **End-to-End Tests (10%)**: Critical user journeys and accessibility
-
-## Testing Stack
+## Testing Tools
 
 ### Core Testing Framework
 
-- **Jest** - JavaScript testing framework
-- **React Native Testing Library** - Component testing utilities
-- **@testing-library/jest-native** - Additional Jest matchers for React Native
+- **JUnit 5** - Modern testing framework for Kotlin
+- **MockK** - Mocking library for Kotlin
+- **Turbine** - Testing library for Kotlin Flow
+- **Robolectric** - Android unit testing framework
+- **Espresso** - UI testing framework for Android
+- **Compose Testing** - Jetpack Compose UI testing utilities
 
 ### Additional Tools
 
-- **Detox** - End-to-end testing for React Native
-- **React Native Accessibility Testing** - Accessibility compliance testing
-- **MSW (Mock Service Worker)** - API mocking for integration tests
-- **@storybook/react-native** - Component documentation and visual testing
+- **Detekt** - Static code analysis for Kotlin
+- **KtLint** - Code formatting and style checking
+- **Truth** - Fluent assertions library
+- **Hilt Testing** - Dependency injection testing utilities
 
-## Installation and Setup
+## Unit Testing
 
-### Install Testing Dependencies
+### Domain Entity Testing
 
-```bash
-# Core testing dependencies
-npm install --save-dev jest @testing-library/react-native @testing-library/jest-native
-
-# Additional testing utilities
-npm install --save-dev react-test-renderer jest-environment-node
-
-# E2E testing with Detox
-npm install --save-dev detox jest-circus
-
-# Accessibility testing
-npm install --save-dev @testing-library/jest-native jest-axe
+```kotlin
+// src/test/java/com/arthurslife/app/domain/task/TaskTest.kt
+class TaskTest {
+    @Test
+    fun `complete task should mark as completed and return tokens`() {
+        // Given
+        val task = Task(
+            id = "task-123",
+            title = "Brush teeth",
+            difficulty = TaskDifficulty.MEDIUM,
+            tokenValue = 10,
+            isCompleted = false
+        )
+        
+        // When
+        val result = task.complete()
+        
+        // Then
+        assertThat(result.isCompleted).isTrue()
+        assertThat(result.tokenValue).isEqualTo(10)
+        assertThat(task.isCompleted).isFalse() // Original unchanged
+    }
+    
+    @Test
+    fun `complete already completed task should throw exception`() {
+        // Given
+        val completedTask = Task(
+            id = "task-123",
+            title = "Brush teeth",
+            difficulty = TaskDifficulty.MEDIUM,
+            tokenValue = 10,
+            isCompleted = true
+        )
+        
+        // When & Then
+        assertThrows<IllegalStateException> {
+            completedTask.complete()
+        }
+    }
+}
 ```
 
-### Jest Configuration
+### Use Case Testing
 
-Create or update `jest.config.js`:
-
-```javascript
-module.exports = {
-  preset: 'react-native',
-  setupFilesAfterEnv: [
-    '@testing-library/jest-native/extend-expect',
-    '<rootDir>/src/test/setup.ts',
-  ],
-  testEnvironment: 'node',
-  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
-  transform: {
-    '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
-  },
-  testMatch: [
-    '**/__tests__/**/*.(ts|tsx|js|jsx)',
-    '**/*.(test|spec).(ts|tsx|js|jsx)',
-  ],
-  collectCoverageFrom: [
-    'src/**/*.{ts,tsx}',
-    '!src/**/*.d.ts',
-    '!src/**/*.stories.{ts,tsx}',
-    '!src/test/**/*',
-  ],
-  coverageThreshold: {
-    global: {
-      branches: 80,
-      functions: 80,
-      lines: 80,
-      statements: 80,
-    },
-  },
-  moduleNameMapping: {
-    '^@/(.*)$': '<rootDir>/src/$1',
-  },
-};
+```kotlin
+// src/test/java/com/arthurslife/app/domain/task/CompleteTaskUseCaseTest.kt
+class CompleteTaskUseCaseTest {
+    @MockK
+    private lateinit var taskRepository: TaskRepository
+    
+    @MockK
+    private lateinit var tokenService: TokenService
+    
+    private lateinit var useCase: CompleteTaskUseCase
+    
+    @BeforeEach
+    fun setUp() {
+        MockKAnnotations.init(this)
+        useCase = CompleteTaskUseCase(taskRepository, tokenService)
+    }
+    
+    @Test
+    fun `complete task should save completed task and award tokens`() = runTest {
+        // Given
+        val task = Task(
+            id = "task-123",
+            title = "Brush teeth",
+            difficulty = TaskDifficulty.MEDIUM,
+            tokenValue = 10,
+            isCompleted = false
+        )
+        val userId = "user-456"
+        
+        coEvery { taskRepository.findById("task-123") } returns task
+        coEvery { taskRepository.save(any()) } returns Result.success(task.complete())
+        coEvery { tokenService.awardTokens(userId, 10) } returns Result.success(Unit)
+        
+        // When
+        val result = useCase.execute("task-123", userId)
+        
+        // Then
+        assertThat(result.isSuccess).isTrue()
+        coVerify { taskRepository.save(match { it.isCompleted }) }
+        coVerify { tokenService.awardTokens(userId, 10) }
+    }
+}
 ```
 
-### Test Setup File
+### Value Object Testing
 
-Create `src/test/setup.ts`:
-
-```typescript
-import '@testing-library/jest-native/extend-expect';
-
-// Mock React Native modules
-jest.mock('react-native/Libraries/Animated/NativeAnimatedHelper');
-
-// Mock AsyncStorage
-jest.mock('@react-native-async-storage/async-storage', () =>
-  require('@react-native-async-storage/async-storage/jest/async-storage-mock')
-);
-
-// Mock Sound for audio feedback
-jest.mock('react-native-sound', () => {
-  return {
-    setCategory: jest.fn(),
-  };
-});
-
-// Global test timeout
-jest.setTimeout(10000);
+```kotlin
+// src/test/java/com/arthurslife/app/domain/user/UserRoleTest.kt
+class UserRoleTest {
+    @Test
+    fun `child role should have correct permissions`() {
+        // Given
+        val childRole = UserRole.CHILD
+        
+        // Then
+        assertThat(childRole.canCreateTasks).isFalse()
+        assertThat(childRole.canCompleteTasks).isTrue()
+        assertThat(childRole.canViewRewards).isTrue()
+        assertThat(childRole.canManageUsers).isFalse()
+    }
+    
+    @Test
+    fun `caregiver role should have management permissions`() {
+        // Given
+        val caregiverRole = UserRole.CAREGIVER
+        
+        // Then
+        assertThat(caregiverRole.canCreateTasks).isTrue()
+        assertThat(caregiverRole.canCompleteTasks).isFalse()
+        assertThat(caregiverRole.canViewRewards).isTrue()
+        assertThat(caregiverRole.canManageUsers).isTrue()
+    }
+}
 ```
 
-## Testing Practices
+## Integration Testing
 
-### Domain Layer Testing
+### Repository Testing
 
-#### Entity Testing
-
-```typescript
-// src/domain/user/__tests__/User.test.ts
-import { User, UserRole, AccessibilitySettings } from '../User';
-
-describe('User Entity', () => {
-  const mockAccessibilitySettings: AccessibilitySettings = {
-    textToSpeech: true,
-    largeText: false,
-    highContrast: true,
-  };
-
-  const mockUser: User = {
-    id: 'user-123',
-    name: 'Arthur',
-    role: UserRole.CHILD,
-    accessibilitySettings: mockAccessibilitySettings,
-    createdAt: new Date('2024-01-01'),
-    lastActiveAt: new Date('2024-01-15'),
-  };
-
-  it('should create a valid user entity', () => {
-    expect(mockUser.id).toBe('user-123');
-    expect(mockUser.role).toBe(UserRole.CHILD);
-    expect(mockUser.accessibilitySettings.textToSpeech).toBe(true);
-  });
-
-  it('should have required properties', () => {
-    expect(mockUser).toHaveProperty('id');
-    expect(mockUser).toHaveProperty('name');
-    expect(mockUser).toHaveProperty('role');
-    expect(mockUser).toHaveProperty('accessibilitySettings');
-  });
-});
+```kotlin
+// src/test/java/com/arthurslife/app/infrastructure/database/TaskRepositoryImplTest.kt
+@RunWith(AndroidJUnit4::class)
+class TaskRepositoryImplTest {
+    
+    @get:Rule
+    var instantExecutorRule = InstantTaskExecutorRule()
+    
+    private lateinit var database: AppDatabase
+    private lateinit var taskDao: TaskDao
+    private lateinit var repository: TaskRepositoryImpl
+    
+    @Before
+    fun setUp() {
+        database = Room.inMemoryDatabaseBuilder(
+            ApplicationProvider.getApplicationContext(),
+            AppDatabase::class.java
+        ).allowMainThreadQueries().build()
+        
+        taskDao = database.taskDao()
+        repository = TaskRepositoryImpl(taskDao, TaskMapper())
+    }
+    
+    @After
+    fun tearDown() {
+        database.close()
+    }
+    
+    @Test
+    fun `save task should persist to database`() = runTest {
+        // Given
+        val task = Task(
+            id = "task-123",
+            title = "Brush teeth",
+            difficulty = TaskDifficulty.MEDIUM,
+            tokenValue = 10,
+            isCompleted = false
+        )
+        
+        // When
+        val result = repository.save(task)
+        
+        // Then
+        assertThat(result.isSuccess).isTrue()
+        val savedTask = repository.findById("task-123")
+        assertThat(savedTask).isNotNull()
+        assertThat(savedTask?.title).isEqualTo("Brush teeth")
+    }
+}
 ```
 
-#### Service Testing
+### Database Migration Testing
 
-```typescript
-// src/domain/token/__tests__/TokenService.test.ts
-import { TokenService, TokenServiceError } from '../TokenService';
-import { TokenType, TokenDifficulty } from '../Token';
-
-describe('TokenService', () => {
-  let tokenService: TokenService;
-  let mockTokenRepository: jest.Mocked<TokenRepository>;
-
-  beforeEach(() => {
-    mockTokenRepository = {
-      saveToken: jest.fn(),
-      getTokensByUserId: jest.fn(),
-      getTokensByType: jest.fn(),
-      updateToken: jest.fn(),
-      getExpiringTokens: jest.fn(),
-    };
-
-    tokenService = new TokenService(mockTokenRepository);
-  });
-
-  describe('awardTokens', () => {
-    it('should award tokens successfully', async () => {
-      const mockToken = {
-        id: 'token-123',
-        userId: 'user-456',
-        amount: 5,
-        type: TokenType.TASK_COMPLETION,
-        reason: 'Completed morning routine',
-        earnedAt: new Date(),
-        isSpent: false,
-      };
-
-      mockTokenRepository.saveToken.mockResolvedValue(mockToken);
-
-      const result = await tokenService.awardTokens('user-456', {
-        amount: 5,
-        type: TokenType.TASK_COMPLETION,
-        reason: 'Completed morning routine',
-      });
-
-      expect(result).toEqual(mockToken);
-      expect(mockTokenRepository.saveToken).toHaveBeenCalledWith(
-        expect.objectContaining({
-          userId: 'user-456',
-          amount: 5,
-          type: TokenType.TASK_COMPLETION,
-        })
-      );
-    });
-
-    it('should throw error for invalid amount', async () => {
-      await expect(
-        tokenService.awardTokens('user-456', {
-          amount: 0,
-          type: TokenType.TASK_COMPLETION,
-          reason: 'Invalid amount',
-        })
-      ).rejects.toThrow(TokenServiceError);
-    });
-  });
-
-  describe('calculateTokenAmount', () => {
-    it('should calculate correct amounts for different difficulties', () => {
-      expect(tokenService.calculateTokenAmount(TokenDifficulty.EASY)).toBe(1);
-      expect(tokenService.calculateTokenAmount(TokenDifficulty.MEDIUM)).toBe(3);
-      expect(tokenService.calculateTokenAmount(TokenDifficulty.HARD)).toBe(5);
-    });
-
-    it('should apply streak bonus correctly', () => {
-      const baseAmount = tokenService.calculateTokenAmount(
-        TokenDifficulty.MEDIUM
-      );
-      const bonusAmount = tokenService.calculateTokenAmount(
-        TokenDifficulty.MEDIUM,
-        true
-      );
-
-      expect(bonusAmount).toBeGreaterThan(baseAmount);
-      expect(bonusAmount).toBe(Math.round(baseAmount * 1.5));
-    });
-  });
-});
+```kotlin
+// src/test/java/com/arthurslife/app/infrastructure/database/MigrationTest.kt
+@RunWith(AndroidJUnit4::class)
+class MigrationTest {
+    
+    @get:Rule
+    val helper: MigrationTestHelper = MigrationTestHelper(
+        InstrumentationRegistry.getInstrumentation(),
+        AppDatabase::class.java,
+        listOf(Migration1to2())
+    )
+    
+    @Test
+    fun `migration from 1 to 2 should add token_value column`() {
+        // Given
+        val db = helper.createDatabase(TEST_DB, 1)
+        
+        // Insert data in version 1 format
+        db.execSQL("INSERT INTO tasks (id, title, difficulty, is_completed) VALUES ('1', 'Test', 'MEDIUM', 0)")
+        db.close()
+        
+        // When
+        val migratedDb = helper.runMigrationsAndValidate(TEST_DB, 2, true, Migration1to2())
+        
+        // Then
+        val cursor = migratedDb.query("SELECT * FROM tasks WHERE id = '1'")
+        assertThat(cursor.moveToFirst()).isTrue()
+        assertThat(cursor.getColumnIndex("token_value")).isGreaterThan(-1)
+        cursor.close()
+    }
+    
+    companion object {
+        private const val TEST_DB = "migration-test"
+    }
+}
 ```
 
-### Component Testing
+## UI Testing
 
-#### Basic Component Testing
+### Compose UI Testing
 
-```typescript
-// src/ui/components/__tests__/TokenDisplay.test.tsx
-import React from 'react';
-import { render, screen } from '@testing-library/react-native';
-import { TokenDisplay } from '../TokenDisplay';
-
-describe('TokenDisplay Component', () => {
-  it('should display token balance correctly', () => {
-    render(<TokenDisplay balance={25} />);
-
-    expect(screen.getByText('25')).toBeTruthy();
-    expect(screen.getByLabelText('Token balance: 25 tokens')).toBeTruthy();
-  });
-
-  it('should be accessible to screen readers', () => {
-    render(<TokenDisplay balance={10} />);
-
-    const tokenElement = screen.getByLabelText('Token balance: 10 tokens');
-    expect(tokenElement).toHaveAccessibilityRole('text');
-  });
-
-  it('should handle zero balance', () => {
-    render(<TokenDisplay balance={0} />);
-
-    expect(screen.getByText('0')).toBeTruthy();
-  });
-});
+```kotlin
+// src/test/java/com/arthurslife/app/presentation/screens/TaskListScreenTest.kt
+@RunWith(AndroidJUnit4::class)
+class TaskListScreenTest {
+    
+    @get:Rule
+    val composeTestRule = createComposeRule()
+    
+    @Test
+    fun `should display task list with correct accessibility labels`() {
+        // Given
+        val tasks = listOf(
+            Task(
+                id = "task-1",
+                title = "Brush teeth",
+                difficulty = TaskDifficulty.MEDIUM,
+                tokenValue = 10,
+                isCompleted = false
+            )
+        )
+        
+        // When
+        composeTestRule.setContent {
+            TaskListScreen(
+                tasks = tasks,
+                onTaskComplete = {}
+            )
+        }
+        
+        // Then
+        composeTestRule
+            .onNodeWithText("Brush teeth")
+            .assertIsDisplayed()
+            .assertHasClickAction()
+        
+        composeTestRule
+            .onNodeWithContentDescription("Complete task: Brush teeth to earn 10 tokens")
+            .assertIsDisplayed()
+    }
+    
+    @Test
+    fun `should handle task completion correctly`() {
+        // Given
+        val tasks = listOf(
+            Task(
+                id = "task-1",
+                title = "Brush teeth",
+                difficulty = TaskDifficulty.MEDIUM,
+                tokenValue = 10,
+                isCompleted = false
+            )
+        )
+        var completedTaskId: String? = null
+        
+        // When
+        composeTestRule.setContent {
+            TaskListScreen(
+                tasks = tasks,
+                onTaskComplete = { taskId -> completedTaskId = taskId }
+            )
+        }
+        
+        composeTestRule
+            .onNodeWithContentDescription("Complete task: Brush teeth to earn 10 tokens")
+            .performClick()
+        
+        // Then
+        assertThat(completedTaskId).isEqualTo("task-1")
+    }
+}
 ```
 
-#### Accessibility Testing
+### Accessibility Testing
 
-```typescript
-// src/ui/components/__tests__/TaskButton.accessibility.test.tsx
-import React from 'react';
-import { render } from '@testing-library/react-native';
-import { axe, toHaveNoViolations } from 'jest-axe';
-import { TaskButton } from '../TaskButton';
-
-expect.extend(toHaveNoViolations);
-
-describe('TaskButton Accessibility', () => {
-  it('should not have accessibility violations', async () => {
-    const { container } = render(
-      <TaskButton
-        title="Brush Teeth"
-        onPress={() => {}}
-        accessibilityLabel="Mark brush teeth as complete"
-      />
-    );
-
-    const results = await axe(container);
-    expect(results).toHaveNoViolations();
-  });
-
-  it('should have proper accessibility properties', () => {
-    const { getByRole } = render(
-      <TaskButton
-        title="Brush Teeth"
-        onPress={() => {}}
-        accessibilityLabel="Mark brush teeth as complete"
-        accessibilityHint="Tap to earn tokens for completing this task"
-      />
-    );
-
-    const button = getByRole('button');
-    expect(button).toHaveAccessibilityLabel('Mark brush teeth as complete');
-    expect(button).toHaveAccessibilityHint('Tap to earn tokens for completing this task');
-  });
-});
-```
-
-### Integration Testing
-
-```typescript
-// src/application/__tests__/EarnToken.integration.test.ts
-import { EarnTokenUseCase } from '../usecases/EarnToken';
-import { TokenService } from '../../domain/token/TokenService';
-import { UserService } from '../../domain/user/UserService';
-
-describe('EarnToken Integration', () => {
-  let earnTokenUseCase: EarnTokenUseCase;
-  let tokenService: TokenService;
-  let userService: UserService;
-
-  beforeEach(() => {
-    // Setup with real services but mocked repositories
-    // This tests the integration between use case and domain services
-  });
-
-  it('should complete full token earning flow', async () => {
-    // Test the complete flow from use case through domain services
-    const result = await earnTokenUseCase.execute({
-      userId: 'arthur-123',
-      taskId: 'task-456',
-      difficulty: TokenDifficulty.MEDIUM,
-    });
-
-    expect(result.success).toBe(true);
-    expect(result.tokensEarned).toBe(3);
-  });
-});
+```kotlin
+// src/test/java/com/arthurslife/app/presentation/components/TaskButtonAccessibilityTest.kt
+@RunWith(AndroidJUnit4::class)
+class TaskButtonAccessibilityTest {
+    
+    @get:Rule
+    val composeTestRule = createComposeRule()
+    
+    @Test
+    fun `task button should be accessible to screen readers`() {
+        // Given
+        val task = Task(
+            id = "task-1",
+            title = "Brush teeth",
+            difficulty = TaskDifficulty.MEDIUM,
+            tokenValue = 10,
+            isCompleted = false
+        )
+        
+        // When
+        composeTestRule.setContent {
+            TaskButton(
+                task = task,
+                onComplete = {}
+            )
+        }
+        
+        // Then
+        composeTestRule
+            .onNodeWithContentDescription("Complete task: Brush teeth to earn 10 tokens")
+            .assertIsDisplayed()
+            .assertHasClickAction()
+            .assert(hasClickAction())
+        
+        // Verify semantic properties
+        composeTestRule
+            .onNodeWithContentDescription("Complete task: Brush teeth to earn 10 tokens")
+            .assert(hasRole(Role.Button))
+    }
+    
+    @Test
+    fun `completed task button should have correct state description`() {
+        // Given
+        val completedTask = Task(
+            id = "task-1",
+            title = "Brush teeth",
+            difficulty = TaskDifficulty.MEDIUM,
+            tokenValue = 10,
+            isCompleted = true
+        )
+        
+        // When
+        composeTestRule.setContent {
+            TaskButton(
+                task = completedTask,
+                onComplete = {}
+            )
+        }
+        
+        // Then
+        composeTestRule
+            .onNodeWithContentDescription("Task completed: Brush teeth")
+            .assertIsDisplayed()
+            .assert(hasStateDescription("Completed"))
+    }
+}
 ```
 
 ## Testing Commands
 
-Add these scripts to your `package.json`:
+### Build Configuration
 
-```json
-{
-  "scripts": {
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
-    "test:unit": "jest --testPathPattern='__tests__'",
-    "test:integration": "jest --testPathPattern='integration'",
-    "test:e2e": "detox test",
-    "test:accessibility": "jest --testPathPattern='accessibility'",
-    "test:debug": "jest --detectOpenHandles --forceExit"
-  }
+Add to `android-kotlin/app/build.gradle.kts`:
+
+```kotlin
+android {
+    // ... other configurations
+    
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+            isReturnDefaultValues = true
+        }
+    }
+}
+
+dependencies {
+    // Unit testing
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
+    testImplementation("io.mockk:mockk:1.13.4")
+    testImplementation("app.cash.turbine:turbine:0.12.1")
+    testImplementation("com.google.truth:truth:1.1.3")
+    testImplementation("org.robolectric:robolectric:4.9.2")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
+    
+    // Android testing
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:$compose_version")
+    androidTestImplementation("androidx.test:runner:1.5.2")
+    androidTestImplementation("androidx.test:rules:1.5.0")
+    androidTestImplementation("androidx.room:room-testing:2.5.0")
+    androidTestImplementation("com.google.dagger:hilt-android-testing:2.44")
+    
+    // Debug dependencies
+    debugImplementation("androidx.compose.ui:ui-test-manifest:$compose_version")
 }
 ```
 
-### Running Tests
+### Essential Commands
 
 ```bash
-# Run all tests
-npm test
+# Navigate to Android project
+cd android-kotlin
 
-# Run tests in watch mode (for development)
-npm run test:watch
+# Unit tests
+./gradlew test                    # Run all unit tests
+./gradlew testDebugUnitTest      # Run debug unit tests
+./gradlew testReleaseUnitTest    # Run release unit tests
 
-# Run tests with coverage report
-npm run test:coverage
+# Integration tests
+./gradlew connectedAndroidTest   # Run instrumented tests
+./gradlew connectedDebugAndroidTest # Run debug instrumented tests
 
-# Run only unit tests
-npm run test:unit
+# Coverage
+./gradlew testDebugUnitTestCoverage # Generate coverage report
+./gradlew createDebugCoverageReport # Instrumented test coverage
 
-# Run integration tests
-npm run test:integration
+# Specific test classes
+./gradlew test --tests TaskTest
+./gradlew test --tests "*.TaskTest"
+./gradlew test --tests "com.arthurslife.app.domain.*"
 
-# Run end-to-end tests
-npm run test:e2e
-
-# Run accessibility tests
-npm run test:accessibility
-
-# Debug test issues
-npm run test:debug
+# Clean and test
+./gradlew clean test
 ```
 
-## E2E Testing with Detox
+## Testing Best Practices
 
-### Detox Configuration
+### General Guidelines
 
-Create `detox.config.js`:
+1. **Follow AAA Pattern**: Arrange, Act, Assert
+2. **Write Descriptive Test Names**: Explain what is being tested
+3. **Test One Thing**: Each test should have a single focus
+4. **Use Given-When-Then**: Structure tests clearly
+5. **Mock External Dependencies**: Keep tests isolated
 
-```javascript
-module.exports = {
-  testRunner: 'jest',
-  runnerConfig: 'e2e/config.json',
-  apps: {
-    'ios.debug': {
-      type: 'ios.app',
-      binaryPath:
-        'ios/build/Build/Products/Debug-iphonesimulator/ArthursLife.app',
-      build:
-        'xcodebuild -workspace ios/ArthursLife.xcworkspace -scheme ArthursLife -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build',
-    },
-    'android.debug': {
-      type: 'android.apk',
-      binaryPath: 'android/app/build/outputs/apk/debug/app-debug.apk',
-      build:
-        'cd android && ./gradlew assembleDebug assembleAndroidTest -DtestBuildType=debug',
-    },
-  },
-  devices: {
-    simulator: {
-      type: 'ios.simulator',
-      device: {
-        type: 'iPhone 12',
-      },
-    },
-    emulator: {
-      type: 'android.emulator',
-      device: {
-        avdName: 'Pixel_4_API_30',
-      },
-    },
-  },
-  configurations: {
-    'ios.sim.debug': {
-      device: 'simulator',
-      app: 'ios.debug',
-    },
-    'android.emu.debug': {
-      device: 'emulator',
-      app: 'android.debug',
-    },
-  },
-};
-```
+### Domain Testing Guidelines
 
-### E2E Test Example
+1. **Test Business Rules**: Ensure domain invariants are maintained
+2. **Test Edge Cases**: Handle boundary conditions
+3. **Test Error Scenarios**: Verify proper error handling
+4. **Keep Tests Fast**: Unit tests should run quickly
+5. **Test Behavior, Not Implementation**: Focus on what, not how
 
-```typescript
-// e2e/token-earning.e2e.ts
-import { device, element, by, expect } from 'detox';
+### UI Testing Guidelines
 
-describe('Token Earning Flow', () => {
-  beforeAll(async () => {
-    await device.launchApp();
-  });
+1. **Test User Interactions**: Focus on user-visible behavior
+2. **Test Accessibility**: Verify screen reader compatibility
+3. **Test Different States**: Loading, error, success states
+4. **Use Semantic Finders**: Find elements by accessibility labels
+5. **Test Responsive Design**: Verify layout across screen sizes
 
-  beforeEach(async () => {
-    await device.reloadReactNative();
-  });
+### Token Economy Testing
 
-  it('should complete task and earn tokens', async () => {
-    // Navigate to tasks screen
-    await element(by.id('tasks-tab')).tap();
+1. **Precision is Critical**: Token calculations must be exact
+2. **Test All Scenarios**: Earning, spending, balance updates
+3. **Verify Atomic Operations**: Ensure consistency
+4. **Test Concurrency**: Handle simultaneous operations
+5. **Audit All Changes**: Track all token modifications
 
-    // Find and tap a task
-    await element(by.id('task-brush-teeth')).tap();
+## Accessibility Testing
 
-    // Confirm task completion
-    await element(by.id('confirm-task-button')).tap();
+### TalkBack Testing
 
-    // Verify token balance updated
-    await expect(element(by.id('token-balance'))).toHaveText('5');
-
-    // Check success message
-    await expect(
-      element(by.text('Great job! You earned 5 tokens!'))
-    ).toBeVisible();
-  });
-
-  it('should work with accessibility features enabled', async () => {
-    // Enable VoiceOver/TalkBack simulation
-    await device.enableAccessibility();
-
-    // Test that all elements are accessible
-    await element(by.id('tasks-tab')).tap();
-    await element(by.id('task-brush-teeth')).tap();
-
-    // Verify accessibility announcements
-    await expect(element(by.id('accessibility-announcement'))).toHaveText(
-      'Task completed! 5 tokens earned!'
-    );
-  });
-});
-```
-
-## Mock Data and Test Utilities
-
-### Test Data Factories
-
-```typescript
-// src/test/factories/UserFactory.ts
-import { User, UserRole, AccessibilitySettings } from '../../domain/user/User';
-
-export class UserFactory {
-  static createChild(overrides: Partial<User> = {}): User {
-    return {
-      id: 'child-123',
-      name: 'Arthur',
-      role: UserRole.CHILD,
-      accessibilitySettings: {
-        textToSpeech: true,
-        largeText: true,
-        highContrast: false,
-      },
-      createdAt: new Date('2024-01-01'),
-      lastActiveAt: new Date(),
-      ...overrides,
-    };
-  }
-
-  static createParent(overrides: Partial<User> = {}): User {
-    return {
-      id: 'parent-456',
-      name: 'Parent',
-      role: UserRole.PARENT,
-      accessibilitySettings: {
-        textToSpeech: false,
-        largeText: false,
-        highContrast: false,
-      },
-      createdAt: new Date('2024-01-01'),
-      lastActiveAt: new Date(),
-      ...overrides,
-    };
-  }
+```kotlin
+@Test
+fun `should announce task completion to screen reader`() {
+    // Enable TalkBack simulation
+    composeTestRule.onRoot().performSemanticsAction(SemanticsActions.RequestFocus)
+    
+    // Trigger task completion
+    composeTestRule
+        .onNodeWithContentDescription("Complete task: Brush teeth")
+        .performClick()
+    
+    // Verify announcement
+    composeTestRule
+        .onNodeWithText("Task completed! You earned 10 tokens!")
+        .assertIsDisplayed()
 }
 ```
 
-### Custom Test Utilities
+### Semantic Testing
 
-```typescript
-// src/test/utils/renderWithProviders.tsx
-import React from 'react';
-import { render } from '@testing-library/react-native';
-import { AccessibilityProvider } from '../../ui/providers/AccessibilityProvider';
-
-export function renderWithProviders(
-  ui: React.ReactElement,
-  options: {
-    accessibilitySettings?: AccessibilitySettings
-  } = {}
-) {
-  function Wrapper({ children }: { children: React.ReactNode }) {
-    return (
-      <AccessibilityProvider settings={options.accessibilitySettings}>
-        {children}
-      </AccessibilityProvider>
-    );
-  }
-
-  return render(ui, { wrapper: Wrapper, ...options });
+```kotlin
+@Test
+fun `should have proper semantic structure`() {
+    composeTestRule.setContent {
+        TaskListScreen(tasks = testTasks)
+    }
+    
+    // Verify semantic hierarchy
+    composeTestRule
+        .onNodeWithContentDescription("Task list")
+        .assert(hasRole(Role.List))
+    
+    composeTestRule
+        .onAllNodesWithRole(Role.Button)
+        .assertCountEquals(testTasks.size)
 }
-```
-
-## Coverage Requirements
-
-### Minimum Coverage Thresholds
-
-- **Domain Layer**: 90% (business logic is critical)
-- **Application Layer**: 85% (use cases must be reliable)
-- **UI Components**: 75% (focus on user interactions)
-- **Infrastructure**: 70% (data access patterns)
-
-### Coverage Reports
-
-```bash
-# Generate detailed coverage report
-npm run test:coverage
-
-# View coverage in browser
-open coverage/lcov-report/index.html
 ```
 
 ## Continuous Integration
@@ -660,7 +618,7 @@ open coverage/lcov-report/index.html
 
 ```yaml
 # .github/workflows/test.yml
-name: Tests
+name: Android Tests
 
 on: [push, pull_request]
 
@@ -671,115 +629,181 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
         with:
-          node-version: '16'
-          cache: 'npm'
+          java-version: '21'
+          distribution: 'temurin'
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
 
       - name: Run unit tests
-        run: npm run test:coverage
+        run: ./gradlew test
 
-      - name: Upload coverage reports
+      - name: Run instrumented tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          script: ./gradlew connectedAndroidTest
+
+      - name: Generate coverage report
+        run: ./gradlew testDebugUnitTestCoverage
+
+      - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
-
-      - name: Run accessibility tests
-        run: npm run test:accessibility
 ```
-
-## Testing Best Practices
-
-### General Guidelines
-
-1. **Write Tests First**: Follow TDD for domain logic
-2. **Test Behavior, Not Implementation**: Focus on what the code does, not how
-3. **Keep Tests Simple**: One assertion per test when possible
-4. **Use Descriptive Names**: Test names should explain the scenario
-5. **Arrange-Act-Assert Pattern**: Structure tests clearly
-
-### Domain Testing Best Practices
-
-1. **Test Business Rules**: Ensure domain logic is thoroughly tested
-2. **Mock External Dependencies**: Keep domain tests isolated
-3. **Test Edge Cases**: Handle boundary conditions and error scenarios
-4. **Validate Invariants**: Ensure domain rules are never violated
-
-### Accessibility Testing Best Practices
-
-1. **Test with Screen Readers**: Use VoiceOver/TalkBack in tests
-2. **Verify Semantic Markup**: Ensure proper accessibility roles and labels
-3. **Test Keyboard Navigation**: Ensure app works without touch
-4. **Check Color Contrast**: Verify accessibility color requirements
-5. **Test Large Text**: Ensure UI scales properly with large fonts
-
-### Token Economy Testing
-
-1. **Precision is Critical**: Token calculations must be exact
-2. **Test All Transaction Types**: Earning, spending, expiring
-3. **Validate Balances**: Ensure balance calculations are always correct
-4. **Test Concurrency**: Handle simultaneous token operations
-5. **Audit Trail**: Ensure all token operations are logged
 
 ## Troubleshooting
 
 ### Common Issues
 
-#### Jest Configuration Problems
-
+#### Build Issues
 ```bash
-# Clear Jest cache
-npx jest --clearCache
+# Clean build
+./gradlew clean
 
-# Reset modules
-rm -rf node_modules && npm install
+# Clear caches
+./gradlew cleanBuildCache
+rm -rf ~/.gradle/caches/
 ```
 
-#### React Native Testing Issues
-
+#### Test Failures
 ```bash
-# Reset Metro bundler
-npx react-native start --reset-cache
+# Run tests with more verbose output
+./gradlew test --info
 
-# Clear Detox cache
-detox clean-framework-cache && detox build-framework-cache
+# Run specific test with debug info
+./gradlew test --tests TaskTest --debug
 ```
 
-#### Mock Issues
+#### Robolectric Issues
+```bash
+# Update Robolectric
+./gradlew --refresh-dependencies
 
-- Ensure all React Native modules are properly mocked
-- Check that AsyncStorage and other native modules have test implementations
-- Verify that date/time mocks are consistent across tests
+# Clear Robolectric cache
+rm -rf ~/.gradle/caches/robolectric/
+```
 
-### Debugging Tests
-
-1. **Use `console.log`** sparingly in tests for debugging
-2. **Run Single Tests**: `npm test -- --testNamePattern="specific test"`
-3. **Debug Mode**: Use VS Code debugger with Jest
-4. **Check Test Output**: Read Jest error messages carefully
-
-## Additional Resources
+## Resources
 
 ### Documentation
-
-- [Jest Documentation](https://jestjs.io/docs/getting-started)
-- [React Native Testing Library](https://callstack.github.io/react-native-testing-library/)
-- [Detox Documentation](https://github.com/wix/Detox)
-- [Accessibility Testing Guide](https://reactnative.dev/docs/accessibility)
+- [Android Testing Documentation](https://developer.android.com/training/testing)
+- [Jetpack Compose Testing](https://developer.android.com/jetpack/compose/testing)
+- [JUnit 5 Documentation](https://junit.org/junit5/docs/current/user-guide/)
+- [MockK Documentation](https://mockk.io/)
 
 ### Best Practices
+- [Android Testing Best Practices](https://developer.android.com/training/testing/fundamentals)
+- [Testing Pyramid](https://martinfowler.com/articles/practical-test-pyramid.html)
+- [Domain-Driven Design Testing](https://martinfowler.com/tags/domain%20driven%20design.html)
 
-- [Testing Trophy](https://kentcdodds.com/blog/the-testing-trophy-and-testing-classifications)
-- [Android Testing Best Practices](https://developer.android.com/training/testing)
-- [Domain-Driven Design Testing](https://martinfowler.com/articles/practical-test-pyramid.html)
+## 🔗 Integration Points
+
+### Dependencies
+- **Internal**: [Architecture](architecture.md) - Domain-driven design patterns
+- **Internal**: [Development Guide](development.md) - Build commands and quality gates
+- **Internal**: [Getting Started](getting-started.md) - Development environment setup
+- **Planning**: [Requirements](../planning/requirements.md) - Quality requirements and success criteria
+
+### Related Features
+- **Code Quality**: Integration with Detekt and KtLint for static analysis
+- **CI/CD**: GitHub Actions integration for automated testing
+- **Accessibility**: TalkBack and semantic testing capabilities
+- **Domain Testing**: DDD-specific testing patterns and practices
+
+## 📊 Success Metrics
+
+### Implementation Goals
+- **Coverage Requirements**: 80%+ domain layer, 100% use cases
+- **Quality Gates**: All tests pass before merge
+- **Accessibility Compliance**: TalkBack compatibility verified
+- **Performance**: Tests run efficiently in CI/CD pipeline
+
+### Quality Indicators
+- **Test Reliability**: Consistent test results across environments
+- **Coverage Accuracy**: Meaningful coverage of business logic
+- **Maintainability**: Tests are easy to update with code changes
+- **Documentation**: Clear test patterns and examples
+
+## 🚧 Implementation Status
+
+**Current Status**: Complete
+
+### Completed Features
+- [x] Unit testing framework with JUnit 5 and MockK
+- [x] Integration testing with Room database
+- [x] UI testing with Jetpack Compose
+- [x] Accessibility testing with TalkBack simulation
+- [x] Coverage reporting and quality gates
+- [x] CI/CD integration with GitHub Actions
+
+### Future Enhancements
+- [ ] Property-based testing for domain invariants
+- [ ] Performance testing automation
+- [ ] Visual regression testing
+- [ ] Mutation testing for test quality validation
+
+## 🔄 Maintenance
+
+### Regular Updates
+- **When to Update**: When adding new features, changing architecture, or updating dependencies
+- **Update Process**: Review test coverage, update patterns, validate CI/CD pipeline
+- **Review Schedule**: Weekly coverage review, monthly test strategy assessment
+
+### Version History
+- **v1.0.0** (2025-01-06): Initial comprehensive testing guide with all testing levels
+
+## 📚 Additional Resources
+
+### Internal Documentation
+- [Architecture](architecture.md) - Design patterns affecting test structure
+- [Development Guide](development.md) - Build commands and quality processes
+- [Getting Started](getting-started.md) - Development environment setup
+- [Contributing Guide](contributing.md) - Code review and quality standards
+
+### External Resources
+- [Android Testing Documentation](https://developer.android.com/training/testing) - Official Android testing guide
+- [Jetpack Compose Testing](https://developer.android.com/jetpack/compose/testing) - UI testing framework
+- [JUnit 5 Documentation](https://junit.org/junit5/docs/current/user-guide/) - Modern testing framework
+- [MockK Documentation](https://mockk.io/) - Kotlin mocking library
+
+### Tools and Utilities
+- [Truth](https://truth.dev/) - Fluent assertions library
+- [Turbine](https://github.com/cashapp/turbine) - Flow testing utilities
+- [Robolectric](http://robolectric.org/) - Android unit testing framework
+- [Espresso](https://developer.android.com/training/testing/espresso) - UI testing framework
 
 ---
 
-This testing documentation ensures that Arthur's Life app maintains high
-quality, accessibility, and reliability standards throughout development.
+## 📝 Contributing
+
+### How to Contribute
+1. **Follow Testing Patterns**: Use established patterns for new tests
+2. **Maintain Coverage**: Ensure new code meets coverage requirements
+3. **Test Accessibility**: Include accessibility testing for UI components
+4. **Update Documentation**: Reflect testing changes in this guide
+
+### Review Process
+1. **Test Review**: Validate test quality and coverage
+2. **Pattern Review**: Ensure consistency with established patterns
+3. **Coverage Review**: Verify coverage requirements are met
+4. **CI/CD Validation**: Ensure tests pass in automated pipeline
+
+### Style Guidelines
+- Use descriptive test names that explain what is being tested
+- Follow AAA pattern (Arrange, Act, Assert)
+- Include accessibility testing for UI components
+- Maintain clear separation between unit, integration, and UI tests
 
 ---
 
-[🏠 Back to Main README](../README.md) | [🚀 Setup Guide](getting-started.md) | [📝 Contributing](contributing.md) | [🏗️ Architecture](ddd.md)
+**Navigation**: [🏠 Docs Hub](README.md) | [🏠 Main README](../README.md) | [📋 Planning](../planning/README.md)

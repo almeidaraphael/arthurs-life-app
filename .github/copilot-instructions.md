@@ -1,253 +1,257 @@
-# GitHub Copilot Instructions - Arthur's Life App
+# GitHub Copilot Instructions – Arthur's Life App
 
-## 🎯 Project Overview
+## Project Overview
+Arthur's Life is a native Android family task management app built with Kotlin 2.1.0, Java 21, and Jetpack Compose. It features a gamified token-based reward system, role-based access (Child, Caregiver, Admin), and a sophisticated theme system (Mario Classic, Material Light/Dark) with semantic UI mapping.
 
-**Arthur's Life** is a native Android family task management application built with Kotlin, Jetpack Compose, and Domain-Driven Design principles. The app features a token-based reward system for children to complete tasks and earn rewards.
+## Architecture Overview
+**Clean Architecture + DDD**: Domain → Infrastructure → Presentation with strict dependency inversion.
 
-## 🏗️ Architecture Principles
-
-### Domain-Driven Design (DDD)
-- **Aggregate Roots**: User, Task, Token, Reward
-- **Value Objects**: UserRole, TaskCategory, TaskDifficulty
-- **Domain Events**: TaskCompleted, TokensEarned, RewardRedeemed
-- **Repository Pattern**: Clean data layer separation
-
-### SOLID Principles
-- **Single Responsibility**: One class, one purpose
-- **Open/Closed**: Extensible for new features
-- **Liskov Substitution**: Proper inheritance
-- **Interface Segregation**: Focused interfaces
-- **Dependency Inversion**: Depend on abstractions
-
-### DRY (Don't Repeat Yourself)
-- Reusable Compose components
-- Centralized business logic
-- Shared utility functions
-- Common validation rules
-
-## 🛠️ Development Standards
-
-### Code Quality Requirements
-- **Java 21** (preferred) or **Java 17** (fallback)
-- **Kotlin 2.1.0** with explicit null safety
-- **100% KtLint compliance** before commits
-- **Detekt static analysis** with zero violations
-- **Unit test coverage** minimum 80% for domain layer
-
-### Ktlint Compliance Rules (MANDATORY)
-- **Function Naming**: All @Composable functions MUST use camelCase (e.g., `taskScreen`, not `TaskScreen`)
-- **No Wildcard Imports**: Use specific imports instead of `import package.*`
-- **Explicit Imports**: Import each class/function explicitly
-- **Factory Method Exception**: Only factory methods can start with uppercase letters
-- **Auto-Format Required**: Run `./gradlew ktlintFormat` after every code change
-- **Pre-Commit Check**: Ensure `./gradlew ktlintMainSourceSetFormat` passes before committing
-
-#### Specific Naming Examples
+**Package Structure**:
 ```kotlin
-// ✅ Correct: Composable functions use camelCase
-@Composable
-fun taskListScreen() { }
-
-@Composable
-fun userProfileCard() { }
-
-@Composable
-fun pinEntryScreen() { }
-
-// ❌ Incorrect: PascalCase for Composables (ktlint error)
-@Composable
-fun TaskListScreen() { }
-
-@Composable
-fun UserProfileCard() { }
-
-@Composable
-fun PinEntryScreen() { }
+com.arthurslife.app/
+├── domain/           # Aggregates: User, Task, Token, Reward, Achievement
+├── infrastructure/   # Repository implementations, Room DAOs, data sources  
+├── presentation/     # Jetpack Compose UI, navigation, ViewModels
+├── di/              # Hilt dependency injection modules
+└── data/            # DataStore preferences and theme management
 ```
 
-#### Import Rules
+**Key Architectural Patterns**:
+- **Repository Pattern**: Domain interfaces → Infrastructure implementations
+- **Aggregate Roots**: User, Task, Token, Reward with business logic encapsulation
+- **Domain Events**: TaskCompleted, TokensEarned, RewardRedeemed for cross-aggregate communication
+- **Theme System**: Role-based theming (Child→Mario Classic, Caregiver→Material) with semantic icon mapping
+
+## Development Standards - ZERO TOLERANCE POLICY
+- **Language**: Kotlin 2.1.0 (explicit null safety), Java 21
+- **Architecture**: DDD, Clean Architecture, SOLID, DRY
+- **Testing**: JUnit, Espresso, MockK (80%+ coverage required for domain)
+- **Static Analysis**: Detekt (ZERO violations - any violation blocks completion)
+- **Accessibility**: All UI must support TalkBack, semantic roles, and 4.5:1 color contrast
+- **Child Safety**: Input validation, secure storage, COPPA compliance
+- **Quality Gate**: NO code is considered complete with ANY build/test/detekt failures
+
+## Critical Implementation Patterns
+
+### Theme System Architecture
+**Role-Based Theme Mapping**: 
+- Child Role → Mario Classic theme → Use game terminology (Quests, Coins, Power-ups)
+- Caregiver/Admin → Material Light/Dark → Use standard terminology (Tasks, Tokens, Rewards)
+
+**Theme-Aware Components**: All UI components must support theme switching via `BaseAppTheme` interface:
 ```kotlin
-// ✅ Correct: Specific imports
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-
-// ❌ Incorrect: Wildcard imports (ktlint error)
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+// Use ThemeAware components, not raw Material components
+ThemeAwareCard(...)      // NOT Card(...)
+ThemeAwareButton(...)    // NOT Button(...)
+themeAwareIconButton(...) // NOT IconButton(...)
 ```
 
-### Build & Quality Commands
-```bash
-# Format code
-./gradlew ktlintFormat
-
-# Static analysis
-./gradlew detekt
-
-# Build project
-./gradlew build
-
-# Run tests
-./gradlew test
-
-# Install debug APK
-./gradlew installDebug
+**Semantic Icon System**: Use `SemanticIconType` enum for consistent theming:
+```kotlin
+ThemeAwareIcon(semanticType = SemanticIconType.TASK_COMPLETE)
+// Automatically maps to different icons per theme
 ```
 
-### Naming Conventions
-- **Classes**: PascalCase (`TaskRepository`, `UserViewModel`)
-- **Functions**: camelCase (`createTask()`, `validateInput()`)
-- **Constants**: SCREAMING_SNAKE_CASE (`MAX_TASK_NAME_LENGTH`)
-- **Packages**: lowercase (`com.arthurslife.app.domain.task`)
+## Navigation & Role Architecture
+**Single App, Three Modes**: The app has a unified navigation structure with role-based screen access via `MainAppNavigation.kt`:
 
-## 📱 UI Development Guidelines
+```kotlin
+// Role-based navigation paths
+Route.CHILD_HOME          // Child dashboard with tasks/tokens
+Route.CAREGIVER_DASHBOARD // Caregiver overview and management
+Route.CAREGIVER_CHILDREN  // Child management interface
+Route.THEME_SETTINGS      // Cross-role theme switching
+```
 
-### Jetpack Compose Standards
-- Use `@Composable` functions for UI components
-- Apply `@Preview` annotations for design verification
-- Follow Material Design 3 principles
-- Implement proper state hoisting patterns
+**Role Switching**: Users can switch between roles using `RoleSwitchingDialog` with PIN authentication for elevated permissions.
 
-### Accessibility Requirements
+## Domain-Driven Design Implementation
+
+### Aggregate Boundaries & Events
+**Core Aggregates**: User, Task, Token, Reward maintain their own consistency
+**Cross-Aggregate Communication**: Use domain events (`TaskCompleted`, `TokensEarned`, `RewardRedeemed`)
+**Repository Pattern**: Domain interfaces in `domain/`, implementations in `infrastructure/`
+
+```kotlin
+// Domain interface (never change)
+interface TaskRepository {
+    suspend fun findByUserId(userId: String): Flow<List<Task>>
+    suspend fun save(task: Task): Result<Task>
+}
+
+// Infrastructure implementation
+class TaskRepositoryImpl(
+    private val taskDataSource: TaskDataSource
+) : TaskRepository
+```
+
+### Value Objects & Domain Logic
+**Immutable Value Objects**: `UserRole`, `TaskCategory`, `TokenBalance`, `TaskDifficulty`
+**Business Rules in Entities**: Task completion logic, token earning rules, role permissions
+**Domain Services**: Cross-entity business logic (e.g., `AuthenticationDomainService`)
+
+## Essential Development Workflow
+
+### Mandatory Directory Check
+**CRITICAL**: Always verify you're in the correct directory before running Gradle commands:
+```zsh
+# Check current directory and navigate if needed
+if [ "$(basename $(pwd))" != "android-kotlin" ]; then 
+    echo "Navigating to android-kotlin directory..."
+    cd android-kotlin
+fi
+```
+
+### Build & Quality Pipeline
+**MANDATORY SEQUENCE** - All must pass for completion:
+```zsh
+./gradlew detektFormat  # Auto-format code
+./gradlew detekt        # ZERO violations required
+./gradlew build         # Must build successfully
+./gradlew test          # All tests must pass
+./gradlew installDebug  # Must install on device/emulator
+```
+
+### Kotlin File Structure
+**STRICT ORDER** - Package → Imports → Code:
+```kotlin
+package com.arthurslife.app.domain.task  // ALWAYS first
+
+import androidx.compose.runtime.Composable  // Explicit imports only
+import com.arthurslife.app.domain.user.User
+
+// Code starts here
+data class Task(...)
+
+@Composable  // camelCase function names
+fun taskCard(...) { ... }
+```
+
+## Feature Implementation Workflow
+1. **Start with Domain**: Define entities, value objects, business rules in `domain/`
+2. **Create Use Cases**: Implement business logic as use cases
+3. **Add Infrastructure**: Repository implementations in `infrastructure/`
+4. **Build UI**: Theme-aware Compose screens in `presentation/screens/`
+5. **Add DI**: Wire dependencies in `di/` modules
+6. **Test**: Comprehensive unit/integration tests
+
+## Critical Code Patterns
+
+### Theme-Aware UI Components
+**ALWAYS use theme-aware components for UI consistency:**
+```kotlin
+// ✅ CORRECT - Theme-aware components
+import com.arthurslife.app.presentation.theme.components.*
+
+@Composable
+fun taskScreen() {  // camelCase for @Composable
+    ThemeAwareCard {
+        ThemeAwareIcon(semanticType = SemanticIconType.TASK_COMPLETE)
+        themeAwareButton(
+            onClick = { ... },
+            text = "Complete"
+        )
+    }
+}
+
+// ❌ WRONG - Raw Material components
+Card { 
+    Icon(...)
+    Button(...)
+}
+```
+
+### Repository Pattern Implementation
+**Domain interfaces NEVER depend on Android/infrastructure:**
+```kotlin
+// ✅ CORRECT - Domain interface
+// File: domain/task/TaskRepository.kt
+interface TaskRepository {
+    suspend fun findByUserId(userId: String): Flow<List<Task>>
+    suspend fun save(task: Task): Result<Task>
+}
+
+// ✅ CORRECT - Infrastructure implementation  
+// File: infrastructure/task/TaskRepositoryImpl.kt
+class TaskRepositoryImpl(
+    private val taskDataSource: TaskDataSource,
+    private val mapper: TaskMapper
+) : TaskRepository
+```
+
+### Hilt Dependency Injection Pattern
+**Module organization by feature, not layer:**
+```kotlin
+// File: di/TaskManagementModule.kt
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class TaskManagementModule {
+    @Binds
+    @Singleton
+    abstract fun bindTaskRepository(impl: TaskRepositoryImpl): TaskRepository
+}
+```
+
+## UI & Accessibility Guidelines
+- Use `@Composable` functions for UI
+- Apply `@Preview` for design verification
+- Support theme switching (Mario Classic, Material)
+- Use semantic icon mapping
 - Provide `contentDescription` for images
-- Use semantic roles for interactive elements
-- Support TalkBack navigation
-- Maintain 4.5:1 color contrast ratios
+- Use `LazyColumn` for long lists
+- Avoid hardcoded strings (use string resources)
+- No business logic in composables
 
-### Performance Best Practices
-- Use `remember` for expensive calculations
-- Implement `LazyColumn` for long lists
-- Apply `derivedStateOf` for computed values
-- Avoid unnecessary recompositions
-
-## 🧪 Testing Requirements
-
-### Unit Testing
+## Testing Requirements
 - Test all domain logic and business rules
 - Mock external dependencies with MockK
-- Use descriptive test names following Given-When-Then
-- Verify both happy path and error scenarios
+- Use descriptive test names (Given-When-Then)
+- Verify happy path and error scenarios
+- UI tests: Espresso for interactions, navigation, accessibility
 
-### UI Testing
-- Test user interactions with Espresso
-- Verify navigation flows
-- Test accessibility features
-- Validate error states and loading indicators
+## Common Pitfalls to Avoid
+- Wildcard imports (use explicit)
+- Magic numbers (use named constants)
+- Long parameter lists (group into data classes)
+- Mutable shared state (prefer immutable data classes)
+- Blocking operations on main thread (use coroutines)
+- Direct DB access in UI (use repository pattern)
+- Hardcoded strings (use resources)
+## Mandatory Verification Before Completion - ALL MUST PASS
+- Check/log current working directory before ALL Gradle commands
+- Run `./gradlew detektFormat` - MUST pass with no errors
+- Run `./gradlew detekt` - MUST show ZERO violations
+- Run `./gradlew build` - MUST build successfully 
+- Run `./gradlew test` - MUST pass ALL tests
+- Run `./gradlew installDebug` - MUST install successfully
+- Verify all @Composable functions use camelCase - NO EXCEPTIONS
+- Confirm ZERO wildcard imports - ALL must be explicit
+- Check all imports are specific - NO exceptions
+- Ensure 80%+ test coverage in domain layer - NON-NEGOTIABLE
+- Support accessibility and child safety standards - MANDATORY
+- **IMPLEMENTATION IS INCOMPLETE** if ANY of above fail
 
-## 🔒 Security & Privacy
+## Key References
+- `presentation/theme/` – Theme system patterns
+- `presentation/navigation/MainAppNavigation.kt` – Navigation structure
+- `domain/user/`, `infrastructure/auth/` – Complete implementation examples
+- `di/AuthModule.kt` – DI patterns
 
-### Child Safety Requirements
-- Validate all user inputs
-- Implement proper authentication
-- Use secure data storage
-- Follow COPPA compliance guidelines
+## Current Development Priorities (MVP)
+1. **Task Management**: Task creation, assignment, completion, repository, screens
+2. **Token Economy**: Token earning, balance tracking, spending
+3. **Reward System**: Reward catalog, redemption, management screens
+4. **Achievement System**: Achievement tracking, unlock logic, display screens
 
-### Technical Security
-- Use Android Keystore for sensitive data
-- Implement certificate pinning
-- Apply ProGuard obfuscation
-- Validate data at all boundaries
+---
+**ZERO TOLERANCE POLICY: All code MUST pass Detekt with ZERO violations, follow DDD/SOLID/DRY principles, include comprehensive tests, support full accessibility, and maintain child safety. ANY failure in these areas means the implementation is INCOMPLETE and MUST be fixed before proceeding.**
 
-## 📁 Project Structure
+## CRITICAL SUCCESS CRITERIA
+**Implementation is ONLY complete when ALL of these pass:**
+- ✅ `./gradlew detektFormat` - formats successfully
+- ✅ `./gradlew detekt` - ZERO violations found
+- ✅ `./gradlew build` - builds successfully
+- ✅ `./gradlew test` - ALL tests pass
+- ✅ `./gradlew installDebug` - installs successfully
 
-```
-app/src/main/java/com/arthurslife/app/
-├── domain/              # Business logic
-│   ├── user/           # User management
-│   ├── task/           # Task operations
-│   ├── token/          # Token economy
-│   └── reward/         # Reward system
-├── data/               # Data layer
-│   ├── local/         # Room database
-│   ├── repository/    # Data repositories
-│   └── mapper/        # Data mappers
-├── presentation/       # UI layer
-│   ├── screens/       # Screen composables
-│   ├── components/    # Reusable components
-│   ├── theme/         # Material Design
-│   └── navigation/    # Navigation logic
-├── di/                # Dependency injection
-└── util/              # Utilities
-```
-
-## 💡 Code Generation Guidelines
-
-### When generating domain entities:
-- Include proper validation in constructors
-- Implement value object patterns
-- Add domain events where appropriate
-- Follow immutability principles
-
-### When generating repository implementations:
-- Use suspend functions for async operations
-- Implement proper error handling
-- Add logging for debugging
-- Follow repository interface contracts
-
-### When generating Compose UI:
-- Use state-first approach
-- Implement proper error boundaries
-- Add loading states
-- Follow accessibility guidelines
-
-### When generating tests:
-- Include setup and teardown methods
-- Test edge cases and error conditions
-- Use descriptive assertion messages
-- Mock all external dependencies
-
-## 🚫 Common Pitfalls to Avoid
-
-### Ktlint Violations (CRITICAL)
-- **No PascalCase Composables** - Use camelCase for @Composable functions (e.g., `taskScreen`, not `TaskScreen`)
-- **No wildcard imports** - Import specific classes only (e.g., `import androidx.compose.material3.Button`, not `import androidx.compose.material3.*`)
-- **No factory method confusion** - Only factory methods can start with uppercase letters
-
-### General Code Quality
-- **No magic numbers** - Use named constants
-- **No nullable platform types** - Explicit nullability
-- **No mutable shared state** - Use immutable data classes
-- **No blocking operations on main thread** - Use coroutines
-- **No hardcoded strings** - Use string resources
-- **No direct database access in UI** - Use repository pattern
-- **No business logic in composables** - Keep UI pure
-
-## 📚 Key Dependencies
-
-- **Jetpack Compose**: Modern Android UI toolkit
-- **Hilt**: Dependency injection framework
-- **Room**: Local database persistence
-- **Coroutines**: Asynchronous programming
-- **Flow**: Reactive data streams
-- **Material3**: Design system components
-- **Navigation Compose**: Type-safe navigation
-- **Coil**: Image loading library
-
-## 🎯 Success Criteria
-
-All generated code must:
-1. **Pass KtLint formatting** - Zero violations in `./gradlew ktlintMainSourceSetFormat`
-2. Follow DDD, SOLID, and DRY principles
-3. Pass Detekt static analysis checks
-4. Include comprehensive tests
-5. Support accessibility features
-6. Maintain child safety standards
-7. Follow established project patterns
-8. Include proper documentation
-9. Handle errors gracefully
-
-### Mandatory Verification
-Before considering any code generation task complete:
-- Run `./gradlew ktlintMainSourceSetFormat` and ensure it passes
-- Verify all @Composable functions use camelCase naming
-- Confirm no wildcard imports are used
-- Check that all imports are explicit and specific
+**If ANY command fails, the work is NOT DONE.**

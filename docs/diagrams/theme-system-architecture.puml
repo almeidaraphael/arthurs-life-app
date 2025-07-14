@@ -1,0 +1,73 @@
+@startuml theme-system-architecture
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Arthur's Life App - Theme System Architecture
+
+Container_Boundary(themes, "Theme Definitions") {
+  Component(baseapptheme, "BaseAppTheme", "Interface", "Contract defining colorScheme, shapes, typography, backgroundImageRes, backgroundTint, semanticIcons, terminology, and avatar")
+  Component(materiallight, "MaterialLightTheme", "Implementation", "Professional Material Design 3 light theme for caregivers")
+  Component(materialdark, "MaterialDarkTheme", "Implementation", "Professional Material Design 3 dark theme for low-light usage")
+  Component(marioclassic, "MarioClassicTheme", "Implementation", "Playful retro gaming theme with Mario-inspired aesthetics for children")
+}
+
+Container_Boundary(management, "Theme Management") {
+  Component(thememanager, "ThemeManager", "Singleton", "Central theme registry providing lookup, metadata generation, and fallback logic")
+  Component(themeviewmodel, "ThemeViewModel", "ViewModel", "Theme state management with role-based defaults and DataStore persistence")
+  Component(themepreferences, "ThemePreferencesDataStore", "DataStore", "Per-role theme preference storage with migration support")
+}
+
+Container_Boundary(ui, "Theme-Aware UI Components") {
+  Component(themeawareicon, "ThemeAwareIcon", "Compose", "Semantic icon mapping with theme-specific implementations")
+  Component(themeawareavatar, "ThemeAwareAvatar", "Compose", "Role-appropriate avatar display based on current theme")
+  Component(themeawarebackground, "ThemeAwareBackground", "Compose", "Theme-specific background styling with images and tints")
+  Component(themeselector, "ThemeSelector", "Compose", "Interactive theme selection UI with live preview")
+}
+
+Container_Boundary(domain, "Domain Integration") {
+  Component(user, "User Aggregate", "Domain", "User profile with role-based theme preferences")
+  Component(userrole, "UserRole", "Enum", "CHILD or CAREGIVER role determining theme defaults")
+}
+
+Container_Boundary(terminology, "Theme Terminology") {
+  Component(themeterminology, "ThemeTerminology", "Data Class", "Theme-specific language mapping")
+  Component(semanticicons, "SemanticIconType", "Enum", "Abstract icon concepts for theme-specific mapping")
+}
+
+' Theme inheritance relationships
+baseapptheme <|-- materiallight : "implements"
+baseapptheme <|-- materialdark : "implements"
+baseapptheme <|-- marioclassic : "implements"
+
+' Theme management relationships
+thememanager --> baseapptheme : "manages instances"
+themeviewmodel --> thememanager : "retrieves themes"
+themeviewmodel --> themepreferences : "loads/saves preferences"
+themeviewmodel --> user : "gets role-based defaults"
+themeviewmodel --> userrole : "determines default theme"
+
+' UI component relationships
+themeawareicon --> thememanager : "gets current theme"
+themeawareicon --> semanticicons : "uses semantic types"
+themeawareavatar --> thememanager : "gets theme avatar"
+themeawarebackground --> thememanager : "gets background styling"
+themeselector --> themeviewmodel : "changes theme selection"
+
+' Theme content relationships
+baseapptheme --> themeterminology : "provides terminology"
+baseapptheme --> semanticicons : "maps to specific icons"
+marioclassic --> themeterminology : "gaming terms (Quests, Coins)"
+materiallight --> themeterminology : "professional terms (Tasks, Badges)"
+
+' Role-based theme defaults
+userrole --> marioclassic : "CHILD → Mario Classic"
+userrole --> materiallight : "CAREGIVER → Material Light"
+
+' Data flow notes
+note right of themeviewmodel : "Reactive theme state\nwith automatic persistence\nand role-based defaults"
+note bottom of thememanager : "Theme registry with\nfallback logic and\nmetadata generation"
+note right of baseapptheme : "Defines complete theme\ncontract including colors,\nicons, and terminology"
+
+SHOW_LEGEND()
+@enduml

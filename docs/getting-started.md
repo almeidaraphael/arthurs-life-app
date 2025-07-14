@@ -1,27 +1,35 @@
-# Getting Started Guide
+# Getting Started Guide - Technical Documentation
 
-[🏠 Back to Main README](../README.md)
+[🏠 Back to Docs Hub](README.md) | [🏠 Main README](../README.md)
 
-A comprehensive guide to setting up and developing Arthur's Life family task management native Android application built with Kotlin and Jetpack Compose.
+Comprehensive setup and development guide for Arthur's Life family task management Android application built with Kotlin and Jetpack Compose.
 
-## 📋 Page Navigation
+## 📋 Document Overview
 
-| Section | Description |
-|---------|-------------|
-| [Prerequisites](#prerequisites) | Required software and tools |
-| [Installation](#installation) | Step-by-step setup guide |
-| [Running the Application](#running-the-application) | Build and run instructions |
-| [Development Workflow](#development-workflow) | Daily development tasks |
-| [Troubleshooting](#troubleshooting) | Common issues and solutions |
+### Purpose
+Provide comprehensive step-by-step setup instructions and development environment configuration to enable efficient development of the Arthur's Life Android application.
 
-## 🔗 Related Documentation
+### Audience
+- **Primary**: New developers setting up the development environment
+- **Secondary**: Experienced developers onboarding to the project
+- **Prerequisites**: Basic Android development knowledge and command line familiarity
 
-| Topic | Link |
-|-------|------|
-| **Contributing Guide** | [contributing.md](contributing.md) |
-| **Architecture** | [architecture.md](architecture.md) |
-| **Development** | [development.md](development.md) |
-| **Tech Stack** | [tech-stack.md](tech-stack.md) |
+### Scope
+Covers development environment setup, project configuration, build instructions, and troubleshooting. Does not include deployment or production configuration.
+
+## 🎯 Quick Reference
+
+### Key Information
+- **Summary**: Complete development environment setup for Android Kotlin development
+- **Status**: Complete - actively maintained
+- **Last Updated**: 2025-01-06
+- **Related**: [Architecture](architecture.md), [Development Guide](development.md)
+
+### Common Tasks
+- [Prerequisites Setup](#prerequisites)
+- [Project Installation](#installation)
+- [Build and Run](#running-the-application)
+- [Development Workflow](#development-workflow)
 
 ## Prerequisites
 
@@ -196,10 +204,10 @@ cd arthurs-life-app/android-kotlin
 
 After completing setup:
 
-1. **Explore the codebase** - [Architecture Guide](ddd.md)
+1. **Explore the codebase** - [Architecture Guide](architecture.md)
 2. **Review development standards** - [Contributing Guide](contributing.md)  
 3. **Understand our testing approach** - [Testing Documentation](testing.md)
-4. **Learn about our tools** - [Development Tools](development-tools.md)
+4. **Learn about our tools** - [Development Tools](development-tools-guide.md)
 
 ## Debugging
 
@@ -365,6 +373,104 @@ After completing the setup:
 
 Welcome to the Arthur's Life Android App development team! 🚀
 
+## 🔗 Integration Points
+
+### Dependencies
+- **Internal**: [Architecture](architecture.md) - System design and patterns
+- **Internal**: [Development Guide](development.md) - Development workflow and tools
+- **Internal**: [Tech Stack](tech-stack.md) - Technology choices and configuration
+- **Planning**: [Requirements](../planning/requirements.md) - Feature requirements
+
+### Related Features
+- **Development Environment**: Android Studio and JDK configuration
+- **Build System**: Gradle configuration and dependency management
+- **Testing Setup**: Unit testing and instrumentation testing environment
+- **Accessibility**: TalkBack testing and accessibility features
+
+## 📊 Success Metrics
+
+### Implementation Goals
+- **Environment Setup**: Successful build and run on developer machines
+- **Development Efficiency**: Streamlined workflow with proper tooling
+- **Code Quality**: Automated quality checks and testing setup
+- **Accessibility**: TalkBack integration and accessibility testing capability
+
+### Quality Indicators
+- **Build Success**: All builds complete without errors
+- **Test Execution**: All tests run successfully in development environment
+- **Tool Integration**: Android Studio debugging and profiling work correctly
+- **Accessibility**: TalkBack testing can be performed effectively
+
+## 🚧 Implementation Status
+
+**Current Status**: Complete
+
+### Completed Features
+- [x] Android Studio development environment setup
+- [x] Java 21/17 installation and configuration
+- [x] Project build and run instructions
+- [x] Testing environment configuration
+- [x] Accessibility testing setup
+- [x] Troubleshooting documentation
+
+### Future Enhancements
+- [ ] Docker development environment option
+- [ ] Automated development environment validation
+- [ ] Enhanced debugging configuration
+- [ ] Performance profiling setup
+
+## 🔄 Maintenance
+
+### Regular Updates
+- **When to Update**: When Android tools update, new dependencies are added, or setup procedures change
+- **Update Process**: Validate setup instructions, update tool versions, test on clean systems
+- **Review Schedule**: Monthly tool version review, quarterly setup validation
+
+### Version History
+- **v1.0.0** (2025-01-06): Initial comprehensive getting started guide
+
+## 📚 Additional Resources
+
+### Internal Documentation
+- [Architecture](architecture.md) - System design and architectural patterns
+- [Development Guide](development.md) - Development workflow and best practices
+- [Testing Guide](testing.md) - Testing strategies and implementation
+- [Contributing Guide](contributing.md) - Contribution guidelines and standards
+
+### External Resources
+- [Android Developer Documentation](https://developer.android.com/) - Official Android development guide
+- [Kotlin Documentation](https://kotlinlang.org/docs/) - Kotlin language documentation
+- [Jetpack Compose](https://developer.android.com/jetpack/compose) - UI framework documentation
+- [Android Studio](https://developer.android.com/studio) - IDE documentation
+
+### Tools and Utilities
+- [Android Studio](https://developer.android.com/studio) - Primary IDE for Android development
+- [Gradle](https://gradle.org/) - Build automation tool
+- [Git](https://git-scm.com/) - Version control system
+- [OpenJDK](https://adoptium.net/) - Java development kit
+
 ---
 
-[🏠 Back to Main README](../README.md) | [📝 Contributing Guide](contributing.md) | [🏗️ Architecture](ddd.md)
+## 📝 Contributing
+
+### How to Contribute
+1. **Follow Setup Instructions**: Ensure development environment is properly configured
+2. **Validate Changes**: Test setup instructions on clean systems
+3. **Update Documentation**: Keep setup instructions current with tool updates
+4. **Report Issues**: Document any setup problems and solutions
+
+### Review Process
+1. **Environment Review**: Validate setup instructions work on different systems
+2. **Tool Validation**: Ensure all required tools are documented and accessible
+3. **Testing Verification**: Confirm testing environment setup is complete
+4. **Documentation Review**: Update related documentation as needed
+
+### Style Guidelines
+- Include step-by-step instructions with command examples
+- Provide troubleshooting information for common issues
+- Reference specific tool versions and compatibility information
+- Maintain clear navigation and cross-references
+
+---
+
+**Navigation**: [🏠 Docs Hub](README.md) | [🏠 Main README](../README.md) | [📋 Planning](../planning/README.md)

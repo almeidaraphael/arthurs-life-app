@@ -15,27 +15,25 @@ This directory contains comprehensive planning documentation for Arthur's Life f
 | **[app-structure.md](app-structure.md)** | App modes, roles, and architecture | User roles, permission levels, system structure |
 | **[use-cases.md](use-cases.md)** | Detailed user flows by role | Child workflows, caregiver workflows, admin workflows |
 | **[navigation.md](navigation.md)** | Navigation structure and IA | Screen hierarchy, navigation patterns, user journeys |
-| **[wireframes.md](wireframes.md)** | Visual wireframes and layouts | Screen designs, component layouts, responsive design |
+| **[wireframes.md](wireframes.md)** | Visual wireframes and layouts | Screen designs, implementation status, responsive design |
+| **[security-practices.md](security-practices.md)** | Security and privacy practices | Child safety, data protection, authentication guidelines |
 
-### Feature-Specific Documentation
+### Feature Documentation
 
-| Document | Focus | Key Content |
-|----------|-------|-------------|
-| **[task-management.md](task-management.md)** | Task system design | Task creation, assignment, completion, scheduling |
-| **[token-economy.md](token-economy.md)** | Digital token system | Token earning, spending, financial literacy concepts |
-| **[reward-system.md](reward-system.md)** | Reward catalog and redemption | Digital rewards, physical rewards, privilege rewards |
-| **[user-management.md](user-management.md)** | Role-based access control | User roles, permissions, family management |
-| **[game-design.md](game-design.md)** | Gamification and motivation | Achievement system, progress tracking, engagement |
-| **[analytics.md](analytics.md)** | Progress tracking and insights | Individual analytics, family insights, reporting |
-
-### System Design Documentation
+All feature-specific documentation is organized in the `/features/` subdirectory for better maintainability and focused content:
 
 | Document | Focus | Key Content |
 |----------|-------|-------------|
-| **[accessibility-features.md](accessibility-features.md)** | Inclusive design requirements | TalkBack support, UI adaptations, usability features |
-| **[data-management.md](data-management.md)** | Data storage and privacy | Local storage, data backup, privacy protection |
-| **[security.md](security.md)** | Child safety and data protection | Authentication, data encryption, safety measures |
-| **[wishlist.md](wishlist.md)** | Future enhancement ideas | Advanced features, nice-to-have functionality |
+| **[features/task-management.md](features/task-management.md)** | Task system design | Task creation, assignment, completion, scheduling |
+| **[features/token-economy.md](features/token-economy.md)** | Digital token system | Token earning, spending, financial literacy concepts |
+| **[features/reward-system.md](features/reward-system.md)** | Reward catalog and redemption | Digital rewards, physical rewards, privilege rewards |
+| **[features/user-management.md](features/user-management.md)** | Role-based access control | User roles, permissions, family management |
+| **[features/achievement-system.md](features/achievement-system.md)** | Global achievement system | Standardized achievements, progress tracking, celebrations |
+| **[features/theme-system.md](features/theme-system.md)** | Role-based theming | Material Light/Dark, Mario Classic, customization |
+| **[features/analytics-insights.md](features/analytics-insights.md)** | Progress tracking and insights | Individual analytics, family insights, reporting |
+| **[features/accessibility-features.md](features/accessibility-features.md)** | Cognitive accessibility focus | Simple language, clear navigation, basic platform support |
+| **[features/data-management.md](features/data-management.md)** | Data storage and privacy | Local storage, data backup, privacy protection |
+| **[features/wishlist-system.md](features/wishlist-system.md)** | Savings goals and family integration | Gift planning, progress tracking, bonus contributions |
 
 ## 🎯 Design Principles
 
@@ -69,10 +67,10 @@ This directory contains comprehensive planning documentation for Arthur's Life f
 ### Phase 2: Enhanced Features  
 **Goal**: Improved engagement and family coordination
 
-1. **Achievement System** - Milestone recognition and progress gamification
-2. **Advanced Analytics** - Detailed progress insights and family reporting
-3. **Enhanced UI/UX** - Improved accessibility and responsive design
-4. **Notification System** - Task reminders and completion celebrations
+1. **Achievement System** - Global milestone recognition and progress gamification
+2. **Theme System** - Role-based theming with Material and Mario Classic options
+3. **Advanced Analytics** - Detailed progress insights and family reporting
+4. **Enhanced Accessibility** - Cognitive accessibility focus with platform integration
 5. **Data Management** - Backup, restore, and data export capabilities
 
 ### Phase 3: Advanced Features
@@ -80,7 +78,7 @@ This directory contains comprehensive planning documentation for Arthur's Life f
 
 1. **Wishlist System** - Save towards higher-cost rewards with progress tracking
 2. **Multi-Child Management** - Advanced family coordination features
-3. **Customization Options** - Personalized themes and reward categories
+3. **Extended Customization** - Additional themes and reward categories
 4. **Social Features** - Family sharing and collaborative goal setting
 5. **Integration Capabilities** - Calendar sync and external service connections
 
@@ -113,12 +111,17 @@ This directory contains comprehensive planning documentation for Arthur's Life f
 ### For Designers
 1. Review [wireframes.md](wireframes.md) for visual design foundation
 2. Study [navigation.md](navigation.md) for information architecture
-3. Check [accessibility-features.md](accessibility-features.md) for inclusive design requirements
+3. Check [features/theme-system.md](features/theme-system.md) for theming requirements
+4. Review [features/accessibility-features.md](features/accessibility-features.md) for cognitive accessibility guidelines
 
 ---
 
 **Ready to dive deeper?** Start with [📋 Requirements](requirements.md) for project overview or [🎯 MVP Planning](mvp.md) for development priorities.
 
+## 📁 Features Directory
+
+For detailed feature specifications, browse the [features/](features/) directory which contains comprehensive documentation for each major system component.
+
 ---
 
-[🏠 Back to Main README](../README.md) | [📋 Requirements](requirements.md) | [🎯 MVP Planning](mvp.md)
+[🏠 Back to Main README](../README.md) | [📋 Requirements](requirements.md) | [🎯 MVP Planning](mvp.md) | [🎨 Features Directory](features/)

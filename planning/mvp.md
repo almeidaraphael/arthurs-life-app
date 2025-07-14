@@ -17,7 +17,7 @@
 |-------|------|
 | **App Structure** | [app-structure.md](app-structure.md) |
 | **User Management** | [user-management.md](user-management.md) |
-| **Task Management** | [task-management.md](task-management.md) |
+| **Task Management** | [features/task-management.md](features/task-management.md) |
 | **Token Economy** | [token-economy.md](token-economy.md) |
 
 ## MVP Scope & Objectives
@@ -51,7 +51,7 @@
 - **Task Execution:** Intuitive mark-complete interface for children
 - **Progress Tracking:** Basic completion statistics and streak tracking
 
-**Reference:** [Task Management System](task-management.md) - Core task operations
+**Reference:** [Task Management System](features/task-management.md) - Core task operations
 
 ### 3. Basic Token Economy
 **Scope:** Simple token earning and spending system
@@ -309,7 +309,7 @@ data class AchievementEntity(
 - [App Structure & Roles](app-structure.md) - Full role system design
 - [Use Cases & User Flows](use-cases.md) - Complete user flow documentation
 - [Wireframes & Screen Layouts](wireframes.md) - Complete UI design reference
-- [Task Management System](task-management.md) - Full task system specifications
+- [Task Management System](features/task-management.md) - Full task system specifications
 - [Token Economy System](token-economy.md) - Complete economic system design
 - [Global Achievement System](achievements.md) - Full gamification system
 - [Reward System](reward-system.md) - Complete reward management

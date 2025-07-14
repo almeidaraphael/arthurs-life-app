@@ -2,26 +2,41 @@
 
 A native Android application designed to help families organize daily tasks through a gamified token-based reward system. Built with role-based access for Children, Caregivers, and Admins with comprehensive task management and progress tracking.
 
-## 📋 Quick Navigation
+## 📋 Documentation Hub
 
-| Documentation | Purpose |
-|---------------|---------|
-| **[📚 Getting Started](docs/getting-started.md)** | Setup instructions and first steps |
-| **[🏗️ Architecture & Design](docs/architecture.md)** | DDD, SOLID principles, and system design |
-| **[🧪 Testing Guide](docs/testing.md)** | Testing strategies and implementation |
-| **[🔒 Security & Privacy](docs/security.md)** | Security implementation and child safety |
-| **[💻 Development Guide](docs/development.md)** | Development workflow and tools |
-| **[📖 Contributing Guide](docs/contributing.md)** | How to contribute to the project |
+### 📚 Technical Documentation
+Complete developer and technical documentation.
 
-## 📋 Project Planning
+| Category | Documentation | Purpose |
+|----------|---------------|---------|
+| **🏗️ Architecture** | **[Architecture Overview](docs/architecture.md)** | DDD, SOLID principles, and system design |
+| **🚀 Development** | **[Getting Started](docs/getting-started.md)** | Setup instructions and first steps |
+| **🧪 Testing** | **[Testing Guide](docs/testing.md)** | Testing strategies and implementation |
+| **🔒 Security** | **[Security & Privacy](docs/security.md)** | Security implementation and child safety |
+| **💻 Workflow** | **[Development Guide](docs/development.md)** | Development workflow and tools |
+| **🤝 Contributing** | **[Contributing Guide](docs/contributing.md)** | How to contribute to the project |
+| **📚 Full Index** | **[📚 Documentation Hub](docs/README.md)** | Complete technical documentation index |
 
-| Planning Documents | Content |
-|-------------------|---------|
-| **[📋 Requirements](planning/requirements.md)** | Core requirements and specifications |
-| **[🎯 MVP Scope](planning/mvp.md)** | Minimum viable product features |
-| **[📱 App Structure](planning/app-structure.md)** | System architecture and user roles |
-| **[🎮 Game Design](planning/game-design.md)** | Token economy and reward systems |
-| **[📊 Analytics](planning/analytics.md)** | Progress tracking and reporting |
+### 📋 Planning Documentation
+Product planning, requirements, and feature specifications.
+
+| Category | Documentation | Purpose |
+|----------|---------------|---------|
+| **📋 Requirements** | **[Requirements](planning/requirements.md)** | Core requirements and specifications |
+| **🎯 MVP** | **[MVP Scope](planning/mvp.md)** | Minimum viable product features |
+| **📱 Architecture** | **[App Structure](planning/app-structure.md)** | System architecture and user roles |
+| **🎮 Features** | **[Feature Specifications](planning/features/)** | Detailed feature documentation |
+| **📊 Analytics** | **[Use Cases](planning/use-cases.md)** | User flows and interaction patterns |
+| **📋 Full Index** | **[📋 Planning Hub](planning/README.md)** | Complete planning documentation index |
+
+### 🎯 Quick Access
+| Need | Documentation | Purpose |
+|------|---------------|---------|
+| **Start Development** | **[Getting Started](docs/getting-started.md)** | Setup and first steps |
+| **Understand Architecture** | **[Architecture](docs/architecture.md)** | System design principles |
+| **Plan Features** | **[Planning Hub](planning/README.md)** | Product planning and requirements |
+| **Write Tests** | **[Testing Guide](docs/testing.md)** | Quality assurance practices |
+| **Contribute** | **[Contributing Guide](docs/contributing.md)** | Collaboration guidelines |
 
 ## 🎯 Core Features
 
@@ -166,4 +181,14 @@ MIT License - see LICENSE file for details.
 
 ---
 
-**Ready to get started?** 👉 [📚 Getting Started Guide](docs/getting-started.md)
+---
+
+## 📚 Documentation Navigation
+
+**Choose your path:**
+- **👨‍💻 Developers**: Start with [Getting Started](docs/getting-started.md) → [Architecture](docs/architecture.md) → [Development Guide](docs/development.md)
+- **🎯 Product Managers**: Review [Planning Hub](planning/README.md) → [Requirements](planning/requirements.md) → [MVP Scope](planning/mvp.md)
+- **🎨 Designers**: Check [Wireframes](planning/wireframes.md) → [Theme System](planning/features/theme-system.md) → [Accessibility](planning/features/accessibility-features.md)
+- **📋 Contributors**: Read [Contributing Guide](docs/contributing.md) → [Development Tools](docs/development-tools-guide.md) → [Testing Guide](docs/testing.md)
+
+**Quick Access**: [📚 Technical Docs](docs/README.md) | [📋 Planning Docs](planning/README.md) | [🎯 Getting Started](docs/getting-started.md)

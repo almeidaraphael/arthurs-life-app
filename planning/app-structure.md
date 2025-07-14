@@ -18,9 +18,9 @@
   - Dedicated tasks list with visual schedules and timers
   - Dedicated rewards store with wishlist functionality
   - Dedicated achievements system with global badges and milestones
-  - Profile management with theme customization
+  - Profile management with role-based theme selection (Mario Classic default)
   - Fun, themed UI with favorite characters
-  - Accessibility features (text-to-speech, large buttons, color options)
+  - Cognitive accessibility support (simple language, clear navigation)
 
 ### 👨‍👩‍👧‍👦 Caregiver Mode
 - **Purpose:** Manage and monitor children's activities and progress
@@ -78,7 +78,7 @@
 
 | Role | Primary Use Cases | Key Features | Navigation Tabs |
 |------|------------------|--------------|-----------------|
-| **Child** | Task completion, Token redemption/wishlist, Achievement discovery, Theme customization | Timers, Rewards store, Global achievements, Theme selection | Home, Tasks, Rewards, Achievements, Profile |
+| **Child** | Task completion, Token redemption/wishlist, Achievement discovery, Mario Classic theme | Timers, Rewards store, Global achievements, Theme selection | Home, Tasks, Rewards, Achievements, Profile |
 | **Caregiver** | Child setup, Task management, Progress monitoring, Reward config, Multi-child | Child selector, Analytics, Custom rewards, Templates | Dashboard, Tasks, Progress, Children, Profile |
 | **Admin** | Family management, Caregiver permissions, Family settings, Family analytics | Family member management, Permission control, Family settings | Dashboard, Tasks, Progress, Family, Profile |
 

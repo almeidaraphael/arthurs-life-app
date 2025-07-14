@@ -117,47 +117,12 @@ Comprehensive user management and role-based access control system for family-or
 ## Technical Implementation
 
 ### Data Structure
-```kotlin
-data class User(
-    val id: String,
-    val name: String,
-    val email: String?,
-    val role: UserRole,
-    val familyId: String,
-    val age: Int?,
-    val avatar: String?,
-    val theme: UserTheme,
-    val preferences: UserPreferences,
-    val accessibility: AccessibilitySettings,
-    val tokenBalance: TokenBalance,
-    val level: Int,
-    val totalExperience: Int,
-    val achievements: List<String>,
-    val createdAt: Timestamp,
-    val lastActiveAt: Timestamp
-)
+The user management system requires comprehensive data structures to support multi-user families:
 
-data class Family(
-    val id: String,
-    val name: String,
-    val adminUserId: String,
-    val members: List<FamilyMember>,
-    val settings: FamilySettings,
-    val createdAt: Timestamp
-)
-
-data class FamilyMember(
-    val userId: String,
-    val role: UserRole,
-    val permissions: UserPermissions,
-    val childAccess: List<String>, // Child IDs this user can manage
-    val joinedAt: Timestamp
-)
-
-enum class UserRole {
-    ADMIN, PARENT, CHILD
-}
-```
+- **User Profiles**: Complete user information including identification, name, email, role assignment, family association, age, avatar, theme preferences, accessibility settings, token balance, level progression, experience points, achievements, and activity timestamps
+- **Family Structure**: Family organization including identification, name, admin designation, member lists, family settings, and creation timestamp
+- **Family Membership**: Detailed member information including user reference, role assignment, permissions, child access rights, and join timestamp
+- **Role Hierarchy**: Three-tier role system with Admin, Parent, and Child roles providing appropriate access levels and capabilities
 
 ### User Operations
 - **Create User**: Account creation with role assignment
@@ -168,34 +133,13 @@ enum class UserRole {
 - **Data Migration**: Account transfer and family restructuring
 
 ### Permission System
-```kotlin
-fun hasPermission(userId: String, permission: Permission, targetChildId: String? = null): Boolean {
-    val user = getUserById(userId)
-    val family = getFamilyById(user.familyId)
-    val member = family.members.find { it.userId == userId }
-    
-    return when (user.role) {
-        UserRole.ADMIN -> true
-        UserRole.PARENT -> {
-            when (permission) {
-                Permission.MANAGE_CHILD -> targetChildId in member?.childAccess.orEmpty()
-                Permission.VIEW_PROGRESS -> targetChildId in member?.childAccess.orEmpty()
-                Permission.ASSIGN_TASKS -> member?.permissions?.canAssignTasks == true
-                Permission.MANAGE_REWARDS -> member?.permissions?.canManageRewards == true
-                else -> false
-            }
-        }
-        UserRole.CHILD -> {
-            when (permission) {
-                Permission.COMPLETE_TASKS -> targetChildId == userId
-                Permission.REDEEM_REWARDS -> targetChildId == userId
-                Permission.VIEW_OWN_PROGRESS -> targetChildId == userId
-                else -> false
-            }
-        }
-    }
-}
-```
+The system requires a comprehensive permission validation system:
+
+- **Role-Based Access Control**: Admin users have full access, Parent users have child-specific access based on assignments, Child users have self-only access
+- **Permission Validation**: Systematic validation of user permissions for specific actions including child management, progress viewing, task assignment, reward management, and self-service operations
+- **Child Access Rights**: Parent users can only manage children they have been explicitly granted access to, preventing unauthorized access
+- **Permission Inheritance**: Children can only perform actions on their own data, ensuring privacy and security
+- **Dynamic Permission Checking**: Real-time permission validation for all user actions with appropriate error handling
 
 ### Family Management System
 - **Family Creation**: Initial family setup with admin designation
