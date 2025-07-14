@@ -1,4 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Arthur\'s Life</string>
+    <string name="avatar_selection_title">Select your avatar</string>
+    <string name="upload_avatar_content_desc">Upload a custom avatar image</string>
+    <string name="upload_avatar_button">Upload Avatar</string>
+    <string name="select_predefined_avatar_button">Choose Predefined Avatar</string>
+    <string name="caregiver_setup_header">Let\'s set up your caregiver profile</string>
+    <string name="caregiver_setup_subheader">As a caregiver, you\'ll be able to create tasks, manage rewards, and track your family\'s progress.</string>
+    <string name="caregiver_name_label">Your Name</string>
+    <string name="caregiver_name_hint">Enter your name</string>
+    <string name="add_child_header">Add your children</string>
+    <string name="add_child_subheader">Create profiles for each child who will use the app. Children can complete tasks and earn tokens!</string>
+    <string name="add_child_form_header">Add New Child</string>
+    <string name="child_name_label">Child\'s name</string>
+    <string name="child_name_hint">Enter child\'s name</string>
+    <string name="add_child_button">Add Child</string>
+    <string name="cancel_button">Cancel</string>
+    <string name="security_pin_title">Security PIN</string>
+    <string name="security_pin_description">Set a 4-digit PIN to secure caregiver features and protect sensitive actions.</string>
+    <string name="pin_digits_label">PIN (4 digits)</string>
+    <string name="pin_length_error">PIN must be 4 digits</string>
+    <string name="hide_pin">Hide PIN</string>
+    <string name="show_pin">Show PIN</string>
+    <string name="role_selector_title">Who\'s using the app?</string>
+    <string name="user_selection_title">Select User</string>
+    <string name="child_role">Child</string>
+    <string name="caregiver_role">Caregiver</string>
+    <string name="retry_button">Retry</string>
+    <string name="no_users_found">No family members found</string>
+    <string name="user_avatar_content_desc">Avatar for %1$s</string>
+    <string name="no_user_selected">Select a family member to view their profile</string>
+    <string name="profile_info_title">Profile Information</string>
+    <string name="name_label">Name</string>
+    <string name="role_label">Role</string>
+    <string name="favorite_color_label">Favorite Color</string>
+    <string name="child_stats_title">My Stats</string>
+    <string name="token_balance_label">Token Balance</string>
+    <string name="tokens_icon_content_desc">Tokens</string>
+    <string name="caregiver_info_title">Caregiver Access</string>
+    <string name="caregiver_description">You have full access to manage tasks, rewards, and family settings.</string>
+    <string name="pin_secured_label">PIN Protected</string>
 </resources>

@@ -4,23 +4,37 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.arthurslife.app.domain.user.User
 import com.arthurslife.app.domain.user.UserRole
-import com.arthurslife.app.presentation.screens.pinEntryScreen
-import com.arthurslife.app.presentation.screens.roleSelectionScreen
+import com.arthurslife.app.presentation.screens.PinEntryScreen
+import com.arthurslife.app.presentation.screens.userSelectionScreen
+import com.arthurslife.app.presentation.theme.ThemeViewModel
 
 @Composable
-fun authenticationNavigation(
+fun AuthenticationNavigation(
     navController: NavHostController,
-    onAuthSuccess: (UserRole) -> Unit,
+    themeViewModel: ThemeViewModel,
+    authViewModel: com.arthurslife.app.presentation.viewmodels.AuthViewModel,
+    onChildSelected: (User) -> Unit = {},
 ) {
     NavHost(
         navController = navController,
-        startDestination = "role_selection",
+        startDestination = "user_selection",
     ) {
-        composable("role_selection") {
-            roleSelectionScreen(
-                onRoleSelected = { role ->
-                    navController.navigate("pin_entry/${role.name}")
+        composable("user_selection") {
+            userSelectionScreen(
+                onUserSelected = { user ->
+                    when (user.role) {
+                        UserRole.CHILD -> {
+                            // Direct access for child - no PIN required
+                            // Pass the specific child user to the callback
+                            onChildSelected(user)
+                        }
+                        UserRole.CAREGIVER -> {
+                            // Navigate to PIN entry for caregiver
+                            navController.navigate("pin_entry/${user.role.name}")
+                        }
+                    }
                 },
             )
         }
@@ -29,10 +43,11 @@ fun authenticationNavigation(
             val roleString = backStackEntry.arguments?.getString("role") ?: return@composable
             val targetRole = UserRole.valueOf(roleString)
 
-            pinEntryScreen(
+            PinEntryScreen(
                 targetRole = targetRole,
-                onAuthSuccess = { onAuthSuccess(targetRole) },
+                themeViewModel = themeViewModel,
                 onCancel = { navController.popBackStack() },
+                authViewModel = authViewModel,
             )
         }
     }
