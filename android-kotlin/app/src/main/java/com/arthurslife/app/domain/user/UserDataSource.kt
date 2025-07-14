@@ -10,4 +10,6 @@ interface UserDataSource {
     suspend fun getAllUsers(): List<User>
 
     suspend fun saveUser(user: User)
+
+    suspend fun saveUsers(users: List<User>)
 }
