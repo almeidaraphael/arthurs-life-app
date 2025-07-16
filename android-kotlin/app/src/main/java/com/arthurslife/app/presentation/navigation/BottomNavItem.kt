@@ -47,7 +47,7 @@ sealed class BottomNavItem(
     // Caregiver navigation items
     data object CaregiverDashboard : BottomNavItem(
         route = "caregiver_dashboard",
-        label = "Home",
+        label = "Dashboard",
         icon = Icons.Default.Dashboard,
     )
 
