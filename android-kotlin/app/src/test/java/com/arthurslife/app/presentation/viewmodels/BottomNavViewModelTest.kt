@@ -55,8 +55,26 @@ class BottomNavViewModelTest {
         // Then
         viewModel.navigationItems.test {
             val items = awaitItem()
-            assertEquals(EXPECTED_CAREGIVER_ITEMS.size, items.size)
-            assertEquals(EXPECTED_CAREGIVER_ITEMS, items)
+            assertEquals(EXPECTED_CAREGIVER_NON_ADMIN_ITEMS.size, items.size)
+            assertEquals(EXPECTED_CAREGIVER_NON_ADMIN_ITEMS, items)
+        }
+    }
+
+    @Test
+    fun `given authenticated admin caregiver user when viewModel initialized then should emit admin caregiver navigation items`() = runTest {
+        // Given
+        every { authPreferencesDataStore.isAuthenticated } returns flowOf(true)
+        every { authPreferencesDataStore.currentRole } returns flowOf(UserRole.CAREGIVER)
+        every { authPreferencesDataStore.isAdmin } returns flowOf(true)
+
+        // When
+        viewModel = BottomNavViewModel(authPreferencesDataStore)
+
+        // Then
+        viewModel.navigationItems.test {
+            val items = awaitItem()
+            assertEquals(EXPECTED_CAREGIVER_ADMIN_ITEMS.size, items.size)
+            assertEquals(EXPECTED_CAREGIVER_ADMIN_ITEMS, items)
         }
     }
 
@@ -203,7 +221,7 @@ class BottomNavViewModelTest {
 
             // Second emission: caregiver items after role change
             val caregiverItems = awaitItem()
-            assertEquals(EXPECTED_CAREGIVER_ITEMS, caregiverItems)
+            assertEquals(EXPECTED_CAREGIVER_NON_ADMIN_ITEMS, caregiverItems)
         }
     }
 
@@ -215,11 +233,18 @@ class BottomNavViewModelTest {
             BottomNavItem.ChildAchievements,
         )
 
-        private val EXPECTED_CAREGIVER_ITEMS = listOf(
+        private val EXPECTED_CAREGIVER_NON_ADMIN_ITEMS = listOf(
             BottomNavItem.CaregiverDashboard,
             BottomNavItem.CaregiverTasks,
             BottomNavItem.CaregiverProgress,
             BottomNavItem.CaregiverChildren,
+        )
+
+        private val EXPECTED_CAREGIVER_ADMIN_ITEMS = listOf(
+            BottomNavItem.CaregiverDashboard,
+            BottomNavItem.CaregiverTasks,
+            BottomNavItem.CaregiverProgress,
+            BottomNavItem.CaregiverUsers,
         )
     }
 }

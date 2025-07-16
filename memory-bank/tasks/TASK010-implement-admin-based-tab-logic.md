@@ -1,6 +1,6 @@
 # [TASK010] - Implement Admin-Based Tab Logic
 
-**Status:** Pending
+**Status:** In Progress
 **Added:** 2025-07-16
 **Updated:** 2025-07-16
 
@@ -26,18 +26,23 @@ This requires creating a CaregiverUsers tab, updating getItemsForRole to accept 
 
 ## Progress Tracking
 
-**Overall Status:** Pending - 0%
+**Overall Status:** In Progress - 75%
 
 ### Subtasks
 | ID | Description | Status | Updated | Notes |
 |----|-------------|--------|---------|-------|
-| 10.1 | Create CaregiverUsers data object | Pending | 2025-07-16 | Add Users tab for Family Admin |
-| 10.2 | Update getItemsForRole with admin parameter | Pending | 2025-07-16 | Differentiate tabs based on admin status |
-| 10.3 | Update BottomNavViewModel to use admin status | Pending | 2025-07-16 | Combine role and admin status flows |
-| 10.4 | Test admin-based tab logic | Pending | 2025-07-16 | Verify correct tabs for each scenario |
+| 10.1 | Create CaregiverUsers data object | Completed | 2025-07-16 | Added CaregiverUsers data object with Users label |
+| 10.2 | Update getItemsForRole with admin parameter | Completed | 2025-07-16 | Added isAdmin parameter with conditional logic |
+| 10.3 | Update BottomNavViewModel to use admin status | Completed | 2025-07-16 | Updated combine to use isAdmin flow |
+| 10.4 | Test admin-based tab logic | In Progress | 2025-07-16 | Tests failing - need to debug flow combination |
 
 ## Progress Log
 ### 2025-07-16
 - Task created from PRD fix analysis
 - Identified need for admin-based tab differentiation
 - Depends on TASK008 and TASK009 completion
+- Created CaregiverUsers data object in BottomNavItem.kt
+- Updated getItemsForRole method to accept isAdmin parameter
+- Updated BottomNavViewModel to combine isAdmin flow with role and auth flows
+- Added admin caregiver test case
+- Tests failing - flows not emitting properly, need to debug combine logic

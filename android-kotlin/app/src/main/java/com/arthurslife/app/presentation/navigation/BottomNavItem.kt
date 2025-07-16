@@ -69,11 +69,20 @@ sealed class BottomNavItem(
         icon = Icons.Default.Group,
     )
 
+    data object CaregiverUsers : BottomNavItem(
+        route = "caregiver_users",
+        label = "Users",
+        icon = Icons.Default.Group,
+    )
+
     companion object {
         /**
          * Get navigation items based on user role with role-specific terminology
          */
-        fun getItemsForRole(userRole: UserRole): List<BottomNavItem> = when (userRole) {
+        fun getItemsForRole(
+            userRole: UserRole,
+            isAdmin: Boolean = false,
+        ): List<BottomNavItem> = when (userRole) {
             UserRole.CHILD -> listOf(
                 ChildHome,
                 ChildTasks,
@@ -84,7 +93,7 @@ sealed class BottomNavItem(
                 CaregiverDashboard,
                 CaregiverTasks,
                 CaregiverProgress,
-                CaregiverChildren,
+                if (isAdmin) CaregiverUsers else CaregiverChildren,
             )
         }
 
@@ -100,6 +109,7 @@ sealed class BottomNavItem(
             CaregiverTasks.route,
             CaregiverProgress.route,
             CaregiverChildren.route,
+            CaregiverUsers.route,
         )
     }
 }

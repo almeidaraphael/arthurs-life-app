@@ -26,20 +26,21 @@ class BottomNavViewModel @Inject constructor(
 
     /**
      * StateFlow that emits the current list of bottom navigation items
-     * based on the authenticated user's role.
+     * based on the authenticated user's role and admin status.
      *
-     * This flow automatically updates when the user role changes through
+     * This flow automatically updates when the user role, admin status, or
      * authentication state changes (login, role switching, logout).
      */
     val navigationItems: StateFlow<List<BottomNavItem>> =
         combine(
             authPreferencesDataStore.isAuthenticated,
             authPreferencesDataStore.currentRole,
-        ) { isAuthenticated, currentRole ->
+            authPreferencesDataStore.isAdmin,
+        ) { isAuthenticated, currentRole, isAdmin ->
             when {
                 isAuthenticated && currentRole != null -> {
-                    // Get navigation items based on the current user's role
-                    BottomNavItem.getItemsForRole(currentRole)
+                    // Get navigation items based on the current user's role and admin status
+                    BottomNavItem.getItemsForRole(currentRole, isAdmin)
                 }
                 else -> {
                     // Return empty list when user is not authenticated
