@@ -33,6 +33,23 @@
 - [TASK023] Integrate Dialog into Settings - Connecting theme selection to settings
 - [TASK024] Implement Unit and UI Tests for Top Bar - Testing for top bar functionality
 
+### Data Management Feature
+- [TASK027] Define Data Management Architecture - Secure storage, backup/restore, export/import, privacy compliance
+- [TASK028] Implement Data Backup and Restore - Encrypted local backup, restore, and migration
+- [TASK029] Implement Data Export/Import - Export/import user and family data, privacy controls
+- [TASK030] Integrate Data Management UI - Caregiver controls, user feedback, error handling
+
+### Internationalization & Localization Feature
+- [TASK031] Define i18n/l10n Architecture - String resources, locale switching, date/time formatting
+- [TASK032] Implement PT-BR Localization - Translate all UI, content, and help to Brazilian Portuguese
+- [TASK033] Integrate Locale Switching UI - Settings integration, user feedback, accessibility
+
+### Reward Suggestion System Feature
+- [TASK034] Define Reward Suggestion Workflow - Child suggestion, caregiver review/approval
+- [TASK035] Implement Suggestion Submission UI - Child-facing UI for proposing rewards
+- [TASK036] Implement Caregiver Review UI - Approve/reject workflow, add to catalog
+- [TASK037] Integrate Notifications & Analytics - Status updates, usage tracking
+
 ### Final Tasks
 - [TASK025] Implement Unit and UI Tests for Theme System - Testing for theme functionality
 - [TASK026] Verify PRD Compliance - Final verification of all PRD requirements

@@ -9,7 +9,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import com.arthurslife.app.domain.auth.UserRole
+import com.arthurslife.app.domain.user.UserRole
 import com.arthurslife.app.presentation.navigation.BottomNavItem
 import com.arthurslife.app.presentation.theme.ArthursLifeTheme
 import com.arthurslife.app.presentation.theme.mario.MarioClassicTheme
@@ -54,9 +54,8 @@ class ThemeAwareBottomNavigationBarTest {
         // Then
         composeTestRule.onNodeWithText("Home").assertIsDisplayed()
         composeTestRule.onNodeWithText("Quests").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Power-ups").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Rewards").assertIsDisplayed()
         composeTestRule.onNodeWithText("Awards").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Profile").assertIsDisplayed()
     }
 
     @Test
@@ -80,9 +79,8 @@ class ThemeAwareBottomNavigationBarTest {
         // Then
         composeTestRule.onNodeWithText("Dashboard").assertIsDisplayed()
         composeTestRule.onNodeWithText("Tasks").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Progress").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Rewards").assertIsDisplayed()
         composeTestRule.onNodeWithText("Children").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Profile").assertIsDisplayed()
     }
 
     @Test
@@ -177,9 +175,8 @@ class ThemeAwareBottomNavigationBarTest {
         composeTestRule.onNodeWithContentDescription("Bottom Navigation").assertIsDisplayed()
         composeTestRule.onNodeWithContentDescription("Navigate to Home").assertIsDisplayed()
         composeTestRule.onNodeWithContentDescription("Navigate to Quests").assertIsDisplayed()
-        composeTestRule.onNodeWithContentDescription("Navigate to Power-ups").assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescription("Navigate to Rewards").assertIsDisplayed()
         composeTestRule.onNodeWithContentDescription("Navigate to Awards").assertIsDisplayed()
-        composeTestRule.onNodeWithContentDescription("Navigate to Profile").assertIsDisplayed()
     }
 
     @Test
@@ -203,9 +200,8 @@ class ThemeAwareBottomNavigationBarTest {
         // Then
         composeTestRule.onNodeWithContentDescription("Navigate to Home").assertHasClickAction()
         composeTestRule.onNodeWithContentDescription("Navigate to Quests").assertHasClickAction()
-        composeTestRule.onNodeWithContentDescription("Navigate to Power-ups").assertHasClickAction()
+        composeTestRule.onNodeWithContentDescription("Navigate to Rewards").assertHasClickAction()
         composeTestRule.onNodeWithContentDescription("Navigate to Awards").assertHasClickAction()
-        composeTestRule.onNodeWithContentDescription("Navigate to Profile").assertHasClickAction()
     }
 
     @Test
@@ -229,9 +225,8 @@ class ThemeAwareBottomNavigationBarTest {
         // Then
         composeTestRule.onNodeWithText("Home").assertIsDisplayed()
         composeTestRule.onNodeWithText("Quests").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Power-ups").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Rewards").assertIsDisplayed()
         composeTestRule.onNodeWithText("Awards").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Profile").assertIsDisplayed()
     }
 
     @Test
@@ -254,7 +249,7 @@ class ThemeAwareBottomNavigationBarTest {
 
         // When
         composeTestRule.onNodeWithText("Quests").performClick()
-        composeTestRule.onNodeWithText("Power-ups").performClick()
+        composeTestRule.onNodeWithText("Rewards").performClick()
         composeTestRule.onNodeWithText("Awards").performClick()
 
         // Then
@@ -283,11 +278,10 @@ class ThemeAwareBottomNavigationBarTest {
         }
 
         // Then
-        composeTestRule.onNodeWithText("Progress").assertIsSelected()
+        composeTestRule.onNodeWithText("Rewards").assertIsSelected()
         composeTestRule.onNodeWithText("Dashboard").assertExists()
         composeTestRule.onNodeWithText("Tasks").assertExists()
         composeTestRule.onNodeWithText("Children").assertExists()
-        composeTestRule.onNodeWithText("Profile").assertExists()
     }
 
     @Test
@@ -354,5 +348,113 @@ class ThemeAwareBottomNavigationBarTest {
 
         // Then
         composeTestRule.onNodeWithText("Quests").assertIsSelected()
+    }
+
+    @Test
+    fun themeAwareBottomNavigationBar_withAdminCaregiver_displaysUsersTab() {
+        // Given
+        val adminCaregiverItems = BottomNavItem.getItemsForRole(UserRole.CAREGIVER, isAdmin = true)
+        val currentRoute = "caregiver/dashboard"
+        var clickedRoute: String? = null
+
+        // When
+        composeTestRule.setContent {
+            ArthursLifeTheme {
+                themeAwareBottomNavigationBar(
+                    items = adminCaregiverItems,
+                    currentRoute = currentRoute,
+                    onItemClick = { route -> clickedRoute = route },
+                )
+            }
+        }
+
+        // Then
+        composeTestRule.onNodeWithText("Dashboard").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Tasks").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Rewards").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Users").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Children").assertIsNotDisplayed()
+    }
+
+    @Test
+    fun themeAwareBottomNavigationBar_withNonAdminCaregiver_displaysChildrenTab() {
+        // Given
+        val nonAdminCaregiverItems = BottomNavItem.getItemsForRole(
+            UserRole.CAREGIVER,
+            isAdmin = false,
+        )
+        val currentRoute = "caregiver/dashboard"
+        var clickedRoute: String? = null
+
+        // When
+        composeTestRule.setContent {
+            ArthursLifeTheme {
+                themeAwareBottomNavigationBar(
+                    items = nonAdminCaregiverItems,
+                    currentRoute = currentRoute,
+                    onItemClick = { route -> clickedRoute = route },
+                )
+            }
+        }
+
+        // Then
+        composeTestRule.onNodeWithText("Dashboard").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Tasks").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Rewards").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Children").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Users").assertIsNotDisplayed()
+    }
+
+    @Test
+    fun themeAwareBottomNavigationBar_adminTabClick_triggersCorrectCallback() {
+        // Given
+        val adminCaregiverItems = BottomNavItem.getItemsForRole(UserRole.CAREGIVER, isAdmin = true)
+        val currentRoute = "caregiver/dashboard"
+        var clickedRoute: String? = null
+
+        // When
+        composeTestRule.setContent {
+            ArthursLifeTheme {
+                themeAwareBottomNavigationBar(
+                    items = adminCaregiverItems,
+                    currentRoute = currentRoute,
+                    onItemClick = { route -> clickedRoute = route },
+                )
+            }
+        }
+
+        // When
+        composeTestRule.onNodeWithText("Users").performClick()
+
+        // Then
+        assert(clickedRoute == "caregiver/users")
+    }
+
+    @Test
+    fun themeAwareBottomNavigationBar_nonAdminTabClick_triggersCorrectCallback() {
+        // Given
+        val nonAdminCaregiverItems = BottomNavItem.getItemsForRole(
+            UserRole.CAREGIVER,
+            isAdmin = false,
+        )
+        val currentRoute = "caregiver/dashboard"
+        var clickedRoute: String? = null
+
+        // When
+        composeTestRule.setContent {
+            ArthursLifeTheme {
+                themeAwareBottomNavigationBar(
+                    items = nonAdminCaregiverItems,
+                    currentRoute = currentRoute,
+                    onItemClick = { route -> clickedRoute = route },
+                )
+            }
+        }
+
+        // When
+        composeTestRule.onNodeWithText("Children").performClick()
+
+        // Then
+        assert(clickedRoute == "caregiver/children")
     }
 }

@@ -30,8 +30,36 @@ class BottomNavItemTest {
         val items = BottomNavItem.getItemsForRole(role)
 
         // Then
-        assertEquals(EXPECTED_CAREGIVER_ITEMS.size, items.size)
-        assertEquals(EXPECTED_CAREGIVER_ITEMS, items)
+        assertEquals(EXPECTED_CAREGIVER_NON_ADMIN_ITEMS.size, items.size)
+        assertEquals(EXPECTED_CAREGIVER_NON_ADMIN_ITEMS, items)
+    }
+
+    @Test
+    fun `given caregiver role and admin status when getItemsForRole called then should return admin caregiver navigation items`() {
+        // Given
+        val role = UserRole.CAREGIVER
+        val isAdmin = true
+
+        // When
+        val items = BottomNavItem.getItemsForRole(role, isAdmin)
+
+        // Then
+        assertEquals(EXPECTED_CAREGIVER_ADMIN_ITEMS.size, items.size)
+        assertEquals(EXPECTED_CAREGIVER_ADMIN_ITEMS, items)
+    }
+
+    @Test
+    fun `given caregiver role and non-admin status when getItemsForRole called then should return non-admin caregiver navigation items`() {
+        // Given
+        val role = UserRole.CAREGIVER
+        val isAdmin = false
+
+        // When
+        val items = BottomNavItem.getItemsForRole(role, isAdmin)
+
+        // Then
+        assertEquals(EXPECTED_CAREGIVER_NON_ADMIN_ITEMS.size, items.size)
+        assertEquals(EXPECTED_CAREGIVER_NON_ADMIN_ITEMS, items)
     }
 
     @Test
@@ -49,6 +77,7 @@ class BottomNavItemTest {
             "caregiver_tasks",
             "caregiver_progress",
             "caregiver_children",
+            "caregiver_users",
         )
         assertEquals(expectedRoutes.size, routes.size)
         expectedRoutes.forEach { expectedRoute ->
@@ -86,7 +115,7 @@ class BottomNavItemTest {
         val caregiverChildren = BottomNavItem.CaregiverChildren
         // Then
         assertEquals("caregiver_dashboard", caregiverDashboard.route)
-        assertEquals("Home", caregiverDashboard.label)
+        assertEquals("Dashboard", caregiverDashboard.label)
 
         assertEquals("caregiver_tasks", caregiverTasks.route)
         assertEquals("Tasks", caregiverTasks.label)
@@ -96,6 +125,16 @@ class BottomNavItemTest {
 
         assertEquals("caregiver_children", caregiverChildren.route)
         assertEquals("Children", caregiverChildren.label)
+    }
+
+    @Test
+    fun `given caregiver users navigation item when checking properties then should have correct route and label`() {
+        // Given & When
+        val caregiverUsers = BottomNavItem.CaregiverUsers
+
+        // Then
+        assertEquals("caregiver_users", caregiverUsers.route)
+        assertEquals("Users", caregiverUsers.label)
     }
 
     @Test
@@ -152,6 +191,23 @@ class BottomNavItemTest {
     }
 
     @Test
+    fun `given admin and non-admin caregivers when comparing fourth tab then should show different items`() {
+        // Given
+        val adminItems = BottomNavItem.getItemsForRole(UserRole.CAREGIVER, isAdmin = true)
+        val nonAdminItems = BottomNavItem.getItemsForRole(UserRole.CAREGIVER, isAdmin = false)
+
+        // When
+        val adminFourthTab = adminItems.last()
+        val nonAdminFourthTab = nonAdminItems.last()
+
+        // Then
+        assertEquals("caregiver_users", adminFourthTab.route)
+        assertEquals("Users", adminFourthTab.label)
+        assertEquals("caregiver_children", nonAdminFourthTab.route)
+        assertEquals("Children", nonAdminFourthTab.label)
+    }
+
+    @Test
     fun `given navigation items when checking sealed class structure then should be properly sealed`() {
         // Given
         val childItems = BottomNavItem.getItemsForRole(UserRole.CHILD)
@@ -175,11 +231,18 @@ class BottomNavItemTest {
             BottomNavItem.ChildAchievements,
         )
 
-        private val EXPECTED_CAREGIVER_ITEMS = listOf(
+        private val EXPECTED_CAREGIVER_NON_ADMIN_ITEMS = listOf(
             BottomNavItem.CaregiverDashboard,
             BottomNavItem.CaregiverTasks,
             BottomNavItem.CaregiverProgress,
             BottomNavItem.CaregiverChildren,
+        )
+
+        private val EXPECTED_CAREGIVER_ADMIN_ITEMS = listOf(
+            BottomNavItem.CaregiverDashboard,
+            BottomNavItem.CaregiverTasks,
+            BottomNavItem.CaregiverProgress,
+            BottomNavItem.CaregiverUsers,
         )
     }
 }

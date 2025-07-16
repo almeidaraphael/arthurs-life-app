@@ -49,7 +49,7 @@ class BottomNavViewModel @Inject constructor(
             }
         }.stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
+            started = SharingStarted.Eagerly,
             initialValue = emptyList(),
         )
 
@@ -61,7 +61,7 @@ class BottomNavViewModel @Inject constructor(
         authPreferencesDataStore.currentRole
             .stateIn(
                 scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
+                started = SharingStarted.Eagerly,
                 initialValue = null,
             )
 
@@ -73,11 +73,7 @@ class BottomNavViewModel @Inject constructor(
         authPreferencesDataStore.isAuthenticated
             .stateIn(
                 scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
+                started = SharingStarted.Eagerly,
                 initialValue = false,
             )
-
-    companion object {
-        private const val TIMEOUT_MILLIS = 5_000L
-    }
 }
