@@ -20,6 +20,7 @@ import java.util.UUID
  * @property avatarType Type of avatar being used (PREDEFINED or CUSTOM)
  * @property avatarData Avatar data - either predefined avatar ID or custom image data
  * @property favoriteColor User's preferred color for personalization
+ * @property isAdmin Admin status for caregivers (true for Family Admin, false for Non-Admin)
  *
  * @sample
  * ```kotlin
@@ -36,6 +37,14 @@ import java.util.UUID
  *     role = UserRole.CAREGIVER,
  *     pin = PIN.create("1234")
  * )
+ *
+ * // Create a family admin caregiver
+ * val admin = User(
+ *     name = "Admin",
+ *     role = UserRole.CAREGIVER,
+ *     pin = PIN.create("1234"),
+ *     isAdmin = true
+ * )
  * ```
  */
 @Serializable
@@ -49,6 +58,7 @@ data class User(
     val avatarType: AvatarType = AvatarType.PREDEFINED,
     val avatarData: String = DEFAULT_AVATAR_ID,
     val favoriteColor: String? = null,
+    val isAdmin: Boolean = false,
 ) {
     companion object {
         const val DEFAULT_AVATAR_ID = "default_child"
