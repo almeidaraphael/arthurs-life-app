@@ -22,6 +22,7 @@ class AuthPreferencesDataStore(
         private val CURRENT_USER_ID = stringPreferencesKey("current_user_id")
         private val CURRENT_ROLE = stringPreferencesKey("current_role")
         private val IS_AUTHENTICATED = booleanPreferencesKey("is_authenticated")
+        private val IS_ADMIN = booleanPreferencesKey("is_admin")
     }
 
     val currentUserId: Flow<String?> =
@@ -39,14 +40,21 @@ class AuthPreferencesDataStore(
             preferences[IS_AUTHENTICATED] ?: false
         }
 
+    val isAdmin: Flow<Boolean> =
+        context.dataStore.data.map { preferences ->
+            preferences[IS_ADMIN] ?: false
+        }
+
     suspend fun setCurrentUser(
         userId: String,
         role: UserRole,
+        isAdmin: Boolean = false,
     ) {
         context.dataStore.edit { preferences ->
             preferences[CURRENT_USER_ID] = userId
             preferences[CURRENT_ROLE] = role.name
             preferences[IS_AUTHENTICATED] = true
+            preferences[IS_ADMIN] = isAdmin
         }
     }
 
@@ -55,6 +63,7 @@ class AuthPreferencesDataStore(
             preferences.remove(CURRENT_USER_ID)
             preferences.remove(CURRENT_ROLE)
             preferences[IS_AUTHENTICATED] = false
+            preferences.remove(IS_ADMIN)
         }
     }
 }

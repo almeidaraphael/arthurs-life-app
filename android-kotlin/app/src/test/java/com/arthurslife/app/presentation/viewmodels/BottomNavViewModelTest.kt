@@ -29,6 +29,7 @@ class BottomNavViewModelTest {
         // Given
         every { authPreferencesDataStore.isAuthenticated } returns flowOf(true)
         every { authPreferencesDataStore.currentRole } returns flowOf(UserRole.CHILD)
+        every { authPreferencesDataStore.isAdmin } returns flowOf(false)
 
         // When
         viewModel = BottomNavViewModel(authPreferencesDataStore)
@@ -46,6 +47,7 @@ class BottomNavViewModelTest {
         // Given
         every { authPreferencesDataStore.isAuthenticated } returns flowOf(true)
         every { authPreferencesDataStore.currentRole } returns flowOf(UserRole.CAREGIVER)
+        every { authPreferencesDataStore.isAdmin } returns flowOf(false)
 
         // When
         viewModel = BottomNavViewModel(authPreferencesDataStore)
@@ -63,6 +65,7 @@ class BottomNavViewModelTest {
         // Given
         every { authPreferencesDataStore.isAuthenticated } returns flowOf(false)
         every { authPreferencesDataStore.currentRole } returns flowOf(null)
+        every { authPreferencesDataStore.isAdmin } returns flowOf(false)
 
         // When
         viewModel = BottomNavViewModel(authPreferencesDataStore)
@@ -79,6 +82,7 @@ class BottomNavViewModelTest {
         // Given
         every { authPreferencesDataStore.isAuthenticated } returns flowOf(true)
         every { authPreferencesDataStore.currentRole } returns flowOf(null)
+        every { authPreferencesDataStore.isAdmin } returns flowOf(false)
 
         // When
         viewModel = BottomNavViewModel(authPreferencesDataStore)
@@ -95,6 +99,7 @@ class BottomNavViewModelTest {
         // Given
         every { authPreferencesDataStore.isAuthenticated } returns flowOf(true)
         every { authPreferencesDataStore.currentRole } returns flowOf(UserRole.CHILD)
+        every { authPreferencesDataStore.isAdmin } returns flowOf(false)
 
         // When
         viewModel = BottomNavViewModel(authPreferencesDataStore)
@@ -111,6 +116,7 @@ class BottomNavViewModelTest {
         // Given
         every { authPreferencesDataStore.isAuthenticated } returns flowOf(true)
         every { authPreferencesDataStore.currentRole } returns flowOf(UserRole.CAREGIVER)
+        every { authPreferencesDataStore.isAdmin } returns flowOf(false)
 
         // When
         viewModel = BottomNavViewModel(authPreferencesDataStore)
@@ -127,6 +133,7 @@ class BottomNavViewModelTest {
         // Given
         every { authPreferencesDataStore.isAuthenticated } returns flowOf(true)
         every { authPreferencesDataStore.currentRole } returns flowOf(UserRole.CHILD)
+        every { authPreferencesDataStore.isAdmin } returns flowOf(false)
 
         // When
         viewModel = BottomNavViewModel(authPreferencesDataStore)
@@ -143,6 +150,7 @@ class BottomNavViewModelTest {
         // Given
         every { authPreferencesDataStore.isAuthenticated } returns flowOf(false)
         every { authPreferencesDataStore.currentRole } returns flowOf(null)
+        every { authPreferencesDataStore.isAdmin } returns flowOf(false)
 
         // When
         viewModel = BottomNavViewModel(authPreferencesDataStore)
@@ -159,6 +167,7 @@ class BottomNavViewModelTest {
         // Given - Initially unauthenticated
         every { authPreferencesDataStore.isAuthenticated } returns flowOf(false, true)
         every { authPreferencesDataStore.currentRole } returns flowOf(null, UserRole.CHILD)
+        every { authPreferencesDataStore.isAdmin } returns flowOf(false, false)
 
         // When
         viewModel = BottomNavViewModel(authPreferencesDataStore)
@@ -181,6 +190,7 @@ class BottomNavViewModelTest {
         // Given - Role changes from child to caregiver
         every { authPreferencesDataStore.isAuthenticated } returns flowOf(true, true)
         every { authPreferencesDataStore.currentRole } returns flowOf(UserRole.CHILD, UserRole.CAREGIVER)
+        every { authPreferencesDataStore.isAdmin } returns flowOf(false, false)
 
         // When
         viewModel = BottomNavViewModel(authPreferencesDataStore)
