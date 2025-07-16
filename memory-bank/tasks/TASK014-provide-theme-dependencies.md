@@ -1,4 +1,4 @@
-# [TASK008] - Provide Theme Dependencies
+# [TASK014] - Provide Theme Dependencies
 
 **Status:** Pending
 **Added:** 2025-07-15

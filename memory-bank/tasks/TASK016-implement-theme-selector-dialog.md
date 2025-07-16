@@ -1,4 +1,4 @@
-# [TASK011] - Implement Theme Selector Dialog
+# [TASK016] - Implement Theme Selector Dialog
 
 **Status:** Pending
 **Added:** 2025-07-15

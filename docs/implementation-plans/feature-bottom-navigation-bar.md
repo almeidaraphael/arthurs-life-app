@@ -37,7 +37,7 @@ The implementation will be broken down into the following tasks:
 | **TASK-003** | Implement the Bottom Navigation Bar Composable | `BottomNavigationBar.kt` | Create a theme-aware composable that takes the list of `BottomNavItem`s and the `NavController`. It will use `BottomNavigation` and `BottomNavigationItem` from Compose Material to build the UI. |
 | **TASK-004** | Integrate Bottom Bar into Main App UI | `MainScreen.kt`, `AppScaffold.kt` | Integrate the `BottomNavigationBar` into the main app scaffold. The scaffold will manage the visibility of the bottom bar based on the current route. |
 | **TASK-005** | Update Main Navigation Host | `MainAppNavigation.kt` | Modify the main `NavHost` to include the `MainScreen` which contains the scaffold and bottom navigation. Ensure the `NavController` is correctly passed down. |
-| **TASK-006** | Implement Unit and UI Tests | `BottomNavViewModelTest.kt`, `BottomNavigationBarTest.kt` | Write JUnit tests for the `BottomNavViewModel` to verify role-based logic. Write Espresso/Compose tests for the `BottomNavigationBar` to verify UI behavior and appearance. |
+| **TASK-006** | Implement Unit and UI Tests | `BottomNavViewModelTest.kt`, `BottomNavigationBarTest.kt`, `BottomNavItemTest.kt`, `ThemeAwareBottomNavigationBarTest.kt` | Write JUnit tests for the `BottomNavViewModel` to verify role-based logic. Write unit tests for `BottomNavItem` sealed class. Write Compose UI tests for the `ThemeAwareBottomNavigationBar` to verify theme behavior, navigation clicks, and accessibility. Note: Integration tests already exist in `MainAppNavigationTest.kt`. |
 
 ## 3. Alternatives
 
@@ -60,7 +60,9 @@ The implementation will be broken down into the following tasks:
 - **MODIFY**: `android-kotlin/app/src/main/java/com/arthurslife/app/presentation/navigation/MainAppNavigation.kt`
 - **MODIFY**: `android-kotlin/app/src/main/java/com/arthurslife/app/presentation/screens/MainScreen.kt` (or equivalent top-level screen composable)
 - **CREATE**: `android-kotlin/app/src/test/java/com/arthurslife/app/presentation/viewmodels/BottomNavViewModelTest.kt`
-- **CREATE**: `android-kotlin/app/src/androidTest/java/com/arthurslife/app/presentation/components/BottomNavigationBarTest.kt`
+- **CREATE**: `android-kotlin/app/src/test/java/com/arthurslife/app/presentation/navigation/BottomNavItemTest.kt`
+- **CREATE**: `android-kotlin/app/src/androidTest/java/com/arthurslife/app/presentation/theme/components/ThemeAwareBottomNavigationBarTest.kt`
+- **EXISTS**: `android-kotlin/app/src/androidTest/java/com/arthurslife/app/ui/navigation/MainAppNavigationTest.kt` (integration tests)
 
 ## 6. Testing
 

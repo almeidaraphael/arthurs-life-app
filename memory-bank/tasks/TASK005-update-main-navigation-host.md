@@ -1,8 +1,8 @@
 # [TASK005] - Update Main Navigation Host
 
-**Status:** Pending
+**Status:** Completed
 **Added:** 2025-07-15
-**Updated:** 2025-07-15
+**Updated:** 2025-07-16
 
 ## Source Documents
 **Implementation Plan:** [docs/implementation-plans/feature-bottom-navigation-bar.md](docs/implementation-plans/feature-bottom-navigation-bar.md)
@@ -22,14 +22,23 @@ This step connects the navigation graph with the new UI structure. It's a critic
 
 ## Progress Tracking
 
-**Overall Status:** Not Started - 0%
+**Overall Status:** Completed - 100%
 
 ### Subtasks
 | ID | Description | Status | Updated | Notes |
 |----|-------------|--------|---------|-------|
-| 5.1 | Modify `MainAppNavigation.kt` to set up the `NavHost` within the `MainScreen` | Not Started | 2025-07-15 | |
-| 5.2 | Ensure `NavController` is created at the top level and passed down | Not Started | 2025-07-15 | |
+| 5.1 | Modify `MainAppNavigation.kt` to set up the `NavHost` within the `MainScreen` | Completed | 2025-07-16 | Extracted scaffold logic into separate MainScreen composable |
+| 5.2 | Ensure `NavController` is created at the top level and passed down | Completed | 2025-07-16 | NavController created in MainAppNavigation and passed to MainScreen |
 
 ## Progress Log
 ### 2025-07-15
 - Task created from implementation plan.
+
+### 2025-07-16
+- **Implementation Completed**
+- Refactored `MainAppNavigation.kt` to extract scaffold logic into a separate `MainScreen` composable
+- `MainAppNavigation` now creates `NavController` and passes it to `MainScreen`
+- `MainScreen` contains the `Scaffold` with bottom navigation and `AppNavHost`
+- `NavController` is properly passed down to all components
+- Code passes detekt formatting and compilation checks
+- Task completed successfully
