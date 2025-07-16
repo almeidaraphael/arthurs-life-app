@@ -5,7 +5,6 @@ import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.Task
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -45,12 +44,6 @@ sealed class BottomNavItem(
         icon = Icons.Default.EmojiEvents,
     )
 
-    data object ChildProfile : BottomNavItem(
-        route = "child_profile",
-        label = "Profile",
-        icon = Icons.Default.Person,
-    )
-
     // Caregiver navigation items
     data object CaregiverDashboard : BottomNavItem(
         route = "caregiver_dashboard",
@@ -76,12 +69,6 @@ sealed class BottomNavItem(
         icon = Icons.Default.Group,
     )
 
-    data object CaregiverProfile : BottomNavItem(
-        route = "caregiver_profile",
-        label = "Profile",
-        icon = Icons.Default.Person,
-    )
-
     companion object {
         /**
          * Get navigation items based on user role with role-specific terminology
@@ -92,14 +79,12 @@ sealed class BottomNavItem(
                 ChildTasks,
                 ChildRewards,
                 ChildAchievements,
-                ChildProfile,
             )
             UserRole.CAREGIVER -> listOf(
                 CaregiverDashboard,
                 CaregiverTasks,
                 CaregiverProgress,
                 CaregiverChildren,
-                CaregiverProfile,
             )
         }
 
@@ -111,12 +96,10 @@ sealed class BottomNavItem(
             ChildTasks.route,
             ChildRewards.route,
             ChildAchievements.route,
-            ChildProfile.route,
             CaregiverDashboard.route,
             CaregiverTasks.route,
             CaregiverProgress.route,
             CaregiverChildren.route,
-            CaregiverProfile.route,
         )
     }
 }

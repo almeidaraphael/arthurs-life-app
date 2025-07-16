@@ -203,7 +203,6 @@ class BottomNavViewModelTest {
             BottomNavItem.ChildTasks,
             BottomNavItem.ChildRewards,
             BottomNavItem.ChildAchievements,
-            BottomNavItem.ChildProfile,
         )
 
         private val EXPECTED_CAREGIVER_ITEMS = listOf(
@@ -211,7 +210,6 @@ class BottomNavViewModelTest {
             BottomNavItem.CaregiverTasks,
             BottomNavItem.CaregiverProgress,
             BottomNavItem.CaregiverChildren,
-            BottomNavItem.CaregiverProfile,
         )
     }
 }

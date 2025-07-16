@@ -41,8 +41,14 @@ class BottomNavItemTest {
 
         // Then
         val expectedRoutes = setOf(
-            "child_home", "child_tasks", "child_rewards", "child_achievements", "child_profile",
-            "caregiver_dashboard", "caregiver_tasks", "caregiver_progress", "caregiver_children", "caregiver_profile",
+            "child_home",
+            "child_tasks",
+            "child_rewards",
+            "child_achievements",
+            "caregiver_dashboard",
+            "caregiver_tasks",
+            "caregiver_progress",
+            "caregiver_children",
         )
         assertEquals(expectedRoutes.size, routes.size)
         expectedRoutes.forEach { expectedRoute ->
@@ -57,8 +63,6 @@ class BottomNavItemTest {
         val childTasks = BottomNavItem.ChildTasks
         val childRewards = BottomNavItem.ChildRewards
         val childAchievements = BottomNavItem.ChildAchievements
-        val childProfile = BottomNavItem.ChildProfile
-
         // Then
         assertEquals("child_home", childHome.route)
         assertEquals("Home", childHome.label)
@@ -71,9 +75,6 @@ class BottomNavItemTest {
 
         assertEquals("child_achievements", childAchievements.route)
         assertEquals("Awards", childAchievements.label)
-
-        assertEquals("child_profile", childProfile.route)
-        assertEquals("Profile", childProfile.label)
     }
 
     @Test
@@ -83,8 +84,6 @@ class BottomNavItemTest {
         val caregiverTasks = BottomNavItem.CaregiverTasks
         val caregiverProgress = BottomNavItem.CaregiverProgress
         val caregiverChildren = BottomNavItem.CaregiverChildren
-        val caregiverProfile = BottomNavItem.CaregiverProfile
-
         // Then
         assertEquals("caregiver_dashboard", caregiverDashboard.route)
         assertEquals("Home", caregiverDashboard.label)
@@ -97,9 +96,6 @@ class BottomNavItemTest {
 
         assertEquals("caregiver_children", caregiverChildren.route)
         assertEquals("Children", caregiverChildren.label)
-
-        assertEquals("caregiver_profile", caregiverProfile.route)
-        assertEquals("Profile", caregiverProfile.label)
     }
 
     @Test
@@ -177,7 +173,6 @@ class BottomNavItemTest {
             BottomNavItem.ChildTasks,
             BottomNavItem.ChildRewards,
             BottomNavItem.ChildAchievements,
-            BottomNavItem.ChildProfile,
         )
 
         private val EXPECTED_CAREGIVER_ITEMS = listOf(
@@ -185,7 +180,6 @@ class BottomNavItemTest {
             BottomNavItem.CaregiverTasks,
             BottomNavItem.CaregiverProgress,
             BottomNavItem.CaregiverChildren,
-            BottomNavItem.CaregiverProfile,
         )
     }
 }
