@@ -3,32 +3,29 @@
 
 LAYOUT_WITH_LEGEND()
 
-title Arthur's Life App - Container Diagram
+title Arthur's Life App - Container Diagram (v1, 2025-07)
 
 Person(arthur, "Arthur", "Child user")
 Person(parent, "Parent/Caregiver", "App administrator")
 System_Ext(talkback, "Android TalkBack", "Accessibility service")
+System_Ext(coppa, "COPPA Compliance", "Child privacy and parental consent requirements")
+System_Ext(gdpr, "GDPR Compliance", "Data minimization and consent management")
 
 System_Boundary(arthurslife, "Arthur's Life App") {
-  Container(mainactivity, "MainActivity", "Kotlin + Jetpack Compose", "Single activity hosting all screens with accessibility-first UI design")
-  
-  Container(presentation, "Presentation Layer", "Kotlin + Compose + ViewModels", "MVVM architecture with reactive UI state management and accessibility semantics")
-  
-  Container(application, "Application Layer", "Kotlin", "Use cases orchestrating domain operations: EarnTokenUseCase, RedeemRewardUseCase, TrackProgressUseCase")
-  
-  Container(domain, "Domain Layer", "Kotlin", "Core business logic: User aggregate, Token economy rules, Task management, Reward system")
-  
-  Container(infrastructure, "Infrastructure Layer", "Kotlin", "Data persistence, preferences, and external service implementations")
-  
-  ContainerDb(roomdb, "Room Database", "SQLite", "Local offline-first storage for user data, tasks, tokens, and rewards")
-  
-  ContainerDb(datastore, "DataStore", "Preferences", "Encrypted storage for user preferences and app settings")
+  Container(mainactivity, "MainActivity", "Kotlin + Jetpack Compose", "Single activity hosting all screens with accessibility-first UI design and privacy compliance")
+  Container(presentation, "Presentation Layer", "Kotlin + Compose + ViewModels", "MVVM architecture with reactive UI state management, accessibility semantics, and theme-aware components")
+  Container(application, "Application Layer", "Kotlin", "Use cases orchestrating domain operations: EarnTokenUseCase, RedeemRewardUseCase, TrackProgressUseCase, ConsentManagementUseCase")
+  Container(domain, "Domain Layer", "Kotlin", "Core business logic: User aggregate, Token economy rules, Task management, Reward system, Privacy/consent logic")
+  Container(infrastructure, "Infrastructure Layer", "Kotlin", "Data persistence, preferences, external service implementations, secure storage")
+  ContainerDb(roomdb, "Room Database", "SQLite", "Local offline-first storage for user data, tasks, tokens, rewards, and privacy/consent logs")
+  ContainerDb(datastore, "DataStore", "Preferences", "Encrypted storage for user/app settings, accessibility, and theme preferences")
 }
 
 arthur --> mainactivity : "Interacts with\naccessible UI"
 parent --> mainactivity : "Configures app\nthrough admin screens"
 mainactivity --> talkback : "Provides content\ndescriptions"
-
+mainactivity --> coppa : "Enforces child privacy\nand consent"
+mainactivity --> gdpr : "Handles data export,\ndelete, retention"
 mainactivity --> presentation : "User interactions"
 presentation --> application : "Triggers use cases"
 application --> domain : "Executes business logic"

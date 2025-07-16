@@ -1,7 +1,7 @@
 @startuml database-entity-relationship
 !theme plain
 
-title Arthur's Life App - Database Entity Relationship Diagram
+title Arthur's Life App - Database Entity Relationship Diagram (v1, 2025-07)
 
 !define ENTITY entity
 
@@ -22,6 +22,8 @@ ENTITY User {
   themePreference : String (nullable)
   accessibilitySettings : String (nullable, JSON)
   languagePreference : String (nullable)
+  privacyConsent : Boolean (default: false)
+  coppaConsent : Boolean (default: false)
   lastLoginAt : Long (nullable)
   isActive : Boolean (default: true)
   --
@@ -34,6 +36,7 @@ ENTITY Family {
   * name : String
   * adminUserId : String <<FK>>
   settings : String (JSON, family-wide settings)
+  parentalControls : String (JSON, COPPA/child safety)
   --
   * createdAt : Long (timestamp)
   * updatedAt : Long (timestamp)
@@ -58,88 +61,26 @@ ENTITY Task {
   * category : String (PersonalCare, HouseholdChores, Homework, SocialSkills, Exercise, Creative, Other)
   * difficulty : String (EASY, MEDIUM, HARD, EXPERT)
   * tokenReward : Int (calculated based on difficulty)
-  * assignedUserId : String <<FK>>
-  * createdByUserId : String <<FK>>
-  * status : String (ACTIVE, PAUSED, ARCHIVED, DRAFT)
+  privacyFlag : Boolean (default: false)
   --
-  description : String (nullable)
-  instructions : String (nullable)
-  timeEstimate : Int (nullable, in minutes)
-  preferredCompletionTime : String (nullable)
-  isRecurring : Boolean (default: false)
-  recurringPattern : String (nullable, DAILY, WEEKLY, WEEKDAYS, WEEKENDS, CUSTOM)
+  assignedToUserId : String <<FK>>
+  completedByUserId : String <<FK>>
+  completedAt : Long (nullable)
+  isActive : Boolean (default: true)
   --
   * createdAt : Long (timestamp)
-  * updatedAt : Long (timestamp)
-}
-
-ENTITY TaskCompletion {
-  * id : String (UUID) <<PK>>
-  --
-  * taskId : String <<FK>>
-  * userId : String <<FK>>
-  * completedAt : Long (timestamp)
-  * tokensEarned : Int
-  * isValidated : Boolean (default: true)
-  --
-  completionNotes : String (nullable)
-  timeDurationMinutes : Int (nullable)
-  validatedByUserId : String (nullable) <<FK>>
-}
-
-ENTITY TokenTransaction {
-  * id : String (UUID) <<PK>>
-  --
-  * userId : String <<FK>>
-  * amount : Int
-  * transactionType : String (EARNED, SPENT, BONUS, PENALTY, TRANSFER)
-  * source : String (TASK_COMPLETION, BEHAVIOR_REWARD, DAILY_BONUS, ACHIEVEMENT_UNLOCK, CAREGIVER_AWARD, STREAK_BONUS, REWARD_PURCHASE, MANUAL_ADJUSTMENT)
-  * description : String
-  * timestamp : Long
-  * balanceAfter : Int
-  --
-  relatedTaskId : String (nullable) <<FK>>
-  relatedRewardId : String (nullable) <<FK>>
-  relatedAchievementId : String (nullable) <<FK>>
-  issuerUserId : String (nullable) <<FK>>
 }
 
 ENTITY Reward {
   * id : String (UUID) <<PK>>
   --
-  * title : String
-  * description : String
-  * category : String (ENTERTAINMENT, TREATS, ACTIVITIES, PRIVILEGES, TOYS, EXPERIENCES)
-  * tokenCost : Int
-  * isAvailable : Boolean (default: true)
-  * createdByUserId : String <<FK>>
-  * isCustom : Boolean (default: false)
-  * approvalRequired : Boolean (default: false)
-  --
-  imageUrl : String (nullable)
-  levelRequirement : Int (nullable)
-  redemptionLimit : Int (nullable)
-  expirationDate : Long (nullable)
-  fulfillmentInstructions : String (nullable)
+  * name : String
+  * cost : Int
+  * category : String (Physical, Digital, Experience, Other)
+  * isActive : Boolean (default: true)
+  auditTrail : String (JSON, redemption history)
   --
   * createdAt : Long (timestamp)
-  * updatedAt : Long (timestamp)
-}
-
-ENTITY RewardRedemption {
-  * id : String (UUID) <<PK>>
-  --
-  * rewardId : String <<FK>>
-  * userId : String <<FK>>
-  * tokensSpent : Int
-  * redemptionAt : Long (timestamp)
-  * status : String (PENDING, APPROVED, FULFILLED, CANCELLED)
-  --
-  approvedByUserId : String (nullable) <<FK>>
-  approvedAt : Long (nullable)
-  fulfilledAt : Long (nullable)
-  notes : String (nullable)
-  satisfactionRating : Int (nullable, 1-5)
 }
 
 ENTITY Achievement {
@@ -147,86 +88,17 @@ ENTITY Achievement {
   --
   * name : String
   * description : String
-  * category : String (DAILY, WEEKLY, MILESTONE, SPECIAL, STREAK)
-  * tokenReward : Int
-  * requirement : String (JSON, achievement criteria)
-  * badgeImageUrl : String
-  * isGlobal : Boolean (default: true)
-  * celebrationLevel : String (COMMON, RARE, EPIC, LEGENDARY)
-  --
-  unlockConditions : String (JSON)
-  --
-  * createdAt : Long (timestamp)
+  * unlockedByUserId : String <<FK>>
+  * unlockedAt : Long (timestamp)
+  * tokenAward : Int
+  auditTrail : String (JSON, unlock history)
 }
 
-ENTITY UserAchievement {
-  * id : String (UUID) <<PK>>
-  --
-  * userId : String <<FK>>
-  * achievementId : String <<FK>>
-  * progress : Int (current progress value)
-  * targetValue : Int (required value for completion)
-  * isCompleted : Boolean (default: false)
-  --
-  completedAt : Long (nullable)
-  currentStreak : Int (nullable, for streak-based achievements)
-  lastProgressAt : Long (nullable)
-}
-
-ENTITY BackupRecord {
-  * id : String (UUID) <<PK>>
-  --
-  * familyId : String <<FK>>
-  * backupDate : Long (timestamp)
-  * dataVersion : String
-  * encryptionInfo : String (JSON)
-  * sizeBytes : Long
-  * backupType : String (AUTOMATIC, MANUAL, MIGRATION, EMERGENCY)
-  * includedCategories : String (JSON array)
-  * verificationHash : String
-  * storageLocation : String
-}
-
-' Family Relationships
-User }o--|| Family : "belongs to (primary)"
-Family ||--o{ FamilyMembership : "has members"
-User ||--o{ FamilyMembership : "member of families"
-Family ||--o{ BackupRecord : "has backups"
-Family ||--o| User : "administered by"
-
-' Task Relationships
-User ||--o{ Task : "assigned tasks"
-User ||--o{ Task : "created tasks"
-User ||--o{ TaskCompletion : "completed tasks"
-Task ||--o{ TaskCompletion : "completions"
-User ||--o{ TaskCompletion : "validates completions"
-
-' Token Economy Relationships
-User ||--o{ TokenTransaction : "has transactions"
-Task ||--o{ TokenTransaction : "generates transactions"
-Reward ||--o{ TokenTransaction : "spending transactions"
-Achievement ||--o{ TokenTransaction : "reward transactions"
-User ||--o{ TokenTransaction : "issued by"
-
-' Reward System Relationships
-User ||--o{ Reward : "creates rewards"
-User ||--o{ RewardRedemption : "redeems rewards"
-Reward ||--o{ RewardRedemption : "redemptions"
-User ||--o{ RewardRedemption : "approves redemptions"
-
-' Achievement System Relationships
-User ||--o{ UserAchievement : "user achievements"
-Achievement ||--o{ UserAchievement : "earned by users"
-
-' Composite Relationships Notes
-note bottom of User : "Central entity with role-based access:\n- CHILD: Limited permissions\n- CAREGIVER: Management permissions\n- ADMIN: Full system access"
-
-note bottom of TokenTransaction : "Immutable audit trail of all token movements\nwith integrity verification and balance tracking"
-
-note bottom of Task : "Supports recurring tasks with flexible patterns\nand difficulty-based token rewards"
-
-note bottom of Achievement : "Gamification system with streak tracking\nand celebration levels for user engagement"
-
-note bottom of Family : "Multi-family support with role-based permissions\nand family-wide settings management"
+User ||--o{ FamilyMembership : "memberships"
+Family ||--o{ FamilyMembership : "members"
+User ||--o{ Task : "tasks"
+User ||--o{ Reward : "rewards"
+User ||--o{ Achievement : "achievements"
+Task ||--o{ Reward : "rewardsForTask"
 
 @enduml

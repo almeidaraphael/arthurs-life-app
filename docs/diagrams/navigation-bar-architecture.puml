@@ -1,0 +1,34 @@
+@startuml navigation-bar-architecture
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Arthur's Life App - Top/Bottom Navigation Bar Architecture (v1, 2025-07)
+
+Container_Boundary(presentation, "Presentation Layer") {
+  Component(mainAppNavigation, "MainAppNavigation", "Kotlin", "Central navigation graph with role-based screen access, theme-aware, accessibility support")
+  Component(bottomNavigationBar, "BottomNavigationBar", "Compose", "Displays main navigation for Child role, Mario theme, semantic icons, accessibility")
+  Component(topNavigationBar, "TopNavigationBar", "Compose", "Displays main navigation for Caregiver/Admin roles, Material theme, semantic icons, accessibility")
+  Component(roleSwitchingDialog, "RoleSwitchingDialog", "Compose", "Allows switching roles with PIN authentication, accessibility, audit trail")
+}
+
+Container_Boundary(domain, "Domain Layer") {
+  Component(userRole, "UserRole", "Enum", "Determines available navigation paths, theme, accessibility")
+}
+
+Container_Boundary(infrastructure, "Infrastructure Layer") {
+  Component(navigationPreferences, "NavigationPreferencesDataStore", "Kotlin", "Persists last visited screen, navigation state, audit log")
+}
+
+' Relationships
+mainAppNavigation --> bottomNavigationBar : "Child role navigation"
+mainAppNavigation --> topNavigationBar : "Caregiver/Admin navigation"
+mainAppNavigation --> roleSwitchingDialog : "Role switching"
+mainAppNavigation --> userRole : "Determines navigation"
+mainAppNavigation --> navigationPreferences : "Persists state"
+bottomNavigationBar --> userRole : "Mario theme, semantic icons"
+topNavigationBar --> userRole : "Material theme, semantic icons"
+roleSwitchingDialog --> navigationPreferences : "Audit PIN switches"
+
+SHOW_LEGEND()
+@enduml

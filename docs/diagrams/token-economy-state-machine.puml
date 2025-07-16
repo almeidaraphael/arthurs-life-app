@@ -1,7 +1,7 @@
 @startuml token-economy-state-machine
 !theme plain
 
-title Arthur's Life App - Token Economy State Machine
+title Arthur's Life App - Token Economy State Machine (v1, 2025-07)
 
 [*] --> UserRegistered : User joins family
 
@@ -43,6 +43,7 @@ state TokenValidation {
   TokenValidation : Check fraud detection
   TokenValidation : Verify task completion
   TokenValidation : Calculate final reward
+  TokenValidation : Log audit trail
 }
 
 TokenValidation --> TokensAwarded : Validation successful
@@ -51,6 +52,7 @@ TokenValidation --> ValidationFailed : Fraud detected or invalid
 state ValidationFailed {
   ValidationFailed : No tokens awarded
   ValidationFailed : Security event logged
+  ValidationFailed : COPPA audit
 }
 
 ValidationFailed --> TaskAssigned : Retry allowed
@@ -58,216 +60,10 @@ ValidationFailed --> [*] : Account suspended
 
 state TokensAwarded {
   TokensAwarded : Tokens added to balance
-  TokensAwarded : Transaction recorded
-  TokensAwarded : Experience points gained
+  TokensAwarded : User notified
+  TokensAwarded : Audit trail updated
 }
 
-TokensAwarded --> BalanceUpdated : Transaction complete
-TokensAwarded --> BonusEligible : Special conditions met
-
-state BonusEligible {
-  BonusEligible : Streak bonus
-  BonusEligible : Achievement unlock
-  BonusEligible : Daily bonus
-}
-
-BonusEligible --> BonusAwarded : Bonus conditions met
-BonusEligible --> BalanceUpdated : No bonus applicable
-
-state BonusAwarded {
-  BonusAwarded : Additional tokens awarded
-  BonusAwarded : Bonus transaction recorded
-}
-
-BonusAwarded --> BalanceUpdated : Bonus applied
-
-state BalanceUpdated {
-  BalanceUpdated : Current balance reflected
-  BalanceUpdated : Available for spending
-}
-
-BalanceUpdated --> RewardBrowsing : Child browses rewards
-BalanceUpdated --> TaskAssigned : New task assigned
-BalanceUpdated --> IdleState : No immediate action
-
-state IdleState {
-  IdleState : Waiting for user action
-  IdleState : Daily bonus checks
-  IdleState : Achievement monitoring
-}
-
-IdleState --> TaskAssigned : New task assigned
-IdleState --> RewardBrowsing : Child wants to spend
-IdleState --> DailyBonus : Daily login bonus
-
-state DailyBonus {
-  DailyBonus : Daily login reward
-  DailyBonus : Streak tracking
-}
-
-DailyBonus --> TokensAwarded : Daily bonus earned
-DailyBonus --> IdleState : No bonus today
-
-state RewardBrowsing {
-  RewardBrowsing : Child selects reward
-  RewardBrowsing : Checking availability
-}
-
-RewardBrowsing --> RewardSelected : Child chooses reward
-RewardBrowsing --> IdleState : Child cancels
-
-state RewardSelected {
-  RewardSelected : Reward chosen
-  RewardSelected : Cost validation
-}
-
-RewardSelected --> PurchaseValidation : Cost validation
-RewardSelected --> InsufficientTokens : Not enough tokens
-RewardSelected --> RewardUnavailable : Reward not available
-
-state InsufficientTokens {
-  InsufficientTokens : Insufficient balance
-  InsufficientTokens : Show required amount
-}
-
-InsufficientTokens --> RewardBrowsing : Try different reward
-InsufficientTokens --> TaskAssigned : Earn more tokens
-
-state RewardUnavailable {
-  RewardUnavailable : Reward not available
-  RewardUnavailable : Or requires approval
-}
-
-RewardUnavailable --> RewardBrowsing : Select different reward
-
-state PurchaseValidation {
-  PurchaseValidation : Final cost check
-  PurchaseValidation : Balance verification
-  PurchaseValidation : Fraud detection
-}
-
-PurchaseValidation --> TokensSpent : Purchase approved
-PurchaseValidation --> PurchaseDenied : Fraud detected
-
-state PurchaseDenied {
-  PurchaseDenied : Purchase blocked
-  PurchaseDenied : Security event logged
-}
-
-PurchaseDenied --> IdleState : Return to idle
-PurchaseDenied --> [*] : Account suspended
-
-state TokensSpent {
-  TokensSpent : Tokens deducted
-  TokensSpent : Spend transaction recorded
-  TokensSpent : Reward redeemed
-}
-
-TokensSpent --> ApprovalRequired : Reward needs approval
-TokensSpent --> RewardFulfilled : Instant fulfillment
-
-state ApprovalRequired {
-  ApprovalRequired : Waiting for parent approval
-  ApprovalRequired : Redemption status = PENDING
-}
-
-ApprovalRequired --> RewardApproved : Parent approves
-ApprovalRequired --> RewardDenied : Parent denies
-ApprovalRequired --> ApprovalTimeout : Timeout reached
-
-state RewardApproved {
-  RewardApproved : Parent approved redemption
-  RewardApproved : Status = APPROVED
-}
-
-RewardApproved --> RewardFulfilled : Ready for fulfillment
-
-state RewardDenied {
-  RewardDenied : Parent denied redemption
-  RewardDenied : Tokens refunded
-}
-
-RewardDenied --> BalanceUpdated : Tokens restored
-
-state ApprovalTimeout {
-  ApprovalTimeout : Approval timed out
-  ApprovalTimeout : Auto-refund tokens
-}
-
-ApprovalTimeout --> BalanceUpdated : Tokens refunded
-
-state RewardFulfilled {
-  RewardFulfilled : Reward delivered
-  RewardFulfilled : Status = FULFILLED
-}
-
-RewardFulfilled --> BalanceUpdated : Transaction complete
-
-state TaskPaused {
-  TaskPaused : Task temporarily paused
-  TaskPaused : No progress counted
-}
-
-TaskPaused --> TaskInProgress : Resume task
-TaskPaused --> TaskArchived : Cancel task
-
-state TaskArchived {
-  TaskArchived : Task cancelled
-  TaskArchived : No tokens awarded
-}
-
-TaskArchived --> TaskAssigned : New task assigned
-TaskArchived --> IdleState : No immediate action
-
-state TaskAbandoned {
-  TaskAbandoned : Child gave up
-  TaskAbandoned : Partial credit possible
-}
-
-TaskAbandoned --> PartialCredit : Some progress made
-TaskAbandoned --> NoCredit : No progress
-
-state PartialCredit {
-  PartialCredit : Reduced token award
-  PartialCredit : Learning opportunity
-}
-
-PartialCredit --> TokensAwarded : Partial tokens awarded
-
-state NoCredit {
-  NoCredit : No tokens for abandonment
-  NoCredit : Encouragement message
-}
-
-NoCredit --> IdleState : No reward given
-
-' Special States
-
-state LevelUp {
-  LevelUp : User gained a level
-  LevelUp : Special celebration
-  LevelUp : Unlock new rewards
-}
-
-TokensAwarded --> LevelUp : Experience threshold reached
-BonusAwarded --> LevelUp : Bonus pushed over threshold
-LevelUp --> BalanceUpdated : Level up complete
-
-state EmergencyReset {
-  EmergencyReset : Balance corruption detected
-  EmergencyReset : Restore from backup
-}
-
-BalanceUpdated --> EmergencyReset : Integrity check failed
-TokensAwarded --> EmergencyReset : Invalid balance state
-EmergencyReset --> BalanceUpdated : Balance restored
-EmergencyReset --> [*] : System error
-
-' Notes
-note top of TokenValidation : "Fraud detection includes:\n- Daily earning limits\n- Rapid accumulation detection\n- Balance integrity checks"
-
-note right of PurchaseValidation : "Security checks include:\n- Spending pattern analysis\n- Balance verification\n- Transaction integrity"
-
-note bottom of BalanceUpdated : "Central state for all\ntoken balance operations\nwith integrity monitoring"
+TokensAwarded --> [*] : End
 
 @enduml

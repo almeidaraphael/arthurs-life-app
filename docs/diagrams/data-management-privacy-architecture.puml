@@ -1,0 +1,45 @@
+@startuml data-management-privacy-architecture
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Arthur's Life App - Data Management & Privacy Architecture (v1, 2025-07)
+
+Container_Boundary(domain, "Domain Layer") {
+  Component(user, "User Aggregate", "Kotlin", "Profile, privacy preferences, consent status, COPPA compliance")
+  Component(family, "Family Entity", "Kotlin", "Family-wide privacy settings, parental controls")
+}
+
+Container_Boundary(application, "Application Layer") {
+  Component(dataManagementService, "DataManagementService", "Kotlin", "Handles data minimization, retention, cleanup, secure export/deletion, child protection policies")
+  Component(consentManagementService, "ConsentManagementService", "Kotlin", "Manages user consent, portability, deletion requests, audit trail")
+}
+
+Container_Boundary(infrastructure, "Infrastructure Layer") {
+  Component(dataStore, "DataStore", "Kotlin", "Encrypted storage for privacy preferences, consent logs, audit trail")
+  Component(database, "Room Database", "Kotlin", "Stores user, family, consent, and audit data")
+}
+
+Container_Boundary(presentation, "Presentation Layer") {
+  Component(privacySettingsScreen, "PrivacySettingsScreen", "Compose", "UI for managing privacy, consent, and data export/deletion settings")
+}
+
+Container_Boundary(compliance, "Compliance & Monitoring") {
+  Component(complianceMonitor, "ComplianceMonitor", "Kotlin", "Validates COPPA/GDPR compliance, generates reports, monitors audit trail")
+}
+
+' Relationships
+dataManagementService --> user : "Reads privacy preferences"
+dataManagementService --> family : "Reads family settings"
+dataManagementService --> dataStore : "Persists privacy data"
+dataManagementService --> database : "Cleans up data"
+dataManagementService --> complianceMonitor : "Reports compliance status"
+consentManagementService --> user : "Manages consent status"
+consentManagementService --> dataStore : "Logs consent actions"
+consentManagementService --> complianceMonitor : "Reports consent/audit"
+privacySettingsScreen --> consentManagementService : "Triggers consent actions"
+complianceMonitor --> dataManagementService : "Validates policies"
+complianceMonitor --> consentManagementService : "Validates consent"
+
+SHOW_LEGEND()
+@enduml

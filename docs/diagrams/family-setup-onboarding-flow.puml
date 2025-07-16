@@ -1,0 +1,38 @@
+@startuml family-setup-onboarding-flow
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Sequence.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Arthur's Life App - Family Setup & Onboarding Flow (v1, 2025-07)
+
+actor User
+participant "OnboardingScreen" as onboarding
+participant "FamilySetupScreen" as familysetup
+participant "UserAggregate" as user
+participant "FamilyAggregate" as family
+participant "RoleSelectionDialog" as roleDialog
+participant "PINAuthentication" as pinAuth
+participant "ThemeSelector" as themeSelector
+participant "ConsentService" as consent
+participant "PrivacyMonitor" as privacyMon
+
+User -> onboarding : Launches app
+onboarding -> familysetup : Proceeds to family setup
+familysetup -> family : Creates or joins family
+family -> user : Links user to family
+familysetup -> roleDialog : Selects role (Child/Caregiver/Admin)
+roleDialog -> pinAuth : Authenticates for elevated roles
+roleDialog -> user : Assigns role
+roleDialog -> themeSelector : Sets default theme
+User -> themeSelector : Customizes theme
+onboarding -> consent : Requests privacy/COPPA consent
+consent -> User : Display consent dialog
+User -> consent : Provide consent
+consent -> privacyMon : Log consent
+onboarding -> user : Completes onboarding
+user -> onboarding : Stores onboarding completion
+
+note right of onboarding : Onboarding flow supports accessibility,\nlanguage selection, privacy consent, and COPPA compliance
+
+SHOW_LEGEND()
+@enduml

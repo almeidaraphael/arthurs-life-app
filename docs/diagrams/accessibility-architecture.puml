@@ -1,9 +1,12 @@
 @startuml accessibility-architecture
-!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
 
 LAYOUT_WITH_LEGEND()
 
-title Arthur's Life App - Accessibility Architecture
+title Arthur's Life App - Accessibility Architecture (v1, 2025-07)
+
+AddComponentTag("a11y", $bgColor="#e0f7fa", $fontColor="#006064", $legendText="Accessibility Feature")
+AddComponentTag("coppa", $bgColor="#fff3e0", $fontColor="#e65100", $legendText="COPPA Compliance")
 
 Person(arthur, "Arthur", "Child with accessibility needs")
 
@@ -16,18 +19,18 @@ System_Boundary(android, "Android System") {
 
 System_Boundary(app, "Arthur's Life App") {
   Container_Boundary(presentation, "Presentation Layer") {
-    Component(semantics, "Accessibility Semantics", "Kotlin + Compose", "Content descriptions, roles, and state descriptions for all UI elements")
-    Component(navigation, "Focus Navigation", "Kotlin + Compose", "Logical tab order and keyboard navigation support")
-    Component(theming, "Adaptive Theming", "Kotlin + Compose", "Dynamic color contrast and text scaling support")
+    Component(semantics, "Accessibility Semantics", "Kotlin + Compose", "Content descriptions, roles, state descriptions for all UI elements, COPPA compliance", $tags="a11y+coppa")
+    Component(navigation, "Focus Navigation", "Kotlin + Compose", "Logical tab order, keyboard navigation, accessibility audit", $tags="a11y")
+    Component(theming, "Adaptive Theming", "Kotlin + Compose", "Dynamic color contrast, text scaling, accessibility preview", $tags="a11y")
   }
-  
+
   Container_Boundary(domain, "Domain Layer") {
-    Component(a11yservice, "AccessibilityService", "Kotlin", "Business rules for accessibility preferences and adaptive behavior")
-    Component(userprefs, "User Preferences", "Kotlin", "Arthur's accessibility settings and customizations")
+    Component(a11yservice, "AccessibilityService", "Kotlin", "Business rules for accessibility preferences, adaptive behavior, audit trail", $tags="a11y")
+    Component(userprefs, "User Preferences", "Kotlin", "Arthur's accessibility settings, customizations, COPPA consent", $tags="coppa")
   }
-  
+
   Container_Boundary(infra, "Infrastructure Layer") {
-    Component(prefsstore, "PreferencesDataStore", "Kotlin", "Persistent storage for accessibility settings")
+    Component(prefsstore, "PreferencesDataStore", "Kotlin", "Persistent storage for accessibility settings, audit logs")
   }
 }
 
@@ -43,7 +46,6 @@ app --> keyboard : "Handles focus\nnavigation"
 semantics --> a11yservice : "Queries accessibility\npreferences"
 navigation --> a11yservice : "Gets navigation\nrules"
 theming --> a11yservice : "Applies visual\nadaptations"
-
 a11yservice --> userprefs : "Reads Arthur's\npreferences"
 userprefs --> prefsstore : "Persists settings"
 
@@ -52,14 +54,7 @@ talkback --> arthur : "Speaks content\ndescriptions"
 magnification --> arthur : "Enlarges text\nand UI"
 highcontrast --> arthur : "Improves color\nvisibility"
 
-note right of a11yservice
-  Business rules include:
-  • Minimum touch target sizes
-  • Content description patterns
-  • Voice announcement timing
-  • High contrast color mappings
-  • Focus order algorithms
-end note
+note right of a11yservice : "Business rules include:\n• Minimum touch target sizes\n• Content description patterns\n• Voice announcement timing\n• High contrast color mappings\n• COPPA accessibility audit"
 
 SHOW_LEGEND()
 @enduml

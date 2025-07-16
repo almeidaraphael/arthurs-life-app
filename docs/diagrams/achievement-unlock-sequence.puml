@@ -1,0 +1,23 @@
+@startuml achievement-unlock-sequence
+!theme plain
+
+title Arthur's Life App - Achievement Unlock Sequence (v1, 2025-07)
+
+actor User
+participant "App UI" as UI
+participant "AchievementService" as Service
+participant "UserRepository" as Repo
+participant "AchievementRepository" as AchRepo
+participant "AuditTrail" as Audit
+
+User -> UI : Completes qualifying action
+UI -> Service : Notify achievement criteria met
+Service -> AchRepo : Query achievement requirements
+AchRepo --> Service : Return achievement details
+Service -> Repo : Update user achievement progress
+Repo --> Service : Confirm progress update
+Service -> Audit : Log achievement unlock
+Service -> UI : Achievement unlocked event
+UI -> User : Show achievement unlock animation
+UI -> User : Award tokens, badge, celebration
+@enduml

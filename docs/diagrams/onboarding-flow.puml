@@ -1,0 +1,26 @@
+@startuml onboarding-flow
+!theme plain
+
+title Arthur's Life App - Onboarding & Family Setup Flow (v1, 2025-07)
+
+actor NewUser
+participant "App UI" as UI
+participant "FamilyService" as FamilySvc
+participant "UserRepository" as UserRepo
+participant "ConsentService" as ConsentSvc
+participant "PrivacyMonitor" as PrivacyMon
+
+NewUser -> UI : Launch app
+UI -> NewUser : Show onboarding screens
+NewUser -> UI : Enter profile info
+UI -> FamilySvc : Create family or join existing
+FamilySvc -> UserRepo : Register user
+UserRepo --> FamilySvc : Confirm registration
+FamilySvc -> ConsentSvc : Request privacy/COPPA consent
+ConsentSvc -> NewUser : Display consent dialog
+NewUser -> ConsentSvc : Provide consent
+ConsentSvc -> PrivacyMon : Log consent
+FamilySvc -> UI : Family setup complete
+UI -> NewUser : Assign initial role (Child/Caregiver/Admin)
+UI -> NewUser : Show welcome and next steps
+@enduml

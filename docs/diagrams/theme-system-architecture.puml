@@ -3,35 +3,35 @@
 
 LAYOUT_WITH_LEGEND()
 
-title Arthur's Life App - Theme System Architecture
+title Arthur's Life App - Theme System Architecture (v1, 2025-07)
 
 Container_Boundary(themes, "Theme Definitions") {
-  Component(baseapptheme, "BaseAppTheme", "Interface", "Contract defining colorScheme, shapes, typography, backgroundImageRes, backgroundTint, semanticIcons, terminology, and avatar")
-  Component(materiallight, "MaterialLightTheme", "Implementation", "Professional Material Design 3 light theme for caregivers")
-  Component(materialdark, "MaterialDarkTheme", "Implementation", "Professional Material Design 3 dark theme for low-light usage")
-  Component(marioclassic, "MarioClassicTheme", "Implementation", "Playful retro gaming theme with Mario-inspired aesthetics for children")
+  Component(baseapptheme, "BaseAppTheme", "Interface", "Contract defining colorScheme, shapes, typography, backgroundImageRes, backgroundTint, semanticIcons, terminology, avatar, accessibility contrast")
+  Component(materiallight, "MaterialLightTheme", "Implementation", "Material Design 3 light theme for caregivers")
+  Component(materialdark, "MaterialDarkTheme", "Implementation", "Material Design 3 dark theme for low-light usage")
+  Component(marioclassic, "MarioClassicTheme", "Implementation", "Retro gaming theme for children, Mario-inspired, COPPA-compliant")
 }
 
 Container_Boundary(management, "Theme Management") {
-  Component(thememanager, "ThemeManager", "Singleton", "Central theme registry providing lookup, metadata generation, and fallback logic")
-  Component(themeviewmodel, "ThemeViewModel", "ViewModel", "Theme state management with role-based defaults and DataStore persistence")
-  Component(themepreferences, "ThemePreferencesDataStore", "DataStore", "Per-role theme preference storage with migration support")
+  Component(thememanager, "ThemeManager", "Singleton", "Central theme registry, metadata generation, fallback logic, accessibility checks")
+  Component(themeviewmodel, "ThemeViewModel", "ViewModel", "Theme state management, role-based defaults, DataStore persistence, accessibility state")
+  Component(themepreferences, "ThemePreferencesDataStore", "DataStore", "Per-role theme preference storage, migration, privacy compliance")
 }
 
 Container_Boundary(ui, "Theme-Aware UI Components") {
-  Component(themeawareicon, "ThemeAwareIcon", "Compose", "Semantic icon mapping with theme-specific implementations")
-  Component(themeawareavatar, "ThemeAwareAvatar", "Compose", "Role-appropriate avatar display based on current theme")
-  Component(themeawarebackground, "ThemeAwareBackground", "Compose", "Theme-specific background styling with images and tints")
-  Component(themeselector, "ThemeSelector", "Compose", "Interactive theme selection UI with live preview")
+  Component(themeawareicon, "ThemeAwareIcon", "Compose", "Semantic icon mapping, theme-specific, accessibility content descriptions")
+  Component(themeawareavatar, "ThemeAwareAvatar", "Compose", "Role-appropriate avatar display, theme-based")
+  Component(themeawarebackground, "ThemeAwareBackground", "Compose", "Theme-specific background styling, images, tints, contrast")
+  Component(themeselector, "ThemeSelector", "Compose", "Interactive theme selection UI, live preview, accessibility preview")
 }
 
 Container_Boundary(domain, "Domain Integration") {
-  Component(user, "User Aggregate", "Domain", "User profile with role-based theme preferences")
-  Component(userrole, "UserRole", "Enum", "CHILD or CAREGIVER role determining theme defaults")
+  Component(user, "User Aggregate", "Domain", "User profile, role-based theme preferences, accessibility settings")
+  Component(userrole, "UserRole", "Enum", "CHILD or CAREGIVER, determines theme defaults and accessibility")
 }
 
 Container_Boundary(terminology, "Theme Terminology") {
-  Component(themeterminology, "ThemeTerminology", "Data Class", "Theme-specific language mapping")
+  Component(themeterminology, "ThemeTerminology", "Data Class", "Theme-specific language mapping, i18n/l10n support")
   Component(semanticicons, "SemanticIconType", "Enum", "Abstract icon concepts for theme-specific mapping")
 }
 
@@ -58,16 +58,5 @@ themeselector --> themeviewmodel : "changes theme selection"
 baseapptheme --> themeterminology : "provides terminology"
 baseapptheme --> semanticicons : "maps to specific icons"
 marioclassic --> themeterminology : "gaming terms (Quests, Coins)"
-materiallight --> themeterminology : "professional terms (Tasks, Badges)"
 
-' Role-based theme defaults
-userrole --> marioclassic : "CHILD → Mario Classic"
-userrole --> materiallight : "CAREGIVER → Material Light"
-
-' Data flow notes
-note right of themeviewmodel : "Reactive theme state\nwith automatic persistence\nand role-based defaults"
-note bottom of thememanager : "Theme registry with\nfallback logic and\nmetadata generation"
-note right of baseapptheme : "Defines complete theme\ncontract including colors,\nicons, and terminology"
-
-SHOW_LEGEND()
 @enduml

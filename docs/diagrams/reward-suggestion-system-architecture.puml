@@ -1,0 +1,37 @@
+@startuml reward-suggestion-system-architecture
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Arthur's Life App - Reward Suggestion System Architecture (v1, 2025-07)
+
+Container_Boundary(domain, "Domain Layer") {
+  Component(rewardSuggestionService, "RewardSuggestionService", "Kotlin", "Suggests rewards based on user behavior, preferences, achievement history, privacy settings")
+  Component(user, "User Aggregate", "Kotlin", "Profile, token balance, achievement history, privacy consent")
+  Component(achievement, "Achievement Entity", "Kotlin", "Tracks unlocked achievements and progress milestones")
+}
+
+Container_Boundary(application, "Application Layer") {
+  Component(suggestRewardUseCase, "SuggestRewardUseCase", "Kotlin", "Orchestrates reward suggestion workflow, respects privacy/consent")
+}
+
+Container_Boundary(presentation, "Presentation Layer") {
+  Component(rewardSuggestionViewModel, "RewardSuggestionViewModel", "Kotlin", "Manages UI state for reward suggestions, privacy-aware")
+  Component(rewardSuggestionScreen, "RewardSuggestionScreen", "Compose", "Displays suggested rewards to user, privacy controls")
+}
+
+Container_Boundary(infrastructure, "Infrastructure Layer") {
+  Component(rewardRepository, "RewardRepositoryImpl", "Kotlin", "Persists reward catalog, suggestion history, audit trail")
+}
+
+' Relationships
+suggestRewardUseCase --> rewardSuggestionService : "Invokes suggestion logic"
+suggestRewardUseCase --> user : "Reads user profile"
+suggestRewardUseCase --> achievement : "Reads achievement history"
+suggestRewardUseCase --> rewardRepository : "Fetches rewards"
+rewardSuggestionViewModel --> suggestRewardUseCase : "Triggers suggestions"
+rewardSuggestionScreen --> rewardSuggestionViewModel : "Displays suggestions"
+rewardSuggestionScreen --> user : "Checks privacy consent"
+
+SHOW_LEGEND()
+@enduml

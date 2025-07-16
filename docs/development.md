@@ -21,19 +21,18 @@ Covers development workflow, code quality standards, build commands, IDE configu
 
 ### Key Information
 - **Summary**: Development workflow with quality gates and coding standards
-- **Status**: Complete - actively maintained
-- **Last Updated**: 2025-01-06
 - **Related**: [Architecture](architecture.md), [Testing Guide](testing.md)
 
 ### Common Tasks
-- [Feature Development Process](#development-workflow)
+- [Feature Development Process](#feature-development-process)
 - [Code Quality Standards](#code-quality-standards)
 - [Build Commands](#build-commands)
 - [IDE Configuration](#ide-configuration)
 
-## Development Workflow
+## 📖 Main Content
 
-### Feature Development Process
+### Section 1: Core Concepts
+#### Development Workflow
 
 1. **Architecture Planning**
    - Apply DDD principles for new domain concepts
@@ -52,24 +51,22 @@ Covers development workflow, code quality standards, build commands, IDE configu
    - Test accessibility features with TalkBack
    - Validate UI responsiveness across screen sizes
 
-### Branch Strategy
-
+#### Branch Strategy
 - **main**: Production-ready code
 - **develop**: Integration branch for features
 - **feature/***: Individual feature development
 - **hotfix/***: Critical bug fixes
 
-## Code Quality Standards
+### Section 2: Implementation Details
+#### Code Quality Standards
 
-### Kotlin Coding Standards
-
-#### Naming Conventions
+##### Kotlin Coding Standards
 - **Classes**: PascalCase (`TaskRepository`, `UserViewModel`)
 - **Functions**: camelCase (`createTask()`, `validateInput()`)
 - **Constants**: SCREAMING_SNAKE_CASE (`MAX_TASK_NAME_LENGTH`)
 - **Packages**: lowercase (`com.arthurslife.app.domain.task`)
 
-#### Code Style Requirements
+##### Code Style Requirements
 ```kotlin
 // Good: Clear, descriptive naming
 class TaskCompletionUseCase(
@@ -100,15 +97,13 @@ class Service {
 }
 ```
 
-### Architecture Compliance
-
-#### Domain-Driven Design
+##### Architecture Compliance
 - **Entities** must encapsulate business logic
 - **Value Objects** must be immutable
 - **Repositories** must use interfaces in domain layer
 - **Domain Events** must represent business concepts
 
-#### SOLID Principles Application
+##### SOLID Principles Application
 ```kotlin
 // Single Responsibility: One purpose per class
 class TokenCalculator {
@@ -144,7 +139,7 @@ interface TaskWriter {
 }
 ```
 
-#### DRY Implementation
+##### DRY Implementation
 ```kotlin
 // Shared validation logic
 object ValidationRules {
@@ -182,9 +177,10 @@ fun StandardButton(
 }
 ```
 
-## Build Commands
+### Section 3: Configuration
+#### Build Commands
 
-### Essential Commands
+##### Essential Commands
 ```bash
 # Navigate to Android project
 cd android-kotlin
@@ -195,10 +191,10 @@ cd android-kotlin
 ./gradlew assembleDebug           # Create debug APK
 ./gradlew assembleRelease         # Create release APK
 
+
 # Code quality
-./gradlew ktlintFormat            # Auto-format code
-./gradlew ktlintCheck             # Check code formatting
-./gradlew detekt                  # Run static analysis
+./gradlew detektFormat            # Auto-format code (Detekt formatting only)
+./gradlew detekt                  # Run static analysis (Detekt, zero violations required)
 ./gradlew check                   # Run all quality checks
 
 # Testing
@@ -208,16 +204,13 @@ cd android-kotlin
 ./gradlew testCoverage            # Generate coverage report
 ```
 
-### Quality Gates
+##### Quality Gates
 ```bash
-# Pre-commit verification
-./gradlew ktlintFormat && ./gradlew detekt && ./gradlew test
-
-# Release verification
-./gradlew check && ./gradlew testCoverage && ./gradlew assembleRelease
+# Mandatory sequence (all must pass)
+./gradlew detektFormat && ./gradlew detekt && ./gradlew build && ./gradlew test && ./gradlew installDebug
 ```
 
-### Java Version Verification
+##### Java Version Verification
 ```bash
 # Verify Java 21 (preferred) or Java 17 (fallback)
 java -version
@@ -225,39 +218,22 @@ java -version
 ./gradlew compileDebugKotlin
 ```
 
-## IDE Configuration
-
-### Android Studio Setup
-
-#### Project SDK Configuration
+#### IDE Configuration
+##### Android Studio Setup
 1. Go to **File → Project Structure → Project**
 2. Set **Project SDK** to Java 21 (preferred) or Java 17 (fallback)
 3. Set **Project Language Level** to 21 (or 17)
 4. Configure **Gradle JVM** to use Java 21 (preferred) or Java 17 (fallback)
 
-#### Code Style Settings
-```xml
-<!-- .editorconfig -->
-root = true
+##### Code Style Settings
 
-[*.{kt,kts}]
-indent_style = space
-indent_size = 4
-end_of_line = lf
-charset = utf-8
-trim_trailing_whitespace = true
-insert_final_newline = true
-max_line_length = 120
-```
+See `.editorconfig` in `android-kotlin/` for enforced formatting. Detekt handles all Kotlin-specific formatting rules.
 
-#### Useful Plugins
-- **Kotlin Multiplatform Mobile** (built-in)
-- **Detekt** - Static analysis integration
+##### Useful Plugins
+- **Detekt** - Static analysis integration (mandatory)
 - **GitToolBox** - Git integration enhancements
 
-### VS Code Configuration
-
-#### Java Extension Settings
+##### VS Code Configuration
 ```json
 {
   "java.configuration.runtimes": [
@@ -275,9 +251,10 @@ max_line_length = 120
 }
 ```
 
-## Performance Optimization
+### Section 4: Examples
+#### Performance Optimization
 
-### Jetpack Compose Best Practices
+##### Jetpack Compose Best Practices
 ```kotlin
 // Use remember for expensive calculations
 @Composable
@@ -304,7 +281,7 @@ fun TaskItem(
 }
 ```
 
-### Database Optimization
+##### Database Optimization
 ```kotlin
 // Efficient queries with Room
 @Dao
@@ -317,97 +294,38 @@ interface TaskDao {
 }
 ```
 
-## Security Considerations
+### Section 5: Best Practices
+#### Security Considerations
 
-### Input Validation
-```kotlin
-// Validate all user inputs
-class TaskCreationUseCase(
-    private val taskRepository: TaskRepository,
-    private val validator: TaskValidator
-) {
-    suspend fun createTask(request: CreateTaskRequest): Result<Task> {
-        val validationResult = validator.validate(request)
-        if (validationResult.hasErrors()) {
-            return Result.failure(ValidationException(validationResult.errors))
-        }
-        
-        // Continue with task creation
-    }
-}
-```
+##### Input Validation
+All user input must be validated according to business rules. Use domain-level validators and ensure compliance with COPPA and child safety standards.
 
-### Data Protection
-```kotlin
-// Use Android Keystore for sensitive data
-class SecurePreferences(context: Context) {
-    private val keyAlias = "user_pin_key"
-    
-    fun storePIN(pin: String) {
-        // Encrypt using Android Keystore
-    }
-    
-    fun retrievePIN(): String? {
-        // Decrypt using Android Keystore
-    }
-}
-```
+##### Data Protection
+Sensitive data (e.g., PINs, tokens) must be stored securely using Android Keystore. Never store sensitive information in plain text or shared preferences.
 
+### Section 6: Troubleshooting
+Common issues and their solutions:
+
+- **Detekt violations**: Run `./gradlew detektFormat` and fix all issues before proceeding. Zero violations required.
+- **Build failures**: Check for missing dependencies, incorrect Java version, or misconfigured Gradle files.
+- **Test failures**: Ensure all domain logic is covered and mocks are properly configured.
+- **IDE configuration issues**: Verify `.editorconfig` and SDK settings match project requirements.
 ## 🔗 Integration Points
 
 ### Dependencies
 - **Internal**: [Architecture](architecture.md) - Design principles and patterns
 - **Internal**: [Getting Started](getting-started.md) - Development environment setup
 - **Internal**: [Testing Guide](testing.md) - Testing strategies and implementation
-- **Planning**: [Requirements](../planning/requirements.md) - Feature specifications
+
+### Related Modules
+- **Dependency Injection**: See `di/DataStoreModule.kt` for Hilt setup and repository bindings.
+- **Domain Events**: See `domain/common/AchievementUpdateEvent.kt` for event-driven architecture.
 
 ### Related Features
 - **Code Quality**: Static analysis with Detekt and KtLint
 - **Build Process**: Gradle-based build system with quality gates
 - **IDE Integration**: Android Studio and VS Code configuration
 - **Security**: Input validation and data protection practices
-
-## 📊 Success Metrics
-
-### Implementation Goals
-- **Code Quality**: 80%+ test coverage, zero critical issues in static analysis
-- **Development Speed**: Efficient workflows with automated quality checks
-- **Consistency**: All code follows established standards and patterns
-- **Maintainability**: Clear, readable code with proper documentation
-
-### Quality Indicators
-- **Build Success**: All builds pass with no failures
-- **Test Coverage**: Unit tests cover all business logic
-- **Code Standards**: Detekt and KtLint pass with no violations
-- **Performance**: App meets responsiveness and efficiency requirements
-
-## 🚧 Implementation Status
-
-**Current Status**: Complete
-
-### Completed Features
-- [x] Development workflow with feature branch strategy
-- [x] Code quality standards with Kotlin conventions
-- [x] Build commands and quality gates
-- [x] IDE configuration for Android Studio and VS Code
-- [x] Performance optimization guidelines
-- [x] Security considerations and best practices
-
-### Future Enhancements
-- [ ] CI/CD pipeline integration
-- [ ] Automated code review tools
-- [ ] Performance profiling automation
-- [ ] Enhanced security scanning
-
-## 🔄 Maintenance
-
-### Regular Updates
-- **When to Update**: When adding new tools, changing standards, or updating dependencies
-- **Update Process**: Review workflow effectiveness, update tool configurations, validate standards
-- **Review Schedule**: Monthly workflow review, quarterly tool evaluation
-
-### Version History
-- **v1.0.0** (2025-01-06): Initial development guide with comprehensive workflow and standards
 
 ## 📚 Additional Resources
 

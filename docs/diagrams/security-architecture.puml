@@ -3,18 +3,18 @@
 
 LAYOUT_WITH_LEGEND()
 
-title Arthur's Life App - Security Architecture (Defense in Depth)
+title Arthur's Life App - Security Architecture (v1, 2025-07)
 
 Container_Boundary(application, "Application Layer Security") {
   Component(inputvalidation, "Input Validation", "Security", "SecureTokenValidator validates all token operations and user inputs")
-  Component(authentication, "Authentication & Authorization", "Security", "PIN-based authentication with Android Keystore, biometric fallback, role-based access")
+  Component(authentication, "Authentication & Authorization", "Security", "PIN-based authentication, Android Keystore, biometric fallback, role-based access, audit trail")
   Component(securecoding, "Secure Coding Practices", "Security", "SecureErrorHandler, SecureMemoryManager, proper error handling")
-  Component(sessionmgmt, "Session Management", "Security", "Auto-logout, session timeouts, parent mode protection")
+  Component(sessionmgmt, "Session Management", "Security", "Auto-logout, session timeouts, parent mode protection, audit logging")
 }
 
 Container_Boundary(data, "Data Layer Security") {
   Component(encryptionrest, "Encryption at Rest", "AES-256-GCM", "All sensitive data encrypted before storage using device keystore")
-  Component(dataminimization, "Data Minimization", "Privacy", "Minimal data collection, automatic cleanup, retention policies")
+  Component(dataminimization, "Data Minimization", "Privacy", "Minimal data collection, automatic cleanup, retention policies, COPPA compliance")
   Component(keymanagement, "Secure Key Management", "Android Keystore", "Key derivation with PBKDF2, secure key storage, periodic rotation")
   Component(dataclassification, "Data Classification", "Security", "Highly sensitive, moderately sensitive, and public data categorization")
 }
@@ -37,7 +37,7 @@ Container_Boundary(tokeneconomy, "Token Economy Security") {
   Component(transactionintegrity, "Transaction Integrity", "Security", "SecureTokenTransaction with HMAC validation and tamper detection")
   Component(balanceprotection, "Balance Protection", "Security", "SecureTokenBalance with fraud detection and rate limiting")
   Component(frauddetection, "Fraud Detection", "Security", "Rapid accumulation detection, impossible balance checking")
-  Component(audittrail, "Audit Trail", "Security", "Immutable transaction history with integrity verification")
+  Component(audittrail, "Audit Trail", "Security", "Immutable transaction history with integrity verification, COPPA audit compliance")
 }
 
 Container_Boundary(monitoring, "Security Monitoring") {
@@ -58,55 +58,6 @@ Container_Boundary(threats, "Threat Detection & Response") {
   Component(threatdetection, "Threat Detection", "Security", "Real-time threat analysis, behavioral anomaly detection")
   Component(intrusiondetection, "Intrusion Detection", "Security", "Unauthorized access detection, privilege escalation monitoring")
   Component(datasecurity, "Data Security", "Security", "Data leak prevention, unauthorized access monitoring")
-  Component(malwareprotection, "Malware Protection", "Security", "Runtime application self-protection, integrity monitoring")
 }
 
-' Layer relationships (Defense in Depth)
-application --> data : "Protects data with encryption"
-data --> transport : "Secures data transmission"
-transport --> device : "Leverages device security"
-
-' Security component relationships
-authentication --> keymanagement : "Uses for PIN storage"
-authentication --> securestorage : "Stores credentials"
-authentication --> biometric : "Fallback authentication"
-authentication --> sessionmgmt : "Manages user sessions"
-
-inputvalidation --> transactionintegrity : "Validates token operations"
-inputvalidation --> balanceprotection : "Prevents fraud"
-inputvalidation --> frauddetection : "Detects anomalies"
-
-encryptionrest --> keymanagement : "Uses encryption keys"
-encryptionrest --> securestorage : "Stores encrypted data"
-encryptionrest --> androidsecurity : "Leverages hardware security"
-
-tlssecurity --> apiauth : "Authenticates API requests"
-tlssecurity --> certpinning : "Validates certificates"
-tlssecurity --> offlinesync : "Secures synchronization"
-
-securityevent --> patternanalysis : "Analyzes security patterns"
-securityevent --> incidentresponse : "Triggers incident response"
-securityevent --> audittrail : "Maintains audit logs"
-
-privacybydesign --> dataminimization : "Minimizes data collection"
-privacybydesign --> datasubjectrights : "Implements user rights"
-privacybydesign --> childprotection : "Protects child data"
-
-threatdetection --> intrusiondetection : "Detects intrusions"
-threatdetection --> datasecurity : "Monitors data access"
-threatdetection --> malwareprotection : "Prevents malware"
-
-' Role-based security
-note right of authentication : "Child Role: Limited access\nParent Role: Full access\nAuto-logout from parent mode"
-note right of childprotection : "COPPA compliant\nParental consent required\nData minimization enforced"
-note right of transactionintegrity : "Tamper-proof transactions\nHMAC validation\nIntegrity verification"
-note right of threatdetection : "Real-time monitoring\nBehavioral analysis\nAutomated response"
-
-' Security boundaries
-note bottom of application : "Application Layer\nInput validation, authentication,\nsecure coding practices"
-note bottom of data : "Data Layer\nEncryption, key management,\ndata minimization"
-note bottom of transport : "Transport Layer\nTLS, certificate pinning,\nsecure API communication"
-note bottom of device : "Device Layer\nAndroid security, keystore,\nbiometric authentication"
-
-SHOW_LEGEND()
 @enduml

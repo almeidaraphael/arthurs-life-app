@@ -4,10 +4,6 @@
 
 **Arthur's Life** is a family task management Android app built with Kotlin and Jetpack Compose. It uses a gamified token-based reward system with role-based access for Children, Caregivers, and Admins.
 
-### Implementation Status
-- ✅ **Implemented**: Theme system, authentication, navigation, architecture foundation
-- ❌ **TODO**: Task management, token economy, rewards, achievements
-
 ### AI Decision Tree: What to implement first?
 1. **Task Management** (core business logic)
 2. **Token Economy** (depends on tasks)
@@ -29,15 +25,35 @@
 ```
 android-kotlin/app/src/main/java/com/arthurslife/app/
 ├── domain/              # Business logic and entities
-├── infrastructure/     # Data layer (repositories, database, preferences)
-├── presentation/       # UI layer (screens, theme, navigation, viewmodels)
-├── data/               # Data layer helpers
-└── di/                 # Dependency injection modules
+├── data/                # Data layer (Room, DataStore, repositories)
+├── presentation/        # UI layer (screens, theme, navigation, viewmodels)
+├── di/                  # Dependency injection modules
+└── util/                # Shared utility functions
+```
+
+### Documentation Structure
+
+```
+docs/
+├── README.md                          # Documentation hub
+├── architecture.md                    # DDD & Clean Architecture guide
+├── tech-stack.md                      # Technology choices and rationale
+├── development.md                     # Workflow, standards, build commands
+├── getting-started.md                 # Environment setup
+├── testing.md                         # Testing strategies
+├── security.md                        # Security practices
+├── theme-system.md                    # Role-based theming
+├── contributing.md                    # Contribution guidelines
+├── diagrams/                          # PlantUML architecture diagrams
+└── product-requirements-documents/    # Feature specifications
 ```
 
 ## AI Workflow Commands - ZERO TOLERANCE POLICY
 
 ```bash
+# Navigate to Android project first
+cd android-kotlin
+
 # 1. After ANY code change, run:
 ./gradlew detektFormat && ./gradlew detekt
 
@@ -153,9 +169,11 @@ android-kotlin/app/src/main/java/com/arthurslife/app/
 ## Known Issues
 
 - Task management, token economy, achievements not implemented
-- Many screens are placeholders
+- Many screens are placeholders  
 - Database schema incomplete
 - Need proper error handling and validation
+- Documentation consolidation in progress (planning/ → docs/)
+- Feature specifications being updated in docs/product-requirements-documents/
 
 ## AI Implementation Protocol
 
@@ -168,7 +186,7 @@ android-kotlin/app/src/main/java/com/arthurslife/app/
 
 **Step 2: Implementation Order (NEVER deviate)**
 1. **Domain** → entities, value objects, use cases
-2. **Infrastructure** → repositories, DAOs, entities
+2. **Data** → repositories, DAOs, Room entities
 3. **Presentation** → screens, viewmodels
 4. **DI** → wire everything together
 
@@ -238,7 +256,8 @@ If Detekt fails:
 
 ### File Pattern Recognition
 - **Domain interfaces**: `domain/[feature]/` (business logic)
-- **Repository implementations**: `infrastructure/[feature]/` (data access)
+- **Repository implementations**: `data/repository/` (data access)
+- **Database entities**: `data/local/entity/` (Room entities)
 - **ViewModels**: `presentation/viewmodels/` (UI state)
 - **Theme-aware components**: `presentation/theme/components/` (UI)
 - **DI modules**: `di/` (dependency injection)
@@ -246,13 +265,15 @@ If Detekt fails:
 ### AI Search Strategy
 1. **For UI patterns** → Search `presentation/theme/` first
 2. **For business logic** → Search `domain/` first
-3. **For data access** → Search `infrastructure/` first
+3. **For data access** → Search `data/repository/` and `data/local/` first
 4. **For existing features** → Use Task tool for comprehensive search
+5. **For documentation** → Check `docs/` for architectural guidance
 
 ### AI Decision Points
-- **User asks for new feature** → Check if domain exists, then infrastructure, then presentation
+- **User asks for new feature** → Check if domain exists, then data layer, then presentation
 - **User asks for UI changes** → Check theme compatibility first
 - **User asks for database changes** → Check domain model alignment first
+- **User asks for documentation** → Check `docs/` for existing patterns and templates
 - **Detekt errors** → Apply standard fixes (see AI Error Recovery above)
 
 ### AI Workflow Optimization

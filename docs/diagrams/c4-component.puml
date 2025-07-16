@@ -3,23 +3,25 @@
 
 LAYOUT_WITH_LEGEND()
 
-title Arthur's Life App - Domain Layer Components
+title Arthur's Life App - Domain Layer Components (v1, 2025-07)
 
 Container_Boundary(domain, "Domain Layer - Arthur's Core Business Logic") {
-  Component(user, "User Aggregate", "Kotlin", "Arthur's profile, token balance, level progression, accessibility preferences, and role-based theme settings")
-  Component(task, "Task Entity", "Kotlin", "Task definitions, completion tracking, difficulty levels, and reward calculations")
-  Component(reward, "Reward Entity", "Kotlin", "Available rewards, costs, categories, and redemption rules")
+  Component(user, "User Aggregate", "Kotlin", "Profile, token balance, level progression, accessibility preferences, role-based theme settings, privacy consent, COPPA compliance")
+  Component(task, "Task Entity", "Kotlin", "Task definitions, completion tracking, difficulty levels, reward calculations, privacy flags")
+  Component(reward, "Reward Entity", "Kotlin", "Available rewards, costs, categories, redemption rules, audit trail")
   Component(token, "Token Value Object", "Kotlin", "Immutable token amounts with validation and arithmetic operations")
-  
-  Component(rewardservice, "RewardCalculationService", "Kotlin", "Complex business logic for token calculations including streak bonuses and level multipliers")
-  Component(progressservice, "ProgressTrackingService", "Kotlin", "Algorithms for measuring Arthur's behavioral improvements and milestone achievements")
-  Component(accessibilityservice, "AccessibilityService", "Kotlin", "Business rules for screen reader interactions and adaptive UI requirements")
+  Component(achievement, "Achievement Entity", "Kotlin", "Tracks unlocked achievements and progress milestones")
+  Component(rewardservice, "RewardCalculationService", "Kotlin", "Business logic for token calculations, streak bonuses, level multipliers, fraud detection")
+  Component(progressservice, "ProgressTrackingService", "Kotlin", "Algorithms for measuring behavioral improvements and milestone achievements")
+  Component(accessibilityservice, "AccessibilityService", "Kotlin", "Business rules for screen reader interactions, adaptive UI, accessibility compliance")
+  Component(consentservice, "ConsentManagementService", "Kotlin", "Handles user consent, privacy, and data export/deletion workflows")
 }
 
 Container_Boundary(application, "Application Layer - Use Cases") {
   Component(earntoken, "EarnTokenUseCase", "Kotlin", "Orchestrates task completion and token awarding workflow")
   Component(redeemreward, "RedeemRewardUseCase", "Kotlin", "Handles reward redemption validation and balance updates")
   Component(trackprogress, "TrackProgressUseCase", "Kotlin", "Compiles progress reports and achievement calculations")
+  Component(manageconsent, "ConsentManagementUseCase", "Kotlin", "Manages privacy consent, export, and deletion requests")
 }
 
 Container_Boundary(presentation, "Presentation Layer - Theme System") {
@@ -36,6 +38,7 @@ Container_Boundary(infrastructure, "Infrastructure Layer - Data Access") {
   Component(taskrepo, "TaskRepositoryImpl", "Kotlin", "Task storage, retrieval, and completion history")
   Component(rewardrepo, "RewardRepositoryImpl", "Kotlin", "Reward catalog management and redemption tracking")
   Component(themepreferences, "ThemePreferencesDataStore", "Kotlin", "Persistent theme storage with per-role preference management")
+  Component(consentstore, "ConsentDataStore", "Kotlin", "Persistent storage for privacy consent and audit logs")
 }
 
 ' Use case dependencies on domain
@@ -45,27 +48,20 @@ earntoken --> rewardservice : "Calculates tokens earned"
 redeemreward --> user : "Deducts token cost"
 redeemreward --> reward : "Validates availability"
 trackprogress --> progressservice : "Generates reports"
+manageconsent --> consentservice : "Handles consent workflows"
 
 ' Domain service relationships
 rewardservice --> task : "Reads difficulty level"
 rewardservice --> user : "Considers current level"
 progressservice --> user : "Analyzes completion history"
 accessibilityservice --> user : "Applies preferences"
+consentservice --> user : "Reads consent status"
 
 ' Infrastructure dependencies
 earntoken --> userrepo : "Persists updates"
 earntoken --> taskrepo : "Records completion"
 redeemreward --> userrepo : "Saves balance"
 redeemreward --> rewardrepo : "Logs redemption"
+manageconsent --> consentstore : "Persists consent logs"
 
-' Theme system dependencies
-themeviewmodel --> thememanager : "Retrieves themes"
-themeviewmodel --> themepreferences : "Loads/saves preferences"
-themeviewmodel --> user : "Gets role-based defaults"
-themeawareicon --> thememanager : "Gets semantic icons"
-themeawareavatar --> thememanager : "Gets theme avatar"
-themeawarebackground --> thememanager : "Gets background styling"
-themeselector --> themeviewmodel : "Changes theme selection"
-
-SHOW_LEGEND()
 @enduml

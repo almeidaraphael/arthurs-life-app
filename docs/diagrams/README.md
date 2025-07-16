@@ -23,6 +23,9 @@ Detailed architectural views of specific system components and patterns.
 | **Theme System Architecture** | [theme-system-architecture.puml](theme-system-architecture.puml) | ![Theme System](theme-system-architecture.svg) | Complete theme management system with role-based defaults |
 | **Security Architecture** | [security-architecture.puml](security-architecture.puml) | ![Security](security-architecture.svg) | Defense-in-depth security layers and threat protection |
 | **Database ERD** | [database-entity-relationship.puml](database-entity-relationship.puml) | ![Database ERD](database-entity-relationship.svg) | Complete data model with 11 entities and relationships |
+| **Reward Suggestion System Architecture** | [reward-suggestion-system-architecture.puml](reward-suggestion-system-architecture.puml) | ![Reward Suggestion System](reward-suggestion-system-architecture.svg) | Suggests rewards based on user behavior, preferences, and achievements |
+| **Navigation Bar Architecture** | [navigation-bar-architecture.puml](navigation-bar-architecture.puml) | ![Navigation Bar](navigation-bar-architecture.svg) | Top/Bottom navigation bar with role-based access and switching |
+| **Data Management & Privacy Architecture** | [data-management-privacy-architecture.puml](data-management-privacy-architecture.puml) | ![Data Management & Privacy](data-management-privacy-architecture.svg) | Data minimization, retention, consent, and compliance |
 
 ### Flow and Process Diagrams
 Sequence diagrams and state machines showing system behavior and workflows.
@@ -32,6 +35,9 @@ Sequence diagrams and state machines showing system behavior and workflows.
 | **Task Completion Flow** | [sequence-task-completion.puml](sequence-task-completion.puml) | ![Task Flow](sequence-task-completion.svg) | Arthur completing a task with token rewards |
 | **Authentication Flow** | [user-authentication-flow.puml](user-authentication-flow.puml) | ![Auth Flow](user-authentication-flow.svg) | Complete user authentication and security workflow |
 | **Token Economy State Machine** | [token-economy-state-machine.puml](token-economy-state-machine.puml) | ![Token States](token-economy-state-machine.svg) | Token earning, spending, and validation state transitions |
+| **Achievement Unlock Sequence** | [achievement-unlock-sequence.puml](achievement-unlock-sequence.puml) | ![Achievement Unlock](achievement-unlock-sequence.svg) | Sequence for unlocking achievements, awarding tokens, and celebrations |
+| **Onboarding & Family Setup Flow** | [onboarding-flow.puml](onboarding-flow.puml) | ![Onboarding Flow](onboarding-flow.svg) | User onboarding, family creation/join, and initial role assignment |
+| **Family Setup & Onboarding Flow (Expanded)** | [family-setup-onboarding-flow.puml](family-setup-onboarding-flow.puml) | ![Family Setup & Onboarding](family-setup-onboarding-flow.svg) | Expanded onboarding flow with role selection, PIN authentication, and theme setup |
 
 ### Specialized Architecture Diagrams
 Domain-specific architectural views for specialized concerns.
@@ -39,6 +45,7 @@ Domain-specific architectural views for specialized concerns.
 | Diagram | PlantUML Source | SVG Output | Description |
 |---------|----------------|------------|-------------|
 | **Accessibility Architecture** | [accessibility-architecture.puml](accessibility-architecture.puml) | ![Accessibility](accessibility-architecture.svg) | How accessibility features integrate across the system |
+| **i18n/l10n Architecture** | [i18n-l10n-architecture.puml](i18n-l10n-architecture.puml) | ![i18n/l10n](i18n-l10n-architecture.svg) | Internationalization and localization data flow and language management |
 
 ## 🔧 Diagram Generation
 

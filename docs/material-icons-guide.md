@@ -1,85 +1,125 @@
-# Material Icons Extended Usage Guide
+# Material Icons Usage Guide - Technical Documentation
 
-[🏠 Back to Main README](../README.md)
+[🏠 Back to Docs Hub](README.md) | [🏠 Main README](../README.md)
 
-## Overview
-This project uses `androidx.compose.material:material-icons-extended` library to access a comprehensive set of Material Design icons. This provides many more icons than the basic `androidx.compose.material.icons.filled.*` package.
+Guide to using Material Design icons in Arthur's Life App, including setup, usage patterns, migration notes, and best practices.
 
-## 🔗 Related Documentation
+## 📋 Document Overview
 
-| Topic | Link |
-|-------|------|
-| **Development Guide** | [development.md](development.md) |
-| **Tech Stack** | [tech-stack.md](tech-stack.md) |
-| **Contributing** | [contributing.md](contributing.md) |
+### Purpose
+Explain how to use Material Design icons, including setup, usage, migration, and best practices.
 
-## Setup
-The library is already included in the project dependencies:
+### Audience
+- **Primary**: UI developers and designers
+- **Secondary**: Technical reviewers
+- **Prerequisites**: Familiarity with Jetpack Compose and Android development
+
+### Scope
+Covers icon setup, usage, migration, and best practices. Excludes branding and custom icon design.
+
+## 🎯 Quick Reference
+
+### Key Information
+- **Summary**: Material Design icons usage for Arthur's Life App
+- **Related**: [development.md](development.md), [tech-stack.md](tech-stack.md), [contributing.md](contributing.md)
+
+### Common Tasks
+- [Setup icons](#setup)
+- [Use icons in Compose](#usage)
+- [Migrate icon names](#migration-notes)
+
+## 📖 Main Content
+
+### Section 1: Core Concepts
+
+#### Overview
+Arthur's Life App uses the `androidx.compose.material:material-icons-extended` library for a comprehensive set of Material Design icons.
+
+### Section 2: Implementation Details
+
+#### Setup
+Add to project dependencies:
 ```kotlin
 implementation(libs.androidx.material.icons.extended)
 ```
 
-## Usage
-
-### Import Structure
+#### Usage
+Import example:
 ```kotlin
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.IconName
 ```
+Common icons:
+- `Icons.Default.ArrowBack` – Back navigation
+- `Icons.Default.MoreVert` – Menu
+- `Icons.Default.Settings` – Settings
+- `Icons.Default.Add` – Add new item
+- `Icons.Default.CloudUpload` – Upload/backup
+- `Icons.Default.CloudDownload` – Download/restore
+- `Icons.Default.Download` – Export
+- `Icons.Default.Clear` – Delete/clear
+- `Icons.Default.FilterList` – Filter
+- `Icons.Default.Search` – Search
+- `Icons.Default.CheckCircle` – Success/completed
+- `Icons.Default.Star` – Favorites/tokens/rewards
+- `Icons.Default.Info` – Information
+- `Icons.Default.Person` – User profile
+- `Icons.Default.AccountCircle` – Profile placeholder
+- `Icons.Default.Face` – Child selection
+- `Icons.Default.SupervisedUserCircle` – Family member/avatar
 
-### Common Icons Used in This Project
+### Section 3: Configuration
 
-#### Navigation & Actions
-- `Icons.Default.ArrowBack` - Back navigation
-- `Icons.Default.MoreVert` - Three-dot menu
-- `Icons.Default.Settings` - Settings/configuration
-- `Icons.Default.Add` - Add/create new items
+#### Migration Notes
+- `More` → `MoreVert`
+- `Save` → `CloudDownload` or `Download`
+- `Filter` → `FilterList`
+- `Upload` → `CloudUpload`
+Extended-only icons:
+- `CloudUpload`, `CloudDownload`, `FilterList`, `FilterAlt`, `MoreVert`, `MoreHoriz`, `Download`, `Upload`, `Refresh`, `Sync`, `Visibility`, `VisibilityOff`, `Edit`, `Delete`, `KeyboardArrowUp`, `KeyboardArrowDown`
 
-#### Data Management
-- `Icons.Default.CloudUpload` - Upload/backup data
-- `Icons.Default.CloudDownload` - Download/restore data
-- `Icons.Default.Download` - Download/export files
-- `Icons.Default.Clear` - Clear/delete data
+### Section 4: Examples
+// Add practical icon usage examples if needed
 
-#### Filtering & Search
-- `Icons.Default.FilterList` - Filter options (replaces `Filter`)
-- `Icons.Default.Search` - Search functionality
+### Section 5: Best Practices
+1. Use semantic icons for clear meaning
+2. Be consistent across the app
+3. Always provide `contentDescription` for accessibility
+4. Import only needed icons (no wildcards)
 
-#### Status & Progress
-- `Icons.Default.CheckCircle` - Completed/success
-- `Icons.Default.Star` - Favorites/tokens/rewards
-- `Icons.Default.Info` - Information
+### Section 6: Troubleshooting
+- Use IDE auto-completion to verify icon availability
+- Consult official Compose Material Icons documentation
 
-#### User & Profile
-- `Icons.Default.Person` - User profile
-- `Icons.Default.AccountCircle` - Profile picture placeholder
-- `Icons.Default.Face` - Child selection
+## 🔗 Integration Points
 
-## Migration Notes
+### Dependencies
+- [development.md](development.md)
+- [tech-stack.md](tech-stack.md)
+- [contributing.md](contributing.md)
 
-### Replaced Icons
-- `Icons.Default.More` → `Icons.Default.MoreVert`
-- `Icons.Default.Save` → `Icons.Default.CloudDownload` (for data operations) or `Icons.Default.Download` (for exports)
-- `Icons.Default.Filter` → `Icons.Default.FilterList`
-- `Icons.Default.Upload` → `Icons.Default.CloudUpload`
+### Related Features
+- UI components, accessibility, theming
 
-### Available but Not Basic
-These icons are available in the extended library but not in the basic package:
-- `CloudUpload`, `CloudDownload`
-- `FilterList`, `FilterAlt`
-- `MoreVert`, `MoreHoriz`
-- `Download`, `Upload`
-- `Refresh`, `Sync`
-- `Visibility`, `VisibilityOff`
-- `Edit`, `Delete`
-- `KeyboardArrowUp`, `KeyboardArrowDown`
+## 📚 Additional Resources
 
-## Best Practices
+### Internal Documentation
+- [README.md](README.md)
+- [development.md](development.md)
+- [tech-stack.md](tech-stack.md)
+- [contributing.md](contributing.md)
 
-1. **Always use semantic icons**: Choose icons that clearly represent the action
-2. **Consistency**: Use the same icon for the same action throughout the app
-3. **Accessibility**: Always provide `contentDescription` for screen readers
-4. **Import only what you need**: Import specific icons rather than using wildcards
+## 📝 Contributing
 
-## Verification
-To verify an icon exists, check the Android Compose Material Icons documentation or use IDE auto-completion after typing `Icons.Default.`
+### How to Contribute
+Update documentation for major icon usage changes. Validate instructions for new icon sets.
+
+### Review Process
+Technical and editorial review required for all changes.
+
+### Style Guidelines
+Use clear, concise language and consistent terminology.
+
+---
+
+**Navigation**: [🏠 Docs Hub](README.md) | [🏠 Main README](../README.md)

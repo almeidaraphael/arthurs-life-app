@@ -1,0 +1,31 @@
+@startuml i18n-l10n-architecture
+!theme plain
+
+title Arthur's Life App - i18n/l10n Architecture (v1, 2025-07)
+
+package "App UI" {
+  [MainScreen]
+  [SettingsScreen]
+  [OnboardingScreen]
+}
+
+package "Localization Engine" {
+  [LanguageManager]
+  [ResourceLoader]
+}
+
+package "Data Layer" {
+  [UserPreferences]
+  [ConsentService]
+}
+
+[SettingsScreen] --> [LanguageManager] : Change language
+[OnboardingScreen] --> [LanguageManager] : Select language
+[LanguageManager] --> [ResourceLoader] : Load resources
+[ResourceLoader] --> [MainScreen] : Provide localized strings
+[UserPreferences] --> [LanguageManager] : Persist language choice
+[LanguageManager] --> [UserPreferences] : Save preference
+[OnboardingScreen] --> [ConsentService] : Request privacy/COPPA consent
+[ConsentService] --> [UserPreferences] : Store consent
+
+@enduml
