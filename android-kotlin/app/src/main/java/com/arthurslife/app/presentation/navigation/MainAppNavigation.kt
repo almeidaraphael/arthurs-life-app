@@ -7,14 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Dashboard
-import androidx.compose.material.icons.filled.EmojiEvents
-import androidx.compose.material.icons.filled.Group
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material.icons.filled.Task
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -30,7 +22,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -58,17 +49,6 @@ import com.arthurslife.app.presentation.theme.ThemeViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
-// No ripple interaction source
-class NoRippleInteractionSource : MutableInteractionSource {
-    override val interactions: Flow<androidx.compose.foundation.interaction.Interaction> = emptyFlow()
-    override suspend fun emit(interaction: androidx.compose.foundation.interaction.Interaction) {
-        // Intentionally empty - we don't want to emit interactions for ripple effect
-    }
-    override fun tryEmit(
-        interaction: androidx.compose.foundation.interaction.Interaction,
-    ): Boolean = true
-}
-
 @Composable
 fun MainAppNavigation(
     userRole: UserRole,
@@ -77,7 +57,7 @@ fun MainAppNavigation(
     modifier: Modifier = Modifier,
 ) {
     val navController = rememberNavController()
-    val navigationItems = getNavigationItems(userRole)
+    val navigationItems = BottomNavItem.getItemsForRole(userRole)
     var selectedItem by remember { mutableStateOf(navigationItems[0].route) }
 
     Scaffold(
@@ -272,9 +252,20 @@ private fun navigateToUserHome(
     }
 }
 
+// No ripple interaction source
+private class NoRippleInteractionSource : MutableInteractionSource {
+    override val interactions: Flow<androidx.compose.foundation.interaction.Interaction> = emptyFlow()
+    override suspend fun emit(interaction: androidx.compose.foundation.interaction.Interaction) {
+        // Intentionally empty - we don't want to emit interactions for ripple effect
+    }
+    override fun tryEmit(
+        interaction: androidx.compose.foundation.interaction.Interaction,
+    ): Boolean = true
+}
+
 @Composable
 private fun AppBottomNavigationBar(
-    navigationItems: List<NavigationItem>,
+    navigationItems: List<BottomNavItem>,
     selectedItem: String,
     onItemSelected: (String) -> Unit,
 ) {
@@ -431,33 +422,3 @@ private fun NavGraphBuilder.setupCommonScreens(
         )
     }
 }
-
-private fun getNavigationItems(userRole: UserRole): List<NavigationItem> =
-    when (userRole) {
-        UserRole.CHILD ->
-            listOf(
-                NavigationItem("child_home", Icons.Default.Home, "Home"),
-                NavigationItem("child_tasks", Icons.Default.Task, "Tasks"),
-                NavigationItem("child_rewards", Icons.Default.ShoppingCart, "Rewards"),
-                NavigationItem("child_achievements", Icons.Default.EmojiEvents, "Awards"),
-                NavigationItem("child_profile", Icons.Default.Person, "Profile"),
-            )
-        UserRole.CAREGIVER ->
-            listOf(
-                NavigationItem("caregiver_dashboard", Icons.Default.Dashboard, "Home"),
-                NavigationItem("caregiver_tasks", Icons.Default.Task, "Tasks"),
-                NavigationItem(
-                    "caregiver_progress",
-                    Icons.Default.ShoppingCart,
-                    "Rewards",
-                ),
-                NavigationItem("caregiver_children", Icons.Default.Group, "Children"),
-                NavigationItem("caregiver_profile", Icons.Default.Person, "Profile"),
-            )
-    }
-
-data class NavigationItem(
-    val route: String,
-    val icon: ImageVector,
-    val label: String,
-)
