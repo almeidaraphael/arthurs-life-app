@@ -1,12 +1,12 @@
-# [TASK016] - Implement Theme Selector Dialog
+# [TASK023] - Implement Theme Selector Dialog
 
 **Status:** Pending
 **Added:** 2025-07-15
-**Updated:** 2025-07-15
+**Updated:** 2025-07-16
 
 ## Source Documents
-**Implementation Plan:** [docs/implementation-plans/feature-theme-system.md](docs/implementation-plans/feature-theme-system.md)
-**Source PRD:** [docs/product-requirements-documents/feature-theme-system.md](docs/product-requirements-documents/feature-theme-system.md)
+**Implementation Plan:** [docs/implementation-plan-documents/feature-theme-system.ipd.md](docs/implementation-plan-documents/feature-theme-system.ipd.md)
+**Source PRD:** [docs/product-requirements-documents/feature-theme-system.prd.md](docs/product-requirements-documents/feature-theme-system.prd.md)
 
 ## Original Request
 Create a composable dialog that displays the list of available themes. It will observe the current theme from `ThemeViewModel` and call the update function upon user selection. It will include previews for each theme.
@@ -27,11 +27,15 @@ The `ThemeSelectorDialog` is the primary user interface for changing themes. It 
 ### Subtasks
 | ID | Description | Status | Updated | Notes |
 |----|-------------|--------|---------|-------|
-| 11.1 | Create `ThemeSelectorDialog.kt` composable | Not Started | 2025-07-15 | |
-| 11.2 | Receive `ThemeViewModel` or state/callbacks as parameters | Not Started | 2025-07-15 | |
-| 11.3 | Display list of themes with previews | Not Started | 2025-07-15 | |
-| 11.4 | Handle user selection and call update theme function | Not Started | 2025-07-15 | |
+| 23.1 | Create `ThemeSelectorDialog.kt` composable | Not Started | 2025-07-15 | |
+| 23.2 | Receive `ThemeViewModel` or state/callbacks as parameters | Not Started | 2025-07-15 | |
+| 23.3 | Display list of themes with previews | Not Started | 2025-07-15 | |
+| 23.4 | Handle user selection and call update theme function | Not Started | 2025-07-15 | |
 
 ## Progress Log
 ### 2025-07-15
 - Task created from implementation plan.
+
+### 2025-07-16
+- Task renumbered from TASK016 to TASK023 as part of feature-based reorganization
+- Updated task ID references and numbering throughout

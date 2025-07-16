@@ -1,12 +1,12 @@
-# [TASK015] - Create Theme State Management
+# [TASK022] - Create Theme State Management
 
 **Status:** Pending
 **Added:** 2025-07-15
-**Updated:** 2025-07-15
+**Updated:** 2025-07-16
 
 ## Source Documents
-**Implementation Plan:** [docs/implementation-plans/feature-theme-system.md](docs/implementation-plans/feature-theme-system.md)
-**Source PRD:** [docs/product-requirements-documents/feature-theme-system.md](docs/product-requirements-documents/feature-theme-system.md)
+**Implementation Plan:** [docs/implementation-plan-documents/feature-theme-system.ipd.md](docs/implementation-plan-documents/feature-theme-system.ipd.md)
+**Source PRD:** [docs/product-requirements-documents/feature-theme-system.prd.md](docs/product-requirements-documents/feature-theme-system.prd.md)
 
 ## Original Request
 Create a `ThemeViewModel` responsible for fetching the available themes, getting the current user's theme from the `ThemeRepository`, and providing a function to update the theme. It will expose the current theme via a `StateFlow`.
@@ -27,11 +27,15 @@ The `ThemeViewModel` acts as the bridge between the data layer (`ThemeRepository
 ### Subtasks
 | ID | Description | Status | Updated | Notes |
 |----|-------------|--------|---------|-------|
-| 10.1 | Create `ThemeViewModel.kt` | Not Started | 2025-07-15 | |
-| 10.2 | Inject `ThemeRepository` | Not Started | 2025-07-15 | |
-| 10.3 | Fetch and expose current theme as `StateFlow` | Not Started | 2025-07-15 | |
-| 10.4 | Implement function to update the theme | Not Started | 2025-07-15 | |
+| 22.1 | Create `ThemeViewModel.kt` | Not Started | 2025-07-15 | |
+| 22.2 | Inject `ThemeRepository` | Not Started | 2025-07-15 | |
+| 22.3 | Fetch and expose current theme as `StateFlow` | Not Started | 2025-07-15 | |
+| 22.4 | Implement function to update the theme | Not Started | 2025-07-15 | |
 
 ## Progress Log
 ### 2025-07-15
 - Task created from implementation plan.
+
+### 2025-07-16
+- Task renumbered from TASK015 to TASK022 as part of feature-based reorganization
+- Updated task ID references and numbering throughout

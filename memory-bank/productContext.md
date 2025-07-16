@@ -19,7 +19,7 @@ Arthur's Life App addresses the need for a safe, engaging, and effective way for
 - All features work offline, with real-time feedback, audit logging, and accessibility compliance
 
 ## User Experience Goals
-- Intuitive, child-friendly, and theme-aware UI
+- Intuitive, child-friendly, and theme-aware UI. Theme system is user-based, persistent (per-user), extensible (dynamic theme registration), and fully accessible (contrast, TalkBack), as per [feature-theme-system.ipd.md].
 - Instant feedback and motivational messaging
 - Seamless navigation for both children and caregivers
 - High accessibility (TalkBack, color contrast, semantic roles)

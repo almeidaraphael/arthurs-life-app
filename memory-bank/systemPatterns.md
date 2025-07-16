@@ -11,7 +11,7 @@ date: 2025-07-15
 - Repository pattern for data access and abstraction
 - Offline-first, local data storage with encryption
 - Role-based access: Child, Caregiver, Admin
-- Theme-aware UI with semantic icon mapping and terminology (role-based: Material for Caregiver/Admin, Mario Classic for Child)
+- Theme-aware UI with semantic icon mapping and terminology (role-based: Material for Caregiver/Admin, Mario Classic for Child). Theme system is user-based, persistent (per-user, via DataStore), extensible (dynamic theme registration), and includes error handling and accessibility compliance as per [feature-theme-system.ipd.md].
 - All code and architecture must strictly follow DDD, SOLID, and DRY principles
 - Java 21 is the primary target, with Java 17 as fallback (explicit troubleshooting and build config steps)
 - 80%+ test coverage for the domain layer is mandatory

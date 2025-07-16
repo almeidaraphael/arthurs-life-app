@@ -2,11 +2,11 @@
 
 **Status:** Pending
 **Added:** 2025-07-15
-**Updated:** 2025-07-15
+**Updated:** 2025-07-16
 
 ## Source Documents
-**Implementation Plan:** [docs/implementation-plans/feature-top-navigation-bar.md](docs/implementation-plans/feature-top-navigation-bar.md)
-**Source PRD:** [docs/product-requirements-documents/feature-top-navigation-bar.md](docs/product-requirements-documents/feature-top-navigation-bar.md)
+**Implementation Plan:** [docs/implementation-plan-documents/feature-top-navigation-bar.ipd.md](docs/implementation-plan-documents/feature-top-navigation-bar.ipd.md)
+**Source PRD:** [docs/product-requirements-documents/feature-top-navigation-bar.prd.md](docs/product-requirements-documents/feature-top-navigation-bar.prd.md)
 
 ## Original Request
 Write JUnit tests for the `TopBarViewModel` to verify state logic for different roles and screens. Write Compose UI tests for the `TopAppBar` and its interaction with dialogs.
@@ -31,7 +31,18 @@ Testing is critical for a complex component like the top bar. Unit tests for the
 | 19.2 | Create and write UI tests for `TopAppBarTest.kt` | Not Started | 2025-07-15 | |
 | 19.3 | Add UI tests to verify dialogs are triggered correctly | Not Started | 2025-07-15 | |
 | 19.4 | Add accessibility checks to the UI tests | Not Started | 2025-07-15 | |
+| 19.5 | Implement TEST-001: Child Home screen elements | Not Started | 2025-07-16 | Per PRD Section 6 |
+| 19.6 | Implement TEST-002: Caregiver Tasks screen elements | Not Started | 2025-07-16 | Per PRD Section 6 |
+| 19.7 | Implement TEST-003: Avatar dialog triggers | Not Started | 2025-07-16 | Per PRD Section 6 |
+| 19.8 | Implement TEST-004: Settings dialog triggers | Not Started | 2025-07-16 | Per PRD Section 6 |
+| 19.9 | Implement TEST-005: Settings sub-dialogs | Not Started | 2025-07-16 | Per PRD Section 6 |
+| 19.10 | Implement TEST-006: Screen transition updates | Not Started | 2025-07-16 | Per PRD Section 6 |
+| 19.11 | Implement TEST-007: Accessibility compliance | Not Started | 2025-07-16 | Per PRD Section 6 |
 
 ## Progress Log
 ### 2025-07-15
 - Task created from implementation plan.
+
+### 2025-07-16
+- Task renumbered from TASK024 to TASK019 as part of feature-based reorganization
+- Updated task ID references and numbering throughout

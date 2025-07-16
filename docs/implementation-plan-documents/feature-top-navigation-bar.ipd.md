@@ -27,12 +27,13 @@ This document provides the implementation plan for the top navigation bar in Art
 
 | Task ID | Description | Files to Edit/Create | Details |
 |---|---|---|---|
-| **TASK-001** | Define Top Bar State | `TopBarState.kt`, `TopBarViewModel.kt` | Create a data class `TopBarState` to model all possible elements of the top bar (avatar, token balance, progress, etc.). Create a `TopBarViewModel` to build and expose a `StateFlow<TopBarState>` based on the current user role and navigation route. |
+| **TASK-001** | Define Top Bar State | `TopBarState.kt`, `TopBarViewModel.kt` | Create a data class `TopBarState` to model all possible elements of the top bar (avatar, token balance, progress, etc.). Create a `TopBarViewModel` to build and expose a `StateFlow<TopBarState>` based on the current user role and navigation route. Include detailed specifications for each role/screen combination per PRD requirements. |
 | **TASK-002** | Implement the Top Navigation Bar Composable | `TopAppBar.kt` | Create a composable that renders the UI based on the `TopBarState`. It will handle the layout of elements and delegate click events to the ViewModel or a navigation handler. |
-| **TASK-003** | Implement Required Dialogs | `ProfileDialog.kt`, `SettingsDialog.kt`, `UserSelectorDialog.kt`, etc. | Create or refactor the required dialog composables. Ensure they are self-contained and can be triggered from the top bar. |
-| **TASK-004** | Create a Dialog Management System | `DialogManager.kt`, `MainViewModel.kt` | Implement a centralized system to show/hide dialogs. The `TopBarViewModel` will request dialogs, and a higher-level `MainViewModel` or manager will control which dialog is currently visible. |
+| **TASK-003** | Implement Required Dialogs | `ProfileDialog.kt`, `SettingsDialog.kt`, `UserSelectorDialog.kt`, `AvatarDialog.kt`, `ChildSelectorDialog.kt`, `LanguageSelectorDialog.kt`, etc. | Create or refactor all required dialog composables (including missing AvatarDialog, ChildSelectorDialog, LanguageSelectorDialog). Ensure they are self-contained and can be triggered from the top bar. |
+| **TASK-004** | Create a Dialog Management System | `DialogManager.kt`, `MainViewModel.kt` | Implement a centralized system to show/hide dialogs. The `TopBarViewModel` will request dialogs, and a higher-level `MainViewModel` or manager will control which dialog is currently visible. Support dialog chaining (Settings→Theme/Language). |
 | **TASK-005** | Integrate Top Bar into Main App UI | `MainScreen.kt`, `AppScaffold.kt` | Add the `TopAppBar` to the main app scaffold, ensuring it's placed correctly and receives the `TopBarState`. |
-| **TASK-006** | Implement Unit and UI Tests | `TopBarViewModelTest.kt`, `TopAppBarTest.kt` | Write JUnit tests for the `TopBarViewModel` to verify state logic for different roles and screens. Write Compose UI tests for the `TopAppBar` and its interaction with dialogs. |
+| **TASK-006** | Implement Unit and UI Tests | `TopBarViewModelTest.kt`, `TopAppBarTest.kt` | Write JUnit tests for the `TopBarViewModel` to verify state logic for different roles and screens. Write Compose UI tests for the `TopAppBar` and its interaction with dialogs. Include all PRD-specified tests (TEST-001 through TEST-007). |
+| **TASK-007** | Implement Accessibility Standards | All top bar and dialog files | Ensure WCAG 2.1 AA compliance including semantic roles, 4.5:1 color contrast, TalkBack support, 48x48dp touch targets for all top bar elements and dialogs. |
 
 ## 3. Alternatives
 
@@ -51,11 +52,12 @@ This document provides the implementation plan for the top navigation bar in Art
 
 - **CREATE**: `android-kotlin/app/src/main/java/com/arthurslife/app/presentation/viewmodels/TopBarViewModel.kt`
 - **CREATE**: `android-kotlin/app/src/main/java/com/arthurslife/app/presentation/components/TopAppBar.kt`
-- **CREATE/MODIFY**: `android-kotlin/app/src/main/java/com/arthurslife/app/presentation/components/dialogs/*.kt` (for all required dialogs)
+- **CREATE/MODIFY**: `android-kotlin/app/src/main/java/com/arthurslife/app/presentation/components/dialogs/*.kt` (for all required dialogs including ProfileDialog, SettingsDialog, UserSelectorDialog, AvatarDialog, ChildSelectorDialog, LanguageSelectorDialog)
 - **CREATE**: `android-kotlin/app/src/main/java/com/arthurslife/app/presentation/navigation/DialogManager.kt`
 - **MODIFY**: `android-kotlin/app/src/main/java/com/arthurslife/app/presentation/screens/MainScreen.kt`
 - **CREATE**: `android-kotlin/app/src/test/java/com/arthurslife/app/presentation/viewmodels/TopBarViewModelTest.kt`
 - **CREATE**: `android-kotlin/app/src/androidTest/java/com/arthurslife/app/presentation/components/TopAppBarTest.kt`
+- **MODIFY**: All dialog files for accessibility compliance
 
 ## 6. Testing
 

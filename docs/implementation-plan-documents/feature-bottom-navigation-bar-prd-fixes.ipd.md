@@ -36,7 +36,6 @@ The implementation will be broken down into the following tasks:
 | **TASK-023** | Implement Admin-Based Tab Logic | `BottomNavItem.kt`, `BottomNavViewModel.kt` | Add getItemsForRole with admin parameter, create Users tab |
 | **TASK-024** | Fix Tab Labels to Match PRD | `BottomNavItem.kt` | Update CaregiverDashboard label from "Home" to "Dashboard" |
 | **TASK-025** | Update Tests for 4-Tab Structure | `BottomNavItemTest.kt`, `BottomNavViewModelTest.kt`, `ThemeAwareBottomNavigationBarTest.kt` | Remove Profile tab references, add admin status tests |
-| **TASK-026** | Verify PRD Compliance | All files | Validate all acceptance criteria are met |
 
 ## 3. Alternatives
 

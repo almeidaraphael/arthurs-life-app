@@ -1,100 +1,81 @@
 # Tasks Index
 
 ## In Progress
-- [TASK007] Remove Profile Tab from Navigation - Fixing PRD violations for 4-tab maximum
+(No tasks currently in progress)
 
 ## Pending
 
-### Bottom Navigation Bar Feature
-- [TASK001] Define Navigation Routes and Items - Foundational setup for bottom navigation
-- [TASK002] Create Role-Based Navigation Logic - ViewModel for bottom navigation
-- [TASK003] Implement the Bottom Navigation Bar Composable - UI for bottom navigation
-- [TASK004] Integrate Bottom Bar into Main App UI - Connecting bottom navigation to the app
-- [TASK005] Update Main Navigation Host - Wiring up the navigation graph
-- [TASK008] Add Admin Status to User Model - Support Users vs Children tab differentiation
-- [TASK009] Update Auth Preferences for Admin Status - Track admin status in preferences
-- [TASK010] Implement Admin-Based Tab Logic - Admin-aware tab selection logic
-- [TASK011] Fix Tab Labels to Match PRD - Correct Dashboard label and others
-- [TASK012] Update Tests for 4-Tab Structure - Test updates for PRD compliance
+### Feature 3: Top Navigation Bar (TASK013-TASK026)
+- [TASK013] Define Top Bar State - Create state management for top navigation bar elements
+- [TASK014] Implement the Top Navigation Bar Composable - Create UI component for top navigation
+- [TASK015] Implement Required Dialogs - Create dialogs triggered from top navigation (Profile, Settings, etc.)
+- [TASK016] Create a Dialog Management System - Centralized system for showing/hiding dialogs
+- [TASK017] Integrate Top Bar into Main App UI - Add top navigation to main screen scaffold
+- [TASK018] Integrate Dialog into Settings - Connect theme selection to settings dialog
+- [TASK019] Implement Unit and UI Tests for Top Bar - Testing for top navigation functionality
+- [TASK026] Implement Accessibility Standards for Top Bar - WCAG 2.1 AA compliance for top navigation
 
-### Theme System Feature
-- [TASK013] Define Theme Data Layer - DataStore and Repository for themes
-- [TASK014] Provide Theme Dependencies - Hilt modules for theme system
-- [TASK015] Create Theme State Management - ViewModel for theme system
-- [TASK016] Implement Theme Selector Dialog - UI for changing themes
-- [TASK017] Create a Top-Level Theme Provider - Applying themes to the entire app
-
-### Top Navigation Bar Feature
-- [TASK018] Define Top Bar State - State management for the top navigation bar
-- [TASK019] Implement the Top Navigation Bar Composable - UI for the top bar
-- [TASK020] Implement Required Dialogs - Creating dialogs triggered from the top bar
-- [TASK021] Create a Dialog Management System - Centralized handling of dialogs
-- [TASK022] Integrate Top Bar into Main App UI - Adding the top bar to the main screen
-- [TASK023] Integrate Dialog into Settings - Connecting theme selection to settings
-- [TASK024] Implement Unit and UI Tests for Top Bar - Testing for top bar functionality
-
-### Data Management Feature
-- [TASK027] Define Data Management Architecture - Secure storage, backup/restore, export/import, privacy compliance
-- [TASK028] Implement Data Backup and Restore - Encrypted local backup, restore, and migration
-- [TASK029] Implement Data Export/Import - Export/import user and family data, privacy controls
-- [TASK030] Integrate Data Management UI - Caregiver controls, user feedback, error handling
-
-### Internationalization & Localization Feature
-- [TASK031] Define i18n/l10n Architecture - String resources, locale switching, date/time formatting
-- [TASK032] Implement PT-BR Localization - Translate all UI, content, and help to Brazilian Portuguese
-- [TASK033] Integrate Locale Switching UI - Settings integration, user feedback, accessibility
-
-### Reward Suggestion System Feature
-- [TASK034] Define Reward Suggestion Workflow - Child suggestion, caregiver review/approval
-- [TASK035] Implement Suggestion Submission UI - Child-facing UI for proposing rewards
-- [TASK036] Implement Caregiver Review UI - Approve/reject workflow, add to catalog
-- [TASK037] Integrate Notifications & Analytics - Status updates, usage tracking
-
-### Final Tasks
+### Feature 4: Theme System (TASK020-TASK025)
+- [TASK020] Define Theme Data Layer - Create AppTheme enum, ThemeDataStore, and ThemeRepository
+- [TASK021] Provide Theme Dependencies - Add Hilt providers for theme system components
+- [TASK022] Create Theme State Management - Implement ThemeViewModel for theme state
+- [TASK023] Implement Theme Selector Dialog - Create UI for theme selection with previews
+- [TASK024] Create a Top-Level Theme Provider - Apply selected theme at application root level
 - [TASK025] Implement Unit and UI Tests for Theme System - Testing for theme functionality
-- [TASK026] Verify PRD Compliance - Final verification of all PRD requirements
 
 ## Completed
-- [TASK006] Implement Unit and UI Tests - Testing for bottom navigation (completed with fixes)
+
+### Feature 1: Bottom Navigation Bar (TASK001-TASK006)
+- [TASK001] Define Navigation Routes and Items - Create sealed class for navigation items and routes
+- [TASK002] Create Role-Based Navigation Logic - Implement ViewModel for bottom navigation state management
+- [TASK003] Implement the Bottom Navigation Bar Composable - Create UI component for bottom navigation
+- [TASK004] Integrate Bottom Bar into Main App UI - Add bottom navigation to main screen scaffold
+- [TASK005] Update Main Navigation Host - Configure navigation graph with bottom navigation
+- [TASK006] Implement Unit and UI Tests - Testing for bottom navigation functionality
+
+### Feature 2: Bottom Navigation Bar PRD Fixes (TASK007-TASK012)
+- [TASK007] Remove Profile Tab from Navigation - Fix PRD violation (5 tabs → 4 tabs maximum)
+- [TASK008] Add Admin Status to User Model - Support differentiation between Users and Children tabs
+- [TASK009] Update Auth Preferences for Admin Status - Store admin status in authentication preferences
+- [TASK010] Implement Admin-Based Tab Logic - Admin-aware tab selection and visibility logic
+- [TASK011] Fix Tab Labels to Match PRD - Correct "Dashboard" label and other PRD requirements
+- [TASK012] Update Tests for 4-Tab Structure - Update tests to reflect PRD-compliant 4-tab structure
 
 ## Abandoned
 (No tasks abandoned yet)
 
 ---
 
-## Task Reordering Summary
+## Feature Organization Summary
 
-Tasks have been reordered to group related features together:
+Tasks have been reorganized by feature following the specified priority order:
 
-### ID Mapping (Old → New)
-**Bottom Navigation Bar:**
-- TASK020 → TASK007 (Remove Profile Tab)
-- TASK021 → TASK008 (Add Admin Status)
-- TASK022 → TASK009 (Update Auth Preferences)
-- TASK023 → TASK010 (Admin-Based Tab Logic)
-- TASK024 → TASK011 (Fix Tab Labels)
-- TASK025 → TASK012 (Update Tests)
+### Priority 1: Bottom Navigation Bar (TASK001-TASK006)
+Core bottom navigation functionality - foundational feature for app navigation.
 
-**Theme System:**
-- TASK007 → TASK013 (Define Theme Data Layer)
-- TASK008 → TASK014 (Provide Dependencies)
-- TASK010 → TASK015 (Theme State Management)
-- TASK011 → TASK016 (Theme Selector Dialog)
-- TASK012 → TASK017 (Top-Level Provider)
+### Priority 2: Bottom Navigation Bar PRD Fixes (TASK007-TASK012)
+Fixes to ensure bottom navigation complies with PRD requirements (4-tab maximum, correct labels, admin logic).
 
-**Top Navigation Bar:**
-- TASK009 → TASK018 (Define Top Bar State)
-- TASK015 → TASK019 (Top Bar Composable)
-- TASK016 → TASK020 (Required Dialogs)
-- TASK017 → TASK021 (Dialog Management)
-- TASK018 → TASK022 (Integrate Top Bar)
-- TASK013 → TASK023 (Integrate Dialog into Settings)
-- TASK019 → TASK024 (Top Bar Tests)
+### Priority 3: Top Navigation Bar (TASK013-TASK019)
+Top navigation bar with state management, dialogs, and integration with main UI.
 
-**Final:**
-- TASK014 → TASK025 (Theme System Tests)
-- TASK026 → TASK026 (PRD Compliance - no change)
+### Priority 4: Theme System (TASK020-TASK025)
+Complete theme system with data layer, state management, UI components, and application-wide theme provider.
+
+---
+
+## Task Status Legend
+- **Pending**: Task created but work not yet started
+- **In Progress**: Task is currently being worked on
+- **Completed**: Task has been successfully completed and tested
+- **Abandoned**: Task was cancelled or superseded
 
 ---
 
 **Last Updated:** 2025-07-16
+
+**Total Tasks:** 26
+- **Completed:** 7 (27%)
+- **In Progress:** 0 (0%)
+- **Pending:** 19 (73%)
+- **Abandoned:** 0 (0%)
