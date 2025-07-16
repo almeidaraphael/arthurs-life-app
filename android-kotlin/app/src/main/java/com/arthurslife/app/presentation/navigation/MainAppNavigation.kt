@@ -1,19 +1,8 @@
 package com.arthurslife.app.presentation.navigation
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -21,8 +10,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -46,8 +33,7 @@ import com.arthurslife.app.presentation.screens.childRewardScreen
 import com.arthurslife.app.presentation.screens.profileCustomizationScreen
 import com.arthurslife.app.presentation.screens.userSelectionScreen
 import com.arthurslife.app.presentation.theme.ThemeViewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
+import com.arthurslife.app.presentation.theme.components.themeAwareBottomNavigationBar
 
 @Composable
 fun MainAppNavigation(
@@ -71,9 +57,11 @@ fun MainAppNavigation(
             )
 
             if (!isUserSwitching) {
-                AppBottomNavigationBar(
+                val currentTheme by themeViewModel.currentTheme.collectAsState()
+                themeAwareBottomNavigationBar(
                     navigationItems = navigationItems,
                     selectedItem = selectedItem,
+                    theme = currentTheme,
                     onItemSelected = { route ->
                         selectedItem = route
                         navController.navigate(route) {
@@ -251,78 +239,6 @@ private fun navigateToUserHome(
         launchSingleTop = true
     }
 }
-
-// No ripple interaction source
-private class NoRippleInteractionSource : MutableInteractionSource {
-    override val interactions: Flow<androidx.compose.foundation.interaction.Interaction> = emptyFlow()
-    override suspend fun emit(interaction: androidx.compose.foundation.interaction.Interaction) {
-        // Intentionally empty - we don't want to emit interactions for ripple effect
-    }
-    override fun tryEmit(
-        interaction: androidx.compose.foundation.interaction.Interaction,
-    ): Boolean = true
-}
-
-@Composable
-private fun AppBottomNavigationBar(
-    navigationItems: List<BottomNavItem>,
-    selectedItem: String,
-    onItemSelected: (String) -> Unit,
-) {
-    NavigationBar(
-        modifier = Modifier
-            .height(80.dp)
-            .background(MaterialTheme.colorScheme.primary),
-        windowInsets = WindowInsets(0),
-        containerColor = Color.Transparent,
-    ) {
-        navigationItems.forEach { item ->
-            val isSelected = selectedItem == item.route
-            val itemColors = getNavigationItemColors()
-
-            NavigationBarItem(
-                modifier = Modifier.padding(0.dp),
-                selected = isSelected,
-                label = if (isSelected) {
-                    {
-                        Text(
-                            text = item.label,
-                            style = MaterialTheme.typography.labelSmall,
-                            color = Color.White,
-                        )
-                    }
-                } else {
-                    null
-                },
-                alwaysShowLabel = false,
-                interactionSource = remember { NoRippleInteractionSource() },
-                icon = {
-                    Icon(
-                        imageVector = item.icon,
-                        contentDescription = null,
-                        modifier = Modifier.size(if (isSelected) 28.dp else 24.dp),
-                        tint = if (isSelected) {
-                            Color.White
-                        } else {
-                            Color.White.copy(alpha = 0.6f)
-                        },
-                    )
-                },
-                colors = itemColors,
-                onClick = { onItemSelected(item.route) },
-            )
-        }
-    }
-}
-
-@Composable
-private fun getNavigationItemColors() = NavigationBarItemDefaults.colors(
-    indicatorColor = Color.Transparent,
-    selectedIconColor = Color.White,
-    selectedTextColor = Color.White,
-    unselectedIconColor = Color.White.copy(alpha = 0.6f),
-    unselectedTextColor = Color.White.copy(alpha = 0.6f),
-)
 
 private fun NavGraphBuilder.setupChildScreens(
     themeViewModel: ThemeViewModel,
