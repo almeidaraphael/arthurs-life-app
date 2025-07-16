@@ -44,6 +44,26 @@ fun MainAppNavigation(
 ) {
     val navController = rememberNavController()
     val navigationItems = BottomNavItem.getItemsForRole(userRole)
+
+    MainScreen(
+        navController = navController,
+        navigationItems = navigationItems,
+        userRole = userRole,
+        themeViewModel = themeViewModel,
+        authViewModel = authViewModel,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun MainScreen(
+    navController: NavHostController,
+    navigationItems: List<BottomNavItem>,
+    userRole: UserRole,
+    themeViewModel: ThemeViewModel,
+    authViewModel: com.arthurslife.app.presentation.viewmodels.AuthViewModel,
+    modifier: Modifier = Modifier,
+) {
     var selectedItem by remember { mutableStateOf(navigationItems[0].route) }
 
     Scaffold(
