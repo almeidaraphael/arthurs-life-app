@@ -8,19 +8,15 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.arthurslife.app.domain.theme.model.AppTheme
 import com.arthurslife.app.domain.user.UserRole
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
-import javax.inject.Singleton
 
 private val Context.themeDataStore: DataStore<Preferences> by preferencesDataStore(
     name = "theme_preferences",
 )
 
-@Singleton
-class ThemePreferencesDataStore @Inject constructor(
-    @ApplicationContext private val context: Context,
+class ThemePreferencesDataStore(
+    private val context: Context,
 ) {
     private companion object {
         val CHILD_THEME_KEY = stringPreferencesKey("child_theme")
