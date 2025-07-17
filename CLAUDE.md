@@ -281,3 +281,6 @@ If Detekt fails:
 - **Use Task tool** for comprehensive codebase searches
 - **Use MultiEdit** for multiple related changes
 - **Run commands in parallel** when possible (multiple Bash calls)
+
+## Memory Bank
+- Follow /home/pheiow/.config/Code/User/prompts/memory-bank.instructions.md instructions.  
