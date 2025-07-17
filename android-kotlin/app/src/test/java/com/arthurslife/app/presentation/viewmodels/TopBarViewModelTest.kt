@@ -382,6 +382,11 @@ class TopBarViewModelTest {
         fun shouldReturnTrueForIsTopBarVisibleWhenAuthenticated() = runTest {
             // Given
             every { authPreferencesDataStore.isAuthenticated } returns flowOf(true)
+            every { authPreferencesDataStore.currentUserId } returns flowOf("user-123")
+            every { authPreferencesDataStore.currentRole } returns flowOf(UserRole.CHILD)
+            every { authPreferencesDataStore.isAdmin } returns flowOf(false)
+            val user = TestDataFactory.createChildUser(id = "user-123")
+            coEvery { userRepository.getUserById("user-123") } returns user
 
             // When
             viewModel = createViewModel()
@@ -396,6 +401,9 @@ class TopBarViewModelTest {
         fun shouldReturnFalseForIsTopBarVisibleWhenNotAuthenticated() = runTest {
             // Given
             every { authPreferencesDataStore.isAuthenticated } returns flowOf(false)
+            every { authPreferencesDataStore.currentUserId } returns flowOf(null)
+            every { authPreferencesDataStore.currentRole } returns flowOf(null)
+            every { authPreferencesDataStore.isAdmin } returns flowOf(false)
 
             // When
             viewModel = createViewModel()
@@ -415,6 +423,11 @@ class TopBarViewModelTest {
         fun shouldReturnCurrentUserRoleFromAuthPreferences() = runTest {
             // Given
             every { authPreferencesDataStore.currentRole } returns flowOf(UserRole.CAREGIVER)
+            every { authPreferencesDataStore.isAuthenticated } returns flowOf(true)
+            every { authPreferencesDataStore.currentUserId } returns flowOf("user-123")
+            every { authPreferencesDataStore.isAdmin } returns flowOf(false)
+            val user = TestDataFactory.createCaregiverUser(id = "user-123")
+            coEvery { userRepository.getUserById("user-123") } returns user
 
             // When
             viewModel = createViewModel()
@@ -429,6 +442,9 @@ class TopBarViewModelTest {
         fun shouldReturnNullWhenNoRoleIsSet() = runTest {
             // Given
             every { authPreferencesDataStore.currentRole } returns flowOf(null)
+            every { authPreferencesDataStore.isAuthenticated } returns flowOf(false)
+            every { authPreferencesDataStore.currentUserId } returns flowOf(null)
+            every { authPreferencesDataStore.isAdmin } returns flowOf(false)
 
             // When
             viewModel = createViewModel()
