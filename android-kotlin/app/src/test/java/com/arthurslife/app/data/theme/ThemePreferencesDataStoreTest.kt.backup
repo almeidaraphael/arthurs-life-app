@@ -1,0 +1,847 @@
+package com.arthurslife.app.data.theme
+
+import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.MutablePreferences
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import com.arthurslife.app.domain.theme.model.AppTheme
+import com.arthurslife.app.domain.user.UserRole
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.slot
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.test.runTest
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
+
+/**
+ * Comprehensive test suite for ThemePreferencesDataStore.
+ *
+ * This test suite validates the ThemePreferencesDataStore's persistence functionality,
+ * including theme storage, retrieval, and DataStore integration. Tests cover various
+ * user roles, theme types, and DataStore operations.
+ *
+ * Coverage includes:
+ * - Theme storage and retrieval
+ * - DataStore integration and operations
+ * - User role-based theme keys
+ * - Theme serialization and deserialization
+ * - Clear operations for themes
+ * - Flow behavior and transformations
+ * - Default theme handling
+ * - Error scenarios and edge cases
+ */
+@DisplayName("ThemePreferencesDataStore Tests")
+class ThemePreferencesDataStoreTest {
+
+    private lateinit var context: Context
+    private lateinit var dataStore: DataStore<Preferences>
+    private lateinit var themePreferencesDataStore: ThemePreferencesDataStore
+    private lateinit var preferences: Preferences
+
+    private companion object {
+        val CHILD_THEME_KEY = stringPreferencesKey("child_theme")
+        val CAREGIVER_THEME_KEY = stringPreferencesKey("caregiver_theme")
+    }
+
+    @BeforeEach
+    fun setUp() {
+        context = mockk()
+        dataStore = mockk()
+        preferences = mockk()
+        themePreferencesDataStore = ThemePreferencesDataStore(context)
+
+        // Mock the DataStore extension property
+        every { context.getSharedPreferences(any(), any()) } returns mockk()
+    }
+
+    @Nested
+    @DisplayName("Theme Retrieval")
+    inner class ThemeRetrieval {
+
+        @Test
+        @DisplayName("Should get default Mario theme for child user role")
+        fun shouldGetDefaultMarioThemeForChildUserRole() = runTest {
+            // Given
+            val userRole = UserRole.CHILD
+            val expectedTheme = AppTheme.MARIO_CLASSIC
+
+            // Mock empty preferences (no saved theme)
+            every { preferences[CHILD_THEME_KEY] } returns null
+            every { dataStore.data } returns flowOf(preferences)
+
+            // Create a mock implementation that returns the expected default
+            val mockDataStore = mockk<DataStore<Preferences>>()
+            every { mockDataStore.data } returns flowOf(preferences)
+            every { preferences[CHILD_THEME_KEY] } returns null
+
+            // When
+            val themeFlow = themePreferencesDataStore.getTheme(userRole)
+            val result = themeFlow.toList()
+
+            // Then
+            assertEquals(1, result.size, "Should emit single theme")
+            assertEquals(expectedTheme, result[0], "Should return default Mario theme for child")
+        }
+
+        @Test
+        @DisplayName("Should get default Material Light theme for caregiver user role")
+        fun shouldGetDefaultMaterialLightThemeForCaregiverUserRole() = runTest {
+            // Given
+            val userRole = UserRole.CAREGIVER
+            val expectedTheme = AppTheme.MATERIAL_LIGHT
+
+            // Mock empty preferences (no saved theme)
+            every { preferences[CAREGIVER_THEME_KEY] } returns null
+            every { dataStore.data } returns flowOf(preferences)
+
+            // When
+            val themeFlow = themePreferencesDataStore.getTheme(userRole)
+            val result = themeFlow.toList()
+
+            // Then
+            assertEquals(1, result.size, "Should emit single theme")
+            assertEquals(
+                expectedTheme,
+                result[0],
+                "Should return default Material Light theme for caregiver",
+            )
+        }
+
+        @Test
+        @DisplayName("Should get saved theme for child user role")
+        fun shouldGetSavedThemeForChildUserRole() = runTest {
+            // Given
+            val userRole = UserRole.CHILD
+            val savedTheme = AppTheme.MATERIAL_DARK
+
+            every { preferences[CHILD_THEME_KEY] } returns savedTheme.key
+            every { dataStore.data } returns flowOf(preferences)
+
+            // When
+            val themeFlow = themePreferencesDataStore.getTheme(userRole)
+            val result = themeFlow.toList()
+
+            // Then
+            assertEquals(1, result.size, "Should emit single theme")
+            assertEquals(savedTheme, result[0], "Should return saved theme for child")
+        }
+
+        @Test
+        @DisplayName("Should get saved theme for caregiver user role")
+        fun shouldGetSavedThemeForCaregiverUserRole() = runTest {
+            // Given
+            val userRole = UserRole.CAREGIVER
+            val savedTheme = AppTheme.MATERIAL_DARK
+
+            every { preferences[CAREGIVER_THEME_KEY] } returns savedTheme.key
+            every { dataStore.data } returns flowOf(preferences)
+
+            // When
+            val themeFlow = themePreferencesDataStore.getTheme(userRole)
+            val result = themeFlow.toList()
+
+            // Then
+            assertEquals(1, result.size, "Should emit single theme")
+            assertEquals(savedTheme, result[0], "Should return saved theme for caregiver")
+        }
+
+        @Test
+        @DisplayName("Should handle invalid theme key gracefully")
+        fun shouldHandleInvalidThemeKeyGracefully() = runTest {
+            // Given
+            val userRole = UserRole.CHILD
+            val invalidThemeKey = "invalid_theme_key"
+            val expectedDefaultTheme = AppTheme.MARIO_CLASSIC
+
+            every { preferences[CHILD_THEME_KEY] } returns invalidThemeKey
+            every { dataStore.data } returns flowOf(preferences)
+
+            // When
+            val themeFlow = themePreferencesDataStore.getTheme(userRole)
+            val result = themeFlow.toList()
+
+            // Then
+            assertEquals(1, result.size, "Should emit single theme")
+            assertEquals(
+                expectedDefaultTheme,
+                result[0],
+                "Should return default theme for invalid key",
+            )
+        }
+
+        @Test
+        @DisplayName("Should handle multiple preference changes")
+        fun shouldHandleMultiplePreferenceChanges() = runTest {
+            // Given
+            val userRole = UserRole.CAREGIVER
+            val theme1 = AppTheme.MATERIAL_LIGHT
+            val theme2 = AppTheme.MATERIAL_DARK
+            val theme3 = AppTheme.MARIO_CLASSIC
+
+            val preferences1 = mockk<Preferences>()
+            val preferences2 = mockk<Preferences>()
+            val preferences3 = mockk<Preferences>()
+
+            every { preferences1[CAREGIVER_THEME_KEY] } returns theme1.key
+            every { preferences2[CAREGIVER_THEME_KEY] } returns theme2.key
+            every { preferences3[CAREGIVER_THEME_KEY] } returns theme3.key
+
+            every { dataStore.data } returns flowOf(preferences1, preferences2, preferences3)
+
+            // When
+            val themeFlow = themePreferencesDataStore.getTheme(userRole)
+            val result = themeFlow.toList()
+
+            // Then
+            assertEquals(3, result.size, "Should emit all theme changes")
+            assertEquals(theme1, result[0], "Should emit first theme")
+            assertEquals(theme2, result[1], "Should emit second theme")
+            assertEquals(theme3, result[2], "Should emit third theme")
+        }
+
+        @Test
+        @DisplayName("Should use correct theme key for user role")
+        fun shouldUseCorrectThemeKeyForUserRole() = runTest {
+            // Given
+            val childRole = UserRole.CHILD
+            val caregiverRole = UserRole.CAREGIVER
+            val childTheme = AppTheme.MARIO_CLASSIC
+            val caregiverTheme = AppTheme.MATERIAL_LIGHT
+
+            val childPreferences = mockk<Preferences>()
+            val caregiverPreferences = mockk<Preferences>()
+
+            every { childPreferences[CHILD_THEME_KEY] } returns childTheme.key
+            every { childPreferences[CAREGIVER_THEME_KEY] } returns null
+            every { caregiverPreferences[CAREGIVER_THEME_KEY] } returns caregiverTheme.key
+            every { caregiverPreferences[CHILD_THEME_KEY] } returns null
+
+            every { dataStore.data } returns flowOf(childPreferences) andThen flowOf(caregiverPreferences)
+
+            // When
+            val childThemeFlow = themePreferencesDataStore.getTheme(childRole)
+            val caregiverThemeFlow = themePreferencesDataStore.getTheme(caregiverRole)
+            val childResult = childThemeFlow.toList()
+            val caregiverResult = caregiverThemeFlow.toList()
+
+            // Then
+            assertEquals(childTheme, childResult[0], "Should use child theme key for child role")
+            assertEquals(
+                caregiverTheme,
+                caregiverResult[0],
+                "Should use caregiver theme key for caregiver role",
+            )
+        }
+
+        @Test
+        @DisplayName("Should handle all theme types correctly")
+        fun shouldHandleAllThemeTypesCorrectly() = runTest {
+            // Given
+            val userRole = UserRole.CHILD
+            val allThemes = AppTheme.values().toList()
+
+            allThemes.forEach { theme ->
+                val mockPreferences = mockk<Preferences>()
+                every { mockPreferences[CHILD_THEME_KEY] } returns theme.key
+                every { dataStore.data } returns flowOf(mockPreferences)
+
+                // When
+                val themeFlow = themePreferencesDataStore.getTheme(userRole)
+                val result = themeFlow.toList()
+
+                // Then
+                assertEquals(theme, result[0], "Should handle $theme correctly")
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("Theme Saving")
+    inner class ThemeSaving {
+
+        @Test
+        @DisplayName("Should save theme for child user role")
+        fun shouldSaveThemeForChildUserRole() = runTest {
+            // Given
+            val userRole = UserRole.CHILD
+            val theme = AppTheme.MARIO_CLASSIC
+            val editSlot = slot<suspend (Preferences.MutablePreferences) -> Unit>()
+
+            coEvery { dataStore.edit(capture(editSlot)) } coAnswers {
+                val mockMutablePreferences = mockk<Preferences.MutablePreferences>(relaxed = true)
+                editSlot.captured(mockMutablePreferences)
+                preferences
+            }
+
+            // When
+            themePreferencesDataStore.saveTheme(userRole, theme)
+
+            // Then
+            coVerify(exactly = 1) { dataStore.edit(any()) }
+        }
+
+        @Test
+        @DisplayName("Should save theme for caregiver user role")
+        fun shouldSaveThemeForCaregiverUserRole() = runTest {
+            // Given
+            val userRole = UserRole.CAREGIVER
+            val theme = AppTheme.MATERIAL_LIGHT
+            val editSlot = slot<suspend (Preferences.MutablePreferences) -> Unit>()
+
+            coEvery { dataStore.edit(capture(editSlot)) } coAnswers {
+                val mockMutablePreferences = mockk<Preferences.MutablePreferences>(relaxed = true)
+                editSlot.captured(mockMutablePreferences)
+                preferences
+            }
+
+            // When
+            themePreferencesDataStore.saveTheme(userRole, theme)
+
+            // Then
+            coVerify(exactly = 1) { dataStore.edit(any()) }
+        }
+
+        @Test
+        @DisplayName("Should save theme with correct key and value")
+        fun shouldSaveThemeWithCorrectKeyAndValue() = runTest {
+            // Given
+            val userRole = UserRole.CHILD
+            val theme = AppTheme.MATERIAL_DARK
+            val mockMutablePreferences = mockk<Preferences.MutablePreferences>(relaxed = true)
+            val editSlot = slot<suspend (Preferences.MutablePreferences) -> Unit>()
+
+            coEvery { dataStore.edit(capture(editSlot)) } coAnswers {
+                editSlot.captured(mockMutablePreferences)
+                preferences
+            }
+
+            // When
+            themePreferencesDataStore.saveTheme(userRole, theme)
+
+            // Then
+            coVerify(exactly = 1) { dataStore.edit(any()) }
+            coVerify(exactly = 1) { mockMutablePreferences.set(CHILD_THEME_KEY, theme.key) }
+        }
+
+        @Test
+        @DisplayName("Should handle saving all theme types")
+        fun shouldHandleSavingAllThemeTypes() = runTest {
+            // Given
+            val userRole = UserRole.CAREGIVER
+            val allThemes = AppTheme.values().toList()
+            val mockMutablePreferences = mockk<Preferences.MutablePreferences>(relaxed = true)
+            val editSlot = slot<suspend (Preferences.MutablePreferences) -> Unit>()
+
+            coEvery { dataStore.edit(capture(editSlot)) } coAnswers {
+                editSlot.captured(mockMutablePreferences)
+                preferences
+            }
+
+            // When
+            allThemes.forEach { theme ->
+                themePreferencesDataStore.saveTheme(userRole, theme)
+            }
+
+            // Then
+            coVerify(exactly = allThemes.size) { dataStore.edit(any()) }
+            allThemes.forEach { theme ->
+                coVerify(exactly = 1) { mockMutablePreferences.set(CAREGIVER_THEME_KEY, theme.key) }
+            }
+        }
+
+        @Test
+        @DisplayName("Should handle multiple saves for same theme")
+        fun shouldHandleMultipleSavesForSameTheme() = runTest {
+            // Given
+            val userRole = UserRole.CHILD
+            val theme = AppTheme.MARIO_CLASSIC
+            val mockMutablePreferences = mockk<Preferences.MutablePreferences>(relaxed = true)
+            val editSlot = slot<suspend (Preferences.MutablePreferences) -> Unit>()
+
+            coEvery { dataStore.edit(capture(editSlot)) } coAnswers {
+                editSlot.captured(mockMutablePreferences)
+                preferences
+            }
+
+            // When
+            themePreferencesDataStore.saveTheme(userRole, theme)
+            themePreferencesDataStore.saveTheme(userRole, theme)
+            themePreferencesDataStore.saveTheme(userRole, theme)
+
+            // Then
+            coVerify(exactly = 3) { dataStore.edit(any()) }
+            coVerify(exactly = 3) { mockMutablePreferences.set(CHILD_THEME_KEY, theme.key) }
+        }
+
+        @Test
+        @DisplayName("Should handle saving for different user roles")
+        fun shouldHandleSavingForDifferentUserRoles() = runTest {
+            // Given
+            val childRole = UserRole.CHILD
+            val caregiverRole = UserRole.CAREGIVER
+            val childTheme = AppTheme.MARIO_CLASSIC
+            val caregiverTheme = AppTheme.MATERIAL_LIGHT
+            val mockMutablePreferences = mockk<Preferences.MutablePreferences>(relaxed = true)
+            val editSlot = slot<suspend (Preferences.MutablePreferences) -> Unit>()
+
+            coEvery { dataStore.edit(capture(editSlot)) } coAnswers {
+                editSlot.captured(mockMutablePreferences)
+                preferences
+            }
+
+            // When
+            themePreferencesDataStore.saveTheme(childRole, childTheme)
+            themePreferencesDataStore.saveTheme(caregiverRole, caregiverTheme)
+
+            // Then
+            coVerify(exactly = 2) { dataStore.edit(any()) }
+            coVerify(exactly = 1) { mockMutablePreferences.set(CHILD_THEME_KEY, childTheme.key) }
+            coVerify(
+                exactly = 1,
+            ) { mockMutablePreferences.set(CAREGIVER_THEME_KEY, caregiverTheme.key) }
+        }
+
+        @Test
+        @DisplayName("Should be suspend function")
+        fun shouldBeSuspendFunction() = runTest {
+            // Given
+            val userRole = UserRole.CHILD
+            val theme = AppTheme.MARIO_CLASSIC
+            val mockMutablePreferences = mockk<Preferences.MutablePreferences>(relaxed = true)
+            val editSlot = slot<suspend (Preferences.MutablePreferences) -> Unit>()
+
+            coEvery { dataStore.edit(capture(editSlot)) } coAnswers {
+                editSlot.captured(mockMutablePreferences)
+                preferences
+            }
+
+            // When & Then - should compile and run without blocking
+            themePreferencesDataStore.saveTheme(userRole, theme)
+        }
+    }
+
+    @Nested
+    @DisplayName("Theme Clearing")
+    inner class ThemeClearing {
+
+        @Test
+        @DisplayName("Should clear theme for child user role")
+        fun shouldClearThemeForChildUserRole() = runTest {
+            // Given
+            val userRole = UserRole.CHILD
+            val mockMutablePreferences = mockk<Preferences.MutablePreferences>(relaxed = true)
+            val editSlot = slot<suspend (Preferences.MutablePreferences) -> Unit>()
+
+            coEvery { dataStore.edit(capture(editSlot)) } coAnswers {
+                editSlot.captured(mockMutablePreferences)
+                preferences
+            }
+
+            // When
+            themePreferencesDataStore.clearTheme(userRole)
+
+            // Then
+            coVerify(exactly = 1) { dataStore.edit(any()) }
+            coVerify(exactly = 1) { mockMutablePreferences.remove(CHILD_THEME_KEY) }
+        }
+
+        @Test
+        @DisplayName("Should clear theme for caregiver user role")
+        fun shouldClearThemeForCaregiverUserRole() = runTest {
+            // Given
+            val userRole = UserRole.CAREGIVER
+            val mockMutablePreferences = mockk<Preferences.MutablePreferences>(relaxed = true)
+            val editSlot = slot<suspend (Preferences.MutablePreferences) -> Unit>()
+
+            coEvery { dataStore.edit(capture(editSlot)) } coAnswers {
+                editSlot.captured(mockMutablePreferences)
+                preferences
+            }
+
+            // When
+            themePreferencesDataStore.clearTheme(userRole)
+
+            // Then
+            coVerify(exactly = 1) { dataStore.edit(any()) }
+            coVerify(exactly = 1) { mockMutablePreferences.remove(CAREGIVER_THEME_KEY) }
+        }
+
+        @Test
+        @DisplayName("Should clear all themes")
+        fun shouldClearAllThemes() = runTest {
+            // Given
+            val mockMutablePreferences = mockk<Preferences.MutablePreferences>(relaxed = true)
+            val editSlot = slot<suspend (Preferences.MutablePreferences) -> Unit>()
+
+            coEvery { dataStore.edit(capture(editSlot)) } coAnswers {
+                editSlot.captured(mockMutablePreferences)
+                preferences
+            }
+
+            // When
+            themePreferencesDataStore.clearAllThemes()
+
+            // Then
+            coVerify(exactly = 1) { dataStore.edit(any()) }
+            coVerify(exactly = 1) { mockMutablePreferences.clear() }
+        }
+
+        @Test
+        @DisplayName("Should handle multiple clear operations")
+        fun shouldHandleMultipleClearOperations() = runTest {
+            // Given
+            val userRole = UserRole.CHILD
+            val mockMutablePreferences = mockk<Preferences.MutablePreferences>(relaxed = true)
+            val editSlot = slot<suspend (Preferences.MutablePreferences) -> Unit>()
+
+            coEvery { dataStore.edit(capture(editSlot)) } coAnswers {
+                editSlot.captured(mockMutablePreferences)
+                preferences
+            }
+
+            // When
+            themePreferencesDataStore.clearTheme(userRole)
+            themePreferencesDataStore.clearTheme(userRole)
+            themePreferencesDataStore.clearAllThemes()
+
+            // Then
+            coVerify(exactly = 3) { dataStore.edit(any()) }
+            coVerify(exactly = 2) { mockMutablePreferences.remove(CHILD_THEME_KEY) }
+            coVerify(exactly = 1) { mockMutablePreferences.clear() }
+        }
+
+        @Test
+        @DisplayName("Should handle clearing for different user roles")
+        fun shouldHandleClearingForDifferentUserRoles() = runTest {
+            // Given
+            val childRole = UserRole.CHILD
+            val caregiverRole = UserRole.CAREGIVER
+            val mockMutablePreferences = mockk<Preferences.MutablePreferences>(relaxed = true)
+            val editSlot = slot<suspend (Preferences.MutablePreferences) -> Unit>()
+
+            coEvery { dataStore.edit(capture(editSlot)) } coAnswers {
+                editSlot.captured(mockMutablePreferences)
+                preferences
+            }
+
+            // When
+            themePreferencesDataStore.clearTheme(childRole)
+            themePreferencesDataStore.clearTheme(caregiverRole)
+
+            // Then
+            coVerify(exactly = 2) { dataStore.edit(any()) }
+            coVerify(exactly = 1) { mockMutablePreferences.remove(CHILD_THEME_KEY) }
+            coVerify(exactly = 1) { mockMutablePreferences.remove(CAREGIVER_THEME_KEY) }
+        }
+    }
+
+    @Nested
+    @DisplayName("Theme Key Management")
+    inner class ThemeKeyManagement {
+
+        @Test
+        @DisplayName("Should use correct theme key for child role")
+        fun shouldUseCorrectThemeKeyForChildRole() = runTest {
+            // Given
+            val userRole = UserRole.CHILD
+            val theme = AppTheme.MARIO_CLASSIC
+            val mockMutablePreferences = mockk<Preferences.MutablePreferences>(relaxed = true)
+            val editSlot = slot<suspend (Preferences.MutablePreferences) -> Unit>()
+
+            coEvery { dataStore.edit(capture(editSlot)) } coAnswers {
+                editSlot.captured(mockMutablePreferences)
+                preferences
+            }
+
+            // When
+            themePreferencesDataStore.saveTheme(userRole, theme)
+
+            // Then
+            coVerify(exactly = 1) { mockMutablePreferences.set(CHILD_THEME_KEY, theme.key) }
+        }
+
+        @Test
+        @DisplayName("Should use correct theme key for caregiver role")
+        fun shouldUseCorrectThemeKeyForCaregiverRole() = runTest {
+            // Given
+            val userRole = UserRole.CAREGIVER
+            val theme = AppTheme.MATERIAL_LIGHT
+            val mockMutablePreferences = mockk<Preferences.MutablePreferences>(relaxed = true)
+            val editSlot = slot<suspend (Preferences.MutablePreferences) -> Unit>()
+
+            coEvery { dataStore.edit(capture(editSlot)) } coAnswers {
+                editSlot.captured(mockMutablePreferences)
+                preferences
+            }
+
+            // When
+            themePreferencesDataStore.saveTheme(userRole, theme)
+
+            // Then
+            coVerify(exactly = 1) { mockMutablePreferences.set(CAREGIVER_THEME_KEY, theme.key) }
+        }
+
+        @Test
+        @DisplayName("Should use unique keys for different user roles")
+        fun shouldUseUniqueKeysForDifferentUserRoles() {
+            // Given & When & Then
+            assertEquals("child_theme", CHILD_THEME_KEY.name, "Should use unique key for child")
+            assertEquals(
+                "caregiver_theme",
+                CAREGIVER_THEME_KEY.name,
+                "Should use unique key for caregiver",
+            )
+        }
+
+        @Test
+        @DisplayName("Should handle theme key serialization")
+        fun shouldHandleThemeKeySerialization() = runTest {
+            // Given
+            val userRole = UserRole.CHILD
+            val allThemes = AppTheme.values().toList()
+            val mockMutablePreferences = mockk<Preferences.MutablePreferences>(relaxed = true)
+            val editSlot = slot<suspend (Preferences.MutablePreferences) -> Unit>()
+
+            coEvery { dataStore.edit(capture(editSlot)) } coAnswers {
+                editSlot.captured(mockMutablePreferences)
+                preferences
+            }
+
+            // When
+            allThemes.forEach { theme ->
+                themePreferencesDataStore.saveTheme(userRole, theme)
+            }
+
+            // Then
+            allThemes.forEach { theme ->
+                coVerify(exactly = 1) { mockMutablePreferences.set(CHILD_THEME_KEY, theme.key) }
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("Integration Scenarios")
+    inner class IntegrationScenarios {
+
+        @Test
+        @DisplayName("Should handle complete theme lifecycle")
+        fun shouldHandleCompleteThemeLifecycle() = runTest {
+            // Given
+            val userRole = UserRole.CHILD
+            val theme = AppTheme.MARIO_CLASSIC
+            val mockMutablePreferences = mockk<Preferences.MutablePreferences>(relaxed = true)
+            val editSlot = slot<suspend (Preferences.MutablePreferences) -> Unit>()
+
+            // Mock save operation
+            coEvery { dataStore.edit(capture(editSlot)) } coAnswers {
+                editSlot.captured(mockMutablePreferences)
+                preferences
+            }
+
+            // Mock get operation
+            every { preferences[CHILD_THEME_KEY] } returns theme.key
+            every { dataStore.data } returns flowOf(preferences)
+
+            // When
+            themePreferencesDataStore.saveTheme(userRole, theme)
+            val themeFlow = themePreferencesDataStore.getTheme(userRole)
+            val result = themeFlow.toList()
+            themePreferencesDataStore.clearTheme(userRole)
+
+            // Then
+            assertEquals(theme, result[0], "Should retrieve saved theme")
+            coVerify(exactly = 1) { mockMutablePreferences.set(CHILD_THEME_KEY, theme.key) }
+            coVerify(exactly = 1) { mockMutablePreferences.remove(CHILD_THEME_KEY) }
+        }
+
+        @Test
+        @DisplayName("Should handle theme switching workflow")
+        fun shouldHandleThemeSwitchingWorkflow() = runTest {
+            // Given
+            val userRole = UserRole.CAREGIVER
+            val theme1 = AppTheme.MATERIAL_LIGHT
+            val theme2 = AppTheme.MATERIAL_DARK
+            val theme3 = AppTheme.MARIO_CLASSIC
+            val mockMutablePreferences = mockk<Preferences.MutablePreferences>(relaxed = true)
+            val editSlot = slot<suspend (Preferences.MutablePreferences) -> Unit>()
+
+            coEvery { dataStore.edit(capture(editSlot)) } coAnswers {
+                editSlot.captured(mockMutablePreferences)
+                preferences
+            }
+
+            // When
+            themePreferencesDataStore.saveTheme(userRole, theme1)
+            themePreferencesDataStore.saveTheme(userRole, theme2)
+            themePreferencesDataStore.saveTheme(userRole, theme3)
+
+            // Then
+            coVerify(exactly = 3) { dataStore.edit(any()) }
+            coVerify(exactly = 1) { mockMutablePreferences.set(CAREGIVER_THEME_KEY, theme1.key) }
+            coVerify(exactly = 1) { mockMutablePreferences.set(CAREGIVER_THEME_KEY, theme2.key) }
+            coVerify(exactly = 1) { mockMutablePreferences.set(CAREGIVER_THEME_KEY, theme3.key) }
+        }
+
+        @Test
+        @DisplayName("Should handle multi-user theme management")
+        fun shouldHandleMultiUserThemeManagement() = runTest {
+            // Given
+            val childRole = UserRole.CHILD
+            val caregiverRole = UserRole.CAREGIVER
+            val childTheme = AppTheme.MARIO_CLASSIC
+            val caregiverTheme = AppTheme.MATERIAL_LIGHT
+            val mockMutablePreferences = mockk<Preferences.MutablePreferences>(relaxed = true)
+            val editSlot = slot<suspend (Preferences.MutablePreferences) -> Unit>()
+
+            coEvery { dataStore.edit(capture(editSlot)) } coAnswers {
+                editSlot.captured(mockMutablePreferences)
+                preferences
+            }
+
+            // When
+            themePreferencesDataStore.saveTheme(childRole, childTheme)
+            themePreferencesDataStore.saveTheme(caregiverRole, caregiverTheme)
+
+            // Then
+            coVerify(exactly = 2) { dataStore.edit(any()) }
+            coVerify(exactly = 1) { mockMutablePreferences.set(CHILD_THEME_KEY, childTheme.key) }
+            coVerify(
+                exactly = 1,
+            ) { mockMutablePreferences.set(CAREGIVER_THEME_KEY, caregiverTheme.key) }
+        }
+
+        @Test
+        @DisplayName("Should handle theme reset workflow")
+        fun shouldHandleThemeResetWorkflow() = runTest {
+            // Given
+            val userRole = UserRole.CHILD
+            val theme = AppTheme.MATERIAL_DARK
+            val mockMutablePreferences = mockk<Preferences.MutablePreferences>(relaxed = true)
+            val editSlot = slot<suspend (Preferences.MutablePreferences) -> Unit>()
+
+            coEvery { dataStore.edit(capture(editSlot)) } coAnswers {
+                editSlot.captured(mockMutablePreferences)
+                preferences
+            }
+
+            // When
+            themePreferencesDataStore.saveTheme(userRole, theme)
+            themePreferencesDataStore.clearTheme(userRole)
+
+            // Then
+            coVerify(exactly = 2) { dataStore.edit(any()) }
+            coVerify(exactly = 1) { mockMutablePreferences.set(CHILD_THEME_KEY, theme.key) }
+            coVerify(exactly = 1) { mockMutablePreferences.remove(CHILD_THEME_KEY) }
+        }
+
+        @Test
+        @DisplayName("Should handle bulk theme operations")
+        fun shouldHandleBulkThemeOperations() = runTest {
+            // Given
+            val userRole = UserRole.CAREGIVER
+            val themes = listOf(
+                AppTheme.MATERIAL_LIGHT,
+                AppTheme.MATERIAL_DARK,
+                AppTheme.MARIO_CLASSIC,
+            )
+            val mockMutablePreferences = mockk<Preferences.MutablePreferences>(relaxed = true)
+            val editSlot = slot<suspend (Preferences.MutablePreferences) -> Unit>()
+
+            coEvery { dataStore.edit(capture(editSlot)) } coAnswers {
+                editSlot.captured(mockMutablePreferences)
+                preferences
+            }
+
+            // When
+            themes.forEach { theme ->
+                themePreferencesDataStore.saveTheme(userRole, theme)
+            }
+            themePreferencesDataStore.clearAllThemes()
+
+            // Then
+            coVerify(exactly = themes.size + 1) { dataStore.edit(any()) }
+            themes.forEach { theme ->
+                coVerify(exactly = 1) { mockMutablePreferences.set(CAREGIVER_THEME_KEY, theme.key) }
+            }
+            coVerify(exactly = 1) { mockMutablePreferences.clear() }
+        }
+    }
+
+    @Nested
+    @DisplayName("DataStore Contract Compliance")
+    inner class DataStoreContractCompliance {
+
+        @Test
+        @DisplayName("Should use proper DataStore operations")
+        fun shouldUseProperDataStoreOperations() = runTest {
+            // Given
+            val userRole = UserRole.CHILD
+            val theme = AppTheme.MARIO_CLASSIC
+            val mockMutablePreferences = mockk<Preferences.MutablePreferences>(relaxed = true)
+            val editSlot = slot<suspend (Preferences.MutablePreferences) -> Unit>()
+
+            coEvery { dataStore.edit(capture(editSlot)) } coAnswers {
+                editSlot.captured(mockMutablePreferences)
+                preferences
+            }
+
+            // When
+            themePreferencesDataStore.saveTheme(userRole, theme)
+            themePreferencesDataStore.clearTheme(userRole)
+            themePreferencesDataStore.clearAllThemes()
+
+            // Then
+            coVerify(exactly = 3) { dataStore.edit(any()) }
+        }
+
+        @Test
+        @DisplayName("Should handle DataStore preferences correctly")
+        fun shouldHandleDataStorePreferencesCorrectly() = runTest {
+            // Given
+            val userRole = UserRole.CAREGIVER
+            val theme = AppTheme.MATERIAL_LIGHT
+            val mockMutablePreferences = mockk<Preferences.MutablePreferences>(relaxed = true)
+            val editSlot = slot<suspend (Preferences.MutablePreferences) -> Unit>()
+
+            coEvery { dataStore.edit(capture(editSlot)) } coAnswers {
+                editSlot.captured(mockMutablePreferences)
+                preferences
+            }
+
+            // When
+            themePreferencesDataStore.saveTheme(userRole, theme)
+
+            // Then
+            coVerify(exactly = 1) { mockMutablePreferences.set(CAREGIVER_THEME_KEY, theme.key) }
+        }
+
+        @Test
+        @DisplayName("Should use suspend functions for DataStore operations")
+        fun shouldUseSuspendFunctionsForDataStoreOperations() = runTest {
+            // Given
+            val userRole = UserRole.CHILD
+            val theme = AppTheme.MARIO_CLASSIC
+            val mockMutablePreferences = mockk<Preferences.MutablePreferences>(relaxed = true)
+            val editSlot = slot<suspend (Preferences.MutablePreferences) -> Unit>()
+
+            coEvery { dataStore.edit(capture(editSlot)) } coAnswers {
+                editSlot.captured(mockMutablePreferences)
+                preferences
+            }
+
+            // When & Then - should compile and execute as suspend functions
+            themePreferencesDataStore.saveTheme(userRole, theme)
+            themePreferencesDataStore.clearTheme(userRole)
+            themePreferencesDataStore.clearAllThemes()
+        }
+    }
+}
