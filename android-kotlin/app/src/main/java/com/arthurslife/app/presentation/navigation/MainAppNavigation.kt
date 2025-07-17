@@ -10,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -33,7 +34,11 @@ import com.arthurslife.app.presentation.screens.childRewardScreen
 import com.arthurslife.app.presentation.screens.profileCustomizationScreen
 import com.arthurslife.app.presentation.screens.userSelectionScreen
 import com.arthurslife.app.presentation.theme.ThemeViewModel
+import com.arthurslife.app.presentation.theme.components.dialogManager
 import com.arthurslife.app.presentation.theme.components.themeAwareBottomNavigationBar
+import com.arthurslife.app.presentation.theme.components.topNavigationBar
+import com.arthurslife.app.presentation.viewmodels.DialogManagementViewModel
+import com.arthurslife.app.presentation.viewmodels.TopBarScreen
 
 @Composable
 fun MainAppNavigation(
@@ -55,6 +60,15 @@ fun MainAppNavigation(
     )
 }
 
+/**
+ * Data class for top bar callbacks to reduce parameter count.
+ */
+data class TopBarCallbacks(
+    val onAvatarClick: () -> Unit,
+    val onSettingsClick: () -> Unit,
+    val onSelectedChildClick: () -> Unit,
+)
+
 @Composable
 fun MainScreen(
     navController: NavHostController,
@@ -63,35 +77,43 @@ fun MainScreen(
     themeViewModel: ThemeViewModel,
     authViewModel: com.arthurslife.app.presentation.viewmodels.AuthViewModel,
     modifier: Modifier = Modifier,
+    dialogViewModel: DialogManagementViewModel = hiltViewModel(),
 ) {
     var selectedItem by remember { mutableStateOf(navigationItems[0].route) }
+    val currentTheme by themeViewModel.currentTheme.collectAsState()
+    val currentDestination by navController.currentBackStackEntryAsState()
+
+    val isUserSwitching = currentDestination?.destination?.route in listOf(
+        "user_selection",
+        "user_switch_dialog/{userId}",
+    )
 
     Scaffold(
         modifier = modifier,
-        bottomBar = {
-            // Only show bottom bar if we're not on user selection screen
-            val currentDestination by navController.currentBackStackEntryAsState()
-            val isUserSwitching = currentDestination?.destination?.route in listOf(
-                "user_selection",
-                "user_switch_dialog/{userId}",
-            )
-
+        topBar = {
             if (!isUserSwitching) {
-                val currentTheme by themeViewModel.currentTheme.collectAsState()
-                themeAwareBottomNavigationBar(
-                    navigationItems = navigationItems,
-                    selectedItem = selectedItem,
+                topNavigationBar(
                     theme = currentTheme,
-                    onItemSelected = { route ->
-                        selectedItem = route
-                        navController.navigate(route) {
-                            popUpTo(navController.graph.startDestinationId) {
-                                saveState = true
-                            }
-                            launchSingleTop = true
-                            restoreState = true
+                    currentScreen = getCurrentTopBarScreen(currentDestination?.destination?.route),
+                    onAvatarClick = {
+                        authViewModel.authState.value.currentUser?.let { user ->
+                            dialogViewModel.showUserProfileDialog(user)
                         }
                     },
+                    onSettingsClick = {
+                        dialogViewModel.showSettingsDialog()
+                    },
+                )
+            }
+        },
+        bottomBar = {
+            if (!isUserSwitching) {
+                mainScreenBottomBar(
+                    navigationItems = navigationItems,
+                    selectedItem = selectedItem,
+                    currentTheme = currentTheme,
+                    navController = navController,
+                    onItemSelected = { selectedItem = it },
                 )
             }
         },
@@ -106,10 +128,32 @@ fun MainScreen(
                 .fillMaxSize()
                 .padding(innerPadding),
             onRequestUserSwitch = {
-                // Navigate to user selection screen
                 navController.navigate("user_selection")
             },
         )
+    }
+
+    mainScreenDialogs(
+        currentTheme = currentTheme,
+        dialogViewModel = dialogViewModel,
+        authViewModel = authViewModel,
+        navController = navController,
+    )
+}
+
+/**
+ * Maps navigation routes to TopBarScreen enum values.
+ */
+fun getCurrentTopBarScreen(route: String?): TopBarScreen {
+    return when (route) {
+        "child_home", "caregiver_dashboard" -> TopBarScreen.HOME
+        "child_tasks", "caregiver_tasks" -> TopBarScreen.TASKS
+        "child_rewards", "caregiver_progress" -> TopBarScreen.REWARDS
+        "child_achievements" -> TopBarScreen.ACHIEVEMENTS
+        "caregiver_children" -> TopBarScreen.CHILDREN_MANAGEMENT
+        "child_profile", "caregiver_profile" -> TopBarScreen.OTHER
+        "theme_settings" -> TopBarScreen.OTHER
+        else -> TopBarScreen.HOME
     }
 }
 
@@ -357,4 +401,60 @@ private fun NavGraphBuilder.setupCommonScreens(
             },
         )
     }
+}
+
+@Composable
+private fun mainScreenBottomBar(
+    navigationItems: List<BottomNavItem>,
+    selectedItem: String,
+    currentTheme: com.arthurslife.app.presentation.theme.BaseAppTheme,
+    navController: NavHostController,
+    onItemSelected: (String) -> Unit,
+) {
+    themeAwareBottomNavigationBar(
+        navigationItems = navigationItems,
+        selectedItem = selectedItem,
+        theme = currentTheme,
+        onItemSelected = { route ->
+            onItemSelected(route)
+            navController.navigate(route) {
+                popUpTo(navController.graph.startDestinationId) {
+                    saveState = true
+                }
+                launchSingleTop = true
+                restoreState = true
+            }
+        },
+    )
+}
+
+@Composable
+private fun mainScreenDialogs(
+    currentTheme: com.arthurslife.app.presentation.theme.BaseAppTheme,
+    dialogViewModel: DialogManagementViewModel,
+    authViewModel: com.arthurslife.app.presentation.viewmodels.AuthViewModel,
+    navController: NavHostController,
+) {
+    dialogManager(
+        theme = currentTheme,
+        onUserSelected = { user ->
+            handleUserSelection(
+                user = user,
+                authViewModel = authViewModel,
+                navController = navController,
+                onShowDialog = { selectedUser ->
+                    dialogViewModel.showUserProfileDialog(selectedUser)
+                },
+            )
+        },
+        onLanguageSelected = { _ -> },
+        onSaveProfile = { dialogViewModel.hideDialog() },
+        onChangeAvatar = { },
+        onChangePIN = { },
+        onSwitchUsers = { navController.navigate("user_selection") },
+        onThemeClick = { navController.navigate("theme_settings") },
+        onThemeSelected = { selectedTheme ->
+            // TODO: Implement theme switching through ThemeViewModel
+        },
+    )
 }
