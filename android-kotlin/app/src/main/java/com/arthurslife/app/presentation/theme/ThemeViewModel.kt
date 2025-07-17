@@ -35,6 +35,8 @@ class ThemeViewModel @Inject constructor(
         ThemeManager.getTheme(_currentTheme.value),
     )
 
+    val currentAppTheme: StateFlow<AppTheme> = _currentTheme.asStateFlow()
+
     private val _availableThemes = MutableStateFlow<List<AppTheme>>(emptyList())
     val availableThemes: StateFlow<List<BaseAppTheme>> = _availableThemes.asStateFlow().map {
         it.map { ThemeManager.getTheme(it) }
