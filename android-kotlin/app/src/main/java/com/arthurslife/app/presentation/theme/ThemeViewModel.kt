@@ -2,6 +2,7 @@ package com.arthurslife.app.presentation.theme
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.arthurslife.app.domain.common.DomainException
 import com.arthurslife.app.domain.theme.model.AppTheme
 import com.arthurslife.app.domain.theme.usecase.GetAvailableThemesUseCase
 import com.arthurslife.app.domain.theme.usecase.GetThemeUseCase
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -48,6 +50,9 @@ class ThemeViewModel @Inject constructor(
 
     private var currentUserRole: UserRole? = null
 
+    // Error handling
+    val errorEvents = ThemeErrorHandler.errorEvents
+
     init {
         loadAvailableThemes()
     }
@@ -64,8 +69,21 @@ class ThemeViewModel @Inject constructor(
 
         // Then load the saved preference (which may override the default)
         viewModelScope.launch {
-            getThemeUseCase(userRole).collect { theme ->
-                _currentTheme.value = theme
+            try {
+                getThemeUseCase(userRole).collect { theme ->
+                    _currentTheme.value = theme
+                }
+            } catch (error: DomainException) {
+                // Handle domain-specific theme loading error
+                val fallbackThemeName = ThemeManager.getTheme(defaultTheme).displayName
+                ThemeErrorHandler.handleThemeLoadError(error, fallbackThemeName)
+                // Keep the default theme as fallback
+                _currentTheme.value = defaultTheme
+            } catch (error: IOException) {
+                // Handle I/O related theme loading error
+                val fallbackThemeName = ThemeManager.getTheme(defaultTheme).displayName
+                ThemeErrorHandler.handleThemeLoadError(error, fallbackThemeName)
+                _currentTheme.value = defaultTheme
             }
         }
     }
@@ -73,13 +91,55 @@ class ThemeViewModel @Inject constructor(
     fun saveTheme(theme: AppTheme) {
         currentUserRole?.let { userRole ->
             viewModelScope.launch {
-                saveThemeUseCase(userRole, theme)
-                _currentTheme.value = theme
+                try {
+                    saveThemeUseCase(userRole, theme)
+                    _currentTheme.value = theme
+                } catch (error: DomainException) {
+                    // Handle domain-specific theme saving error
+                    val themeName = ThemeManager.getTheme(theme).displayName
+                    ThemeErrorHandler.handleThemeSaveError(error, themeName)
+                    // Still update the current theme for the session
+                    _currentTheme.value = theme
+                } catch (error: IOException) {
+                    // Handle I/O related theme saving error
+                    val themeName = ThemeManager.getTheme(theme).displayName
+                    ThemeErrorHandler.handleThemeSaveError(error, themeName)
+                    _currentTheme.value = theme
+                }
             }
         }
     }
 
     private fun loadAvailableThemes() {
-        _availableThemes.value = getAvailableThemesUseCase()
+        try {
+            _availableThemes.value = getAvailableThemesUseCase()
+        } catch (error: DomainException) {
+            // Handle domain-specific error for available themes
+            viewModelScope.launch {
+                ThemeErrorHandler.handleGenericThemeError(
+                    error,
+                    "Failed to load available themes. Using default themes.",
+                )
+            }
+            // Fallback to basic themes
+            _availableThemes.value = listOf(
+                AppTheme.MATERIAL_LIGHT,
+                AppTheme.MATERIAL_DARK,
+                AppTheme.MARIO_CLASSIC,
+            )
+        } catch (error: IOException) {
+            // Handle I/O related error for available themes
+            viewModelScope.launch {
+                ThemeErrorHandler.handleGenericThemeError(
+                    error,
+                    "Storage error loading themes. Using default themes.",
+                )
+            }
+            _availableThemes.value = listOf(
+                AppTheme.MATERIAL_LIGHT,
+                AppTheme.MATERIAL_DARK,
+                AppTheme.MARIO_CLASSIC,
+            )
+        }
     }
 }
