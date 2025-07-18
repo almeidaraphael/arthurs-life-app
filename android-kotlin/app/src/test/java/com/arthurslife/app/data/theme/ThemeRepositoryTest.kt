@@ -1,7 +1,6 @@
 package com.arthurslife.app.data.theme
 
 import com.arthurslife.app.domain.theme.model.AppTheme
-import com.arthurslife.app.domain.user.UserRole
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -52,7 +51,7 @@ class ThemeRepositoryTest {
         @DisplayName("Should get theme for child user role")
         fun shouldGetThemeForChildUserRole() = runTest {
             // Given
-            val userRole = UserRole.CHILD
+            val userRole = "child-user-123"
             val expectedTheme = AppTheme.MARIO_CLASSIC
             every { themePreferencesDataStore.getTheme(userRole) } returns flowOf(expectedTheme)
 
@@ -70,7 +69,7 @@ class ThemeRepositoryTest {
         @DisplayName("Should get theme for caregiver user role")
         fun shouldGetThemeForCaregiverUserRole() = runTest {
             // Given
-            val userRole = UserRole.CAREGIVER
+            val userRole = "caregiver-user-456"
             val expectedTheme = AppTheme.MATERIAL_LIGHT
             every { themePreferencesDataStore.getTheme(userRole) } returns flowOf(expectedTheme)
 
@@ -92,7 +91,7 @@ class ThemeRepositoryTest {
         @DisplayName("Should delegate theme retrieval to DataStore")
         fun shouldDelegateThemeRetrievalToDataStore() = runTest {
             // Given
-            val userRole = UserRole.CHILD
+            val userRole = "child-user-123"
             val expectedTheme = AppTheme.MATERIAL_DARK
             every { themePreferencesDataStore.getTheme(userRole) } returns flowOf(expectedTheme)
 
@@ -109,7 +108,7 @@ class ThemeRepositoryTest {
         @DisplayName("Should return flow of theme changes")
         fun shouldReturnFlowOfThemeChanges() = runTest {
             // Given
-            val userRole = UserRole.CAREGIVER
+            val userRole = "caregiver-user-456"
             val themeChanges = listOf(
                 AppTheme.MATERIAL_LIGHT,
                 AppTheme.MATERIAL_DARK,
@@ -130,8 +129,8 @@ class ThemeRepositoryTest {
         @DisplayName("Should handle different user roles independently")
         fun shouldHandleDifferentUserRolesIndependently() = runTest {
             // Given
-            val childRole = UserRole.CHILD
-            val caregiverRole = UserRole.CAREGIVER
+            val childRole = "child-user-123"
+            val caregiverRole = "caregiver-user-456"
             val childTheme = AppTheme.MARIO_CLASSIC
             val caregiverTheme = AppTheme.MATERIAL_LIGHT
 
@@ -155,7 +154,7 @@ class ThemeRepositoryTest {
         @DisplayName("Should handle all theme types correctly")
         fun shouldHandleAllThemeTypesCorrectly() = runTest {
             // Given
-            val userRole = UserRole.CHILD
+            val userRole = "child-user-123"
             val allThemes = AppTheme.values().toList()
 
             allThemes.forEach { theme ->
@@ -174,7 +173,7 @@ class ThemeRepositoryTest {
         @DisplayName("Should maintain flow characteristics")
         fun shouldMaintainFlowCharacteristics() = runTest {
             // Given
-            val userRole = UserRole.CAREGIVER
+            val userRole = "caregiver-user-456"
             val theme = AppTheme.MATERIAL_DARK
             every { themePreferencesDataStore.getTheme(userRole) } returns flowOf(theme)
 
@@ -191,7 +190,7 @@ class ThemeRepositoryTest {
         @DisplayName("Should pass through DataStore flow emissions")
         fun shouldPassThroughDataStoreFlowEmissions() = runTest {
             // Given
-            val userRole = UserRole.CHILD
+            val userRole = "child-user-123"
             val multipleEmissions = listOf(
                 AppTheme.MARIO_CLASSIC,
                 AppTheme.MATERIAL_LIGHT,
@@ -216,7 +215,7 @@ class ThemeRepositoryTest {
         @DisplayName("Should save theme for child user role")
         fun shouldSaveThemeForChildUserRole() = runTest {
             // Given
-            val userRole = UserRole.CHILD
+            val userRole = "child-user-123"
             val theme = AppTheme.MARIO_CLASSIC
             coEvery { themePreferencesDataStore.saveTheme(userRole, theme) } returns Unit
 
@@ -231,7 +230,7 @@ class ThemeRepositoryTest {
         @DisplayName("Should save theme for caregiver user role")
         fun shouldSaveThemeForCaregiverUserRole() = runTest {
             // Given
-            val userRole = UserRole.CAREGIVER
+            val userRole = "caregiver-user-456"
             val theme = AppTheme.MATERIAL_LIGHT
             coEvery { themePreferencesDataStore.saveTheme(userRole, theme) } returns Unit
 
@@ -246,7 +245,7 @@ class ThemeRepositoryTest {
         @DisplayName("Should delegate theme saving to DataStore")
         fun shouldDelegateThemeSavingToDataStore() = runTest {
             // Given
-            val userRole = UserRole.CHILD
+            val userRole = "child-user-123"
             val theme = AppTheme.MATERIAL_DARK
             coEvery { themePreferencesDataStore.saveTheme(userRole, theme) } returns Unit
 
@@ -261,7 +260,7 @@ class ThemeRepositoryTest {
         @DisplayName("Should handle saving all theme types")
         fun shouldHandleSavingAllThemeTypes() = runTest {
             // Given
-            val userRole = UserRole.CAREGIVER
+            val userRole = "caregiver-user-456"
             val allThemes = AppTheme.values().toList()
 
             allThemes.forEach { theme ->
@@ -283,8 +282,8 @@ class ThemeRepositoryTest {
         @DisplayName("Should handle saving for different user roles")
         fun shouldHandleSavingForDifferentUserRoles() = runTest {
             // Given
-            val childRole = UserRole.CHILD
-            val caregiverRole = UserRole.CAREGIVER
+            val childRole = "child-user-123"
+            val caregiverRole = "caregiver-user-456"
             val childTheme = AppTheme.MARIO_CLASSIC
             val caregiverTheme = AppTheme.MATERIAL_LIGHT
 
@@ -306,7 +305,7 @@ class ThemeRepositoryTest {
         @DisplayName("Should handle multiple saves for same user role")
         fun shouldHandleMultipleSavesForSameUserRole() = runTest {
             // Given
-            val userRole = UserRole.CHILD
+            val userRole = "child-user-123"
             val themes = listOf(
                 AppTheme.MARIO_CLASSIC,
                 AppTheme.MATERIAL_LIGHT,
@@ -332,7 +331,7 @@ class ThemeRepositoryTest {
         @DisplayName("Should handle saving same theme multiple times")
         fun shouldHandleSavingSameThemeMultipleTimes() = runTest {
             // Given
-            val userRole = UserRole.CAREGIVER
+            val userRole = "caregiver-user-456"
             val theme = AppTheme.MATERIAL_DARK
             coEvery { themePreferencesDataStore.saveTheme(userRole, theme) } returns Unit
 
@@ -349,7 +348,7 @@ class ThemeRepositoryTest {
         @DisplayName("Should be suspend function")
         fun shouldBeSuspendFunction() = runTest {
             // Given
-            val userRole = UserRole.CHILD
+            val userRole = "child-user-123"
             val theme = AppTheme.MARIO_CLASSIC
             coEvery { themePreferencesDataStore.saveTheme(userRole, theme) } returns Unit
 
@@ -488,7 +487,7 @@ class ThemeRepositoryTest {
         @DisplayName("Should handle complete theme management workflow")
         fun shouldHandleCompleteThemeManagementWorkflow() = runTest {
             // Given
-            val userRole = UserRole.CHILD
+            val userRole = "child-user-123"
             val initialTheme = AppTheme.MARIO_CLASSIC
             val newTheme = AppTheme.MATERIAL_DARK
 
@@ -514,8 +513,8 @@ class ThemeRepositoryTest {
         @DisplayName("Should handle multiple user roles simultaneously")
         fun shouldHandleMultipleUserRolesSimultaneously() = runTest {
             // Given
-            val childRole = UserRole.CHILD
-            val caregiverRole = UserRole.CAREGIVER
+            val childRole = "child-user-123"
+            val caregiverRole = "caregiver-user-456"
             val childTheme = AppTheme.MARIO_CLASSIC
             val caregiverTheme = AppTheme.MATERIAL_LIGHT
 
@@ -546,7 +545,7 @@ class ThemeRepositoryTest {
         @DisplayName("Should handle theme switching scenario")
         fun shouldHandleThemeSwitchingScenario() = runTest {
             // Given
-            val userRole = UserRole.CAREGIVER
+            val userRole = "caregiver-user-456"
             val themes = listOf(
                 AppTheme.MATERIAL_LIGHT,
                 AppTheme.MATERIAL_DARK,
@@ -578,7 +577,7 @@ class ThemeRepositoryTest {
         @DisplayName("Should handle repository operations independently")
         fun shouldHandleRepositoryOperationsIndependently() = runTest {
             // Given
-            val userRole = UserRole.CHILD
+            val userRole = "child-user-123"
             val theme = AppTheme.MARIO_CLASSIC
             every { themePreferencesDataStore.getTheme(userRole) } returns flowOf(theme)
             coEvery { themePreferencesDataStore.saveTheme(userRole, theme) } returns Unit
@@ -599,7 +598,7 @@ class ThemeRepositoryTest {
         @DisplayName("Should maintain consistent state across operations")
         fun shouldMaintainConsistentStateAcrossOperations() = runTest {
             // Given
-            val userRole = UserRole.CAREGIVER
+            val userRole = "caregiver-user-456"
             val theme = AppTheme.MATERIAL_DARK
             every { themePreferencesDataStore.getTheme(userRole) } returns flowOf(theme)
             coEvery { themePreferencesDataStore.saveTheme(userRole, theme) } returns Unit
@@ -642,7 +641,7 @@ class ThemeRepositoryTest {
         @DisplayName("Should provide all required methods")
         fun shouldProvideAllRequiredMethods() = runTest {
             // Given
-            val userRole = UserRole.CHILD
+            val userRole = "child-user-123"
             val theme = AppTheme.MARIO_CLASSIC
             every { themePreferencesDataStore.getTheme(userRole) } returns flowOf(theme)
             coEvery { themePreferencesDataStore.saveTheme(userRole, theme) } returns Unit
@@ -657,24 +656,24 @@ class ThemeRepositoryTest {
         }
 
         @Test
-        @DisplayName("Should handle all user roles")
-        fun shouldHandleAllUserRoles() = runTest {
+        @DisplayName("Should handle all users")
+        fun shouldHandleAllUsers() = runTest {
             // Given
-            val userRoles = UserRole.values().toList()
+            val userIds = listOf("user-1", "user-2", "user-3")
             val theme = AppTheme.MATERIAL_LIGHT
 
-            userRoles.forEach { role ->
-                every { themePreferencesDataStore.getTheme(role) } returns flowOf(theme)
-                coEvery { themePreferencesDataStore.saveTheme(role, theme) } returns Unit
+            userIds.forEach { userId ->
+                every { themePreferencesDataStore.getTheme(userId) } returns flowOf(theme)
+                coEvery { themePreferencesDataStore.saveTheme(userId, theme) } returns Unit
             }
 
             // When & Then
-            userRoles.forEach { role ->
-                val themeFlow = themeRepository.getTheme(role)
+            userIds.forEach { userId ->
+                val themeFlow = themeRepository.getTheme(userId)
                 val result = themeFlow.toList()
-                themeRepository.saveTheme(role, theme)
+                themeRepository.saveTheme(userId, theme)
 
-                assertEquals(theme, result[0], "Should handle $role user role")
+                assertEquals(theme, result[0], "Should handle $userId user")
             }
         }
 
@@ -682,7 +681,7 @@ class ThemeRepositoryTest {
         @DisplayName("Should handle all theme types")
         fun shouldHandleAllThemeTypes() = runTest {
             // Given
-            val userRole = UserRole.CHILD
+            val userRole = "child-user-123"
             val allThemes = AppTheme.values().toList()
 
             // When & Then

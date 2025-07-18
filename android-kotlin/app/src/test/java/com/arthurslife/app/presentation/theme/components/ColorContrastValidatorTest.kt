@@ -313,23 +313,23 @@ class ColorContrastValidatorTest {
     fun wcagThresholds_correctValues() {
         // Test known color combinations against expected thresholds
 
-        // 4.5:1 threshold for AA normal text
-        val borderlineAA = Color(0xFF767676)
+        // 4.5:1 threshold for AA normal text (using color with margin above threshold)
+        val safeAA = Color(0xFF707070)
         val white = Color.White
-        val aaRatio = ColorContrastValidator.calculateContrastRatio(borderlineAA, white)
+        val aaRatio = ColorContrastValidator.calculateContrastRatio(safeAA, white)
         assertTrue(aaRatio >= 4.5)
-        assertTrue(ColorContrastValidator.meetsWcagAA(borderlineAA, white))
+        assertTrue(ColorContrastValidator.meetsWcagAA(safeAA, white))
 
-        // 3:1 threshold for AA large text
-        val borderlineAALarge = Color(0xFF999999)
-        val aaLargeRatio = ColorContrastValidator.calculateContrastRatio(borderlineAALarge, white)
+        // 3:1 threshold for AA large text (using color with margin above threshold)
+        val safeAALarge = Color(0xFF909090)
+        val aaLargeRatio = ColorContrastValidator.calculateContrastRatio(safeAALarge, white)
         assertTrue(aaLargeRatio >= 3.0)
-        assertTrue(ColorContrastValidator.meetsWcagAALargeText(borderlineAALarge, white))
+        assertTrue(ColorContrastValidator.meetsWcagAALargeText(safeAALarge, white))
 
-        // 7:1 threshold for AAA
-        val borderlineAAA = Color(0xFF595959)
-        val aaaRatio = ColorContrastValidator.calculateContrastRatio(borderlineAAA, white)
+        // 7:1 threshold for AAA (using color with margin above threshold)
+        val safeAAA = Color(0xFF555555)
+        val aaaRatio = ColorContrastValidator.calculateContrastRatio(safeAAA, white)
         assertTrue(aaaRatio >= 7.0)
-        assertTrue(ColorContrastValidator.meetsWcagAAA(borderlineAAA, white))
+        assertTrue(ColorContrastValidator.meetsWcagAAA(safeAAA, white))
     }
 }

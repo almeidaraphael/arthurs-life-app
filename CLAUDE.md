@@ -3,7 +3,7 @@
 ## 📋 Project Overview
 **Arthur's Life** is a family task management Android app built with Clean Architecture and Domain-Driven Design. It provides a gamified token-based reward system with role-based access for Children, Caregivers, and Admins.
 
-**NOTE**: This file works in conjunction with `CLAUDE.global.md` which contains universal development standards and practices. Read both files for complete context.
+**NOTE**: This file works in conjunction with `~/.claude/CLAUDE.md` which contains universal development standards and practices. Read both files for complete context.
 
 ## 🧠 Memory Bank Workflow
 
@@ -90,7 +90,7 @@ cd android-kotlin
 ./gradlew installDebug  # Must install successfully
 ```
 
-**NOTE**: See `CLAUDE.global.md` for the complete zero tolerance policy and universal build verification principles.
+**NOTE**: See `~/.claude/CLAUDE.md` for the complete zero tolerance policy and universal build verification principles.
 
 ## 🎯 Architecture Principles
 
@@ -360,21 +360,21 @@ cd android-kotlin
 
 ## 📖 How These Files Work Together
 
-This file (`CLAUDE.md`) contains **Arthur's Life App specific** instructions and must be used in conjunction with `CLAUDE.global.md` which contains **universal development standards**.
+This file (`CLAUDE.md`) contains **Arthur's Life App specific** instructions and must be used in conjunction with `~/.claude/CLAUDE.md` which contains **universal development standards**.
 
 ### Reading Order
-1. **First** → Read `CLAUDE.global.md` for universal standards
+1. **First** → Read `~/.claude/CLAUDE.md` for universal standards
 2. **Second** → Read this file for Arthur's Life specifics
 3. **During work** → Follow both sets of instructions
 
 ### Division of Responsibilities
-- **CLAUDE.global.md** → Universal standards, build verification, general best practices
+- **~/.claude/CLAUDE.md** → Universal standards, build verification, general best practices
 - **CLAUDE.md** → Arthur's Life context, Memory Bank workflow, project-specific requirements
 
 ### When in Doubt
-- **Code standards** → Check global file first, then project-specific additions
-- **Build process** → Use Arthur's Life specific commands, but follow global zero-tolerance policy
+- **Code standards** → Check `~/.claude/CLAUDE.md` file first, then project-specific additions
+- **Build process** → Use Arthur's Life specific commands, but follow `~/.claude/CLAUDE.md` zero-tolerance policy
 - **Architecture** → Arthur's Life uses Clean Architecture + DDD (specified here)
-- **Quality standards** → Global file defines the framework, this file adds project requirements
+- **Quality standards** → `~/.claude/CLAUDE.md` file defines the framework, this file adds project requirements
 
 Both files are **mandatory** and **complementary** - neither is complete without the other.

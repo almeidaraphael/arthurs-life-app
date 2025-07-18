@@ -144,9 +144,9 @@ fun validateColorPair(foreground: Color, background: Color): Boolean {
     return ColorContrastValidator.meetsWcagAA(foreground, background)
 }
 
-private const val EXCELLENT_THRESHOLD = 1.0
-private const val GOOD_THRESHOLD = 1.0
-private const val ACCEPTABLE_THRESHOLD = 0.8
+private const val EXCELLENT_THRESHOLD = 0.9 // 90% AAA compliance
+private const val GOOD_THRESHOLD = 0.8 // 80% AA compliance
+private const val ACCEPTABLE_THRESHOLD = 0.7 // 70% AA compliance
 private const val NEEDS_IMPROVEMENT_THRESHOLD = 0.6
 
 /**

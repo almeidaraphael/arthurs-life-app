@@ -7,7 +7,6 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.arthurslife.app.domain.theme.model.AppTheme
-import com.arthurslife.app.domain.user.UserRole
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -19,37 +18,30 @@ class ThemePreferencesDataStore(
     private val context: Context,
 ) {
     private companion object {
-        val CHILD_THEME_KEY = stringPreferencesKey("child_theme")
-        val CAREGIVER_THEME_KEY = stringPreferencesKey("caregiver_theme")
+        private const val THEME_KEY_PREFIX = "user_theme_"
     }
 
-    private fun getThemeKey(userRole: UserRole): Preferences.Key<String> {
-        return when (userRole) {
-            UserRole.CHILD -> CHILD_THEME_KEY
-            UserRole.CAREGIVER -> CAREGIVER_THEME_KEY
-        }
+    private fun getThemeKey(userId: String): Preferences.Key<String> {
+        return stringPreferencesKey("${THEME_KEY_PREFIX}$userId")
     }
 
-    fun getTheme(userRole: UserRole): Flow<AppTheme> {
+    fun getTheme(userId: String): Flow<AppTheme> {
         return context.themeDataStore.data.map { preferences ->
-            val defaultTheme = when (userRole) {
-                UserRole.CHILD -> AppTheme.MARIO_CLASSIC
-                UserRole.CAREGIVER -> AppTheme.MATERIAL_LIGHT
-            }
-            val themeKey = preferences[getThemeKey(userRole)] ?: defaultTheme.key
+            val defaultTheme = AppTheme.MATERIAL_LIGHT
+            val themeKey = preferences[getThemeKey(userId)] ?: defaultTheme.key
             AppTheme.values().firstOrNull { it.key == themeKey } ?: defaultTheme
         }
     }
 
-    suspend fun saveTheme(userRole: UserRole, theme: AppTheme) {
+    suspend fun saveTheme(userId: String, theme: AppTheme) {
         context.themeDataStore.edit { preferences ->
-            preferences[getThemeKey(userRole)] = theme.key
+            preferences[getThemeKey(userId)] = theme.key
         }
     }
 
-    suspend fun clearTheme(userRole: UserRole) {
+    suspend fun clearTheme(userId: String) {
         context.themeDataStore.edit { preferences ->
-            preferences.remove(getThemeKey(userRole))
+            preferences.remove(getThemeKey(userId))
         }
     }
 

@@ -27,23 +27,23 @@ private val MARIO_ORANGE = Color(0xFFFF8C00)
 private val MarioClassicColors = lightColorScheme(
     primary = MARIO_RED,
     onPrimary = Color.White,
-    primaryContainer = MARIO_RED.copy(alpha = 0.2f),
-    onPrimaryContainer = MARIO_RED,
+    primaryContainer = Color(0xFFFFE6E6), // Light red background with proper contrast
+    onPrimaryContainer = Color(0xFF8B0000), // Dark red text for accessibility
     secondary = MARIO_BLUE,
     onSecondary = Color.White,
-    secondaryContainer = MARIO_BLUE.copy(alpha = 0.2f),
-    onSecondaryContainer = MARIO_BLUE,
+    secondaryContainer = Color(0xFFE6F0FF), // Light blue background with proper contrast
+    onSecondaryContainer = Color(0xFF003366), // Dark blue text for accessibility
     tertiary = MARIO_GREEN,
     onTertiary = Color.White,
-    tertiaryContainer = MARIO_GREEN.copy(alpha = 0.2f),
-    onTertiaryContainer = MARIO_GREEN,
+    tertiaryContainer = Color(0xFFE6F5E6), // Light green background with proper contrast
+    onTertiaryContainer = Color(0xFF004D00), // Dark green text for accessibility
     background = Color(0xFFFFFBFE),
     onBackground = Color(0xFF1C1B1F),
     surface = Color(0xFFFFFBFE),
     onSurface = Color(0xFF1C1B1F),
-    surfaceVariant = MARIO_YELLOW.copy(alpha = 0.1f),
+    surfaceVariant = Color(0xFFFFF8E1), // Light yellow background with proper contrast
     onSurfaceVariant = Color(0xFF49454F),
-    outline = MARIO_ORANGE.copy(alpha = 0.3f),
+    outline = Color(0xFF8B6914), // Darker orange for better contrast
     error = Color(0xFFBA1A1A),
     onError = Color.White,
     errorContainer = Color(0xFFFFDAD6),

@@ -3,7 +3,7 @@ package com.arthurslife.app.presentation.theme.components
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
-import com.arthurslife.app.presentation.theme.mario.MarioClassicTheme
+import com.arthurslife.app.presentation.theme.mario.MarioTheme
 import com.arthurslife.app.presentation.theme.materialdark.MaterialDarkTheme
 import com.arthurslife.app.presentation.theme.materiallight.MaterialLightTheme
 import org.junit.Test
@@ -56,7 +56,7 @@ class ThemeAccessibilityValidationTest {
     @Test
     fun marioClassicTheme_validateAccessibility_meetsWcagStandards() {
         // Given
-        val theme = MarioClassicTheme
+        val theme = MarioTheme
 
         // When
         val validation = theme.validateAccessibility()
@@ -122,7 +122,7 @@ class ThemeAccessibilityValidationTest {
     @Test
     fun getThemeAccessibilityRating_allThemes_returnAppropriateRatings() {
         // Given
-        val themes = listOf(MaterialLightTheme, MaterialDarkTheme, MarioClassicTheme)
+        val themes = listOf(MaterialLightTheme, MaterialDarkTheme, MarioTheme)
 
         // When & Then
         themes.forEach { theme ->

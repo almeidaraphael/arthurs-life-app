@@ -49,10 +49,10 @@ fun ArthursLifeTheme(
     val authState by authViewModel.authState.collectAsState()
     val currentAppTheme by themeViewModel.currentAppTheme.collectAsState()
 
-    // Load theme when user role changes
-    LaunchedEffect(authState.currentRole) {
-        authState.currentRole?.let { role ->
-            themeViewModel.loadTheme(role)
+    // Refresh theme when authentication state changes
+    LaunchedEffect(authState.currentUser) {
+        authState.currentUser?.let {
+            themeViewModel.refreshTheme()
         }
     }
 
