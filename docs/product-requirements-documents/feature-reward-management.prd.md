@@ -120,7 +120,7 @@ The Reward Management System enables caregivers to efficiently manage the catalo
 * Notification system for pending approvals and fulfilled requests.
 
 ### 5.4 UI/UX highlights
-* Theme-aware components for role-based experience.
+* Theme-aware components for user-selectable theme experience.
 * Semantic icons for reward types and statuses.
 * Accessible forms and navigation.
 * Real-time status updates and notifications.

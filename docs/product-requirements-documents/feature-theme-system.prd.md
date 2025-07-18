@@ -50,9 +50,9 @@ post_date: 2025-07-15
 * **Child**: Enjoys playful, game-like UI and terminology
 * **Caregiver**: Prefers professional, readable, and accessible interface
 
-### 3.3 Role-based access
-* **Child**: Can select any available theme, defaults to Mario Classic
-* **Caregiver**: Can select any available theme, defaults to Material Light. The first caregiver is always assigned the Family Admin role by default.
+### 3.3 User-based access
+* **All Users**: Can select any available theme, defaults to Material Light
+* **Theme Selection**: Independent of user role - children and caregivers have equal access to all themes
 
 ## 4. Requirements
 * **FR-THEME-11**: Theme Selector Dialog
@@ -99,7 +99,7 @@ post_date: 2025-07-15
 
 ### 5.1 Entry points & first-time user flow
 * Theme settings accessible from the top bar on all screens
-* On first launch, user is shown default theme based on role, with option to change in settings
+* On first launch, all users are shown Material Light theme by default, with option to change in settings
 
 ### 5.2 Core experience
 * **Theme Selection**: User opens settings, previews available themes, selects preferred theme, UI updates instantly
@@ -125,7 +125,7 @@ post_date: 2025-07-15
 * Minimum tap target sizes and spacing for theme selector controls
 
 ## 6. Narrative
-Every user can personalize their experience by selecting a theme that matches their preferences. Children enjoy playful Mario Classic visuals and terminology, while caregivers benefit from professional Material themes. Theme changes are instant, persistent, and deeply integrated, ensuring a consistent and accessible experience for all.
+Every user can personalize their experience by selecting a theme that matches their preferences. All users have equal access to themes, with Material Light as the default. Users can choose the playful Mario Classic visuals and terminology, or prefer professional Material themes (Light or Dark). Theme changes are instant, persistent, and deeply integrated, ensuring a consistent and accessible experience for all.
 
 ## 7. Success metrics
 
@@ -172,17 +172,17 @@ Every user can personalize their experience by selecting a theme that matches th
   * Given a new theme is added, When it is registered in the system, Then it appears in the theme selector dialog automatically.
   * Given any theme is selected, When I view the top bar or any dialog, Then their style and semantic icons match the selected theme.
 
-### 9.1. Child selects Mario Classic theme
+### 9.1. User selects Mario Classic theme
 * **ID**: US-THEME-1
-* **Description**: As a child, I want to select the Mario Classic theme for a playful experience.
+* **Description**: As a user, I want to select the Mario Classic theme for a playful experience.
 * **Acceptance criteria**:
   * Given I am in the settings dialog,
   * When I select Mario Classic theme,
   * Then the UI updates instantly and terminology/icons change to Mario style.
 
-### 9.2. Caregiver selects Material Light or Dark theme
+### 9.2. User selects Material Light or Dark theme
 * **ID**: US-THEME-2
-* **Description**: As a caregiver, I want to select Material Light or Dark theme for a professional interface.
+* **Description**: As a user, I want to select Material Light or Dark theme for a professional interface.
 * **Acceptance criteria**:
   * Given I am in the settings dialog,
   * When I select Material Light or Material Dark theme,

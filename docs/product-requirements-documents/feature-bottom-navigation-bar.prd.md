@@ -5,9 +5,9 @@ post_slug: feature-bottom-navigation-bar
 microsoft_alias: copilot
 featured_image: https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80
 categories: [Navigation, UI/UX, Mobile]
-tags: [bottom navigation, Jetpack Compose, theme-aware, role-based, responsive, Arthur's Life]
+tags: [bottom navigation, Jetpack Compose, theme-aware, user-based, responsive, Arthur's Life]
 ai_note: Generated with comprehensive requirements for Arthur's Life App bottom navigation bar.
-summary: This PRD defines the requirements, user stories, and technical considerations for implementing a responsive, theme-aware bottom navigation bar for the Arthur's Life App, supporting Child and Caregiver roles with adaptive tab content and strict design standards.
+summary: This PRD defines the requirements, user stories, and technical considerations for implementing a responsive, theme-aware bottom navigation bar for the Arthur's Life App, supporting Child and Caregiver roles with adaptive tab content and user-selectable themes.
 post_date: 2025-07-15
 ---
 
@@ -20,8 +20,8 @@ post_date: 2025-07-15
 * Version: 1.0.0
 
 ### 1.2 Product summary
-* The bottom navigation bar is a persistent, theme-aware UI component at the bottom of the screen, providing fast access to core app sections for Child and Caregiver roles. It adapts its tabs, icons, and labels based on user role and permissions, ensuring a consistent, accessible, and intuitive navigation experience across all supported devices.
-* The navigation bar supports a maximum of four tabs, with content and labeling tailored to each role. It is fully responsive, visually consistent, and integrates with the app's theme system for both Mario Classic (Child) and Material (Caregiver) modes.
+* The bottom navigation bar is a persistent, theme-aware UI component at the bottom of the screen, providing fast access to core app sections for Child and Caregiver roles. It adapts its tabs, icons, and labels based on user role and permissions, and displays them according to the user's selected theme (Material Light, Material Dark, or Mario Classic), ensuring a consistent, accessible, and intuitive navigation experience across all supported devices.
+* The navigation bar supports a maximum of four tabs, with content and labeling tailored to each role. It is fully responsive, visually consistent, and integrates with the app's theme system for Mario Classic, Material Light, and Material Dark themes - all available to any user regardless of role.
 
 ## 2. Goals
 
@@ -65,7 +65,7 @@ post_date: 2025-07-15
 * **FR3**: Responsive Layout:
   * The navigation bar must adapt to different screen sizes and orientations without loss of usability or clarity.
 * **FR4**: Theme Awareness:
-  * The navigation bar must use theme-aware components and icons, adapting to Mario Classic (Child) or Material (Caregiver) themes.
+  * The navigation bar must use theme-aware components and icons, adapting to the user's selected theme (Mario Classic, Material Light, or Material Dark).
 * **FR5**: Consistent Icons and Labels:
   * Each tab must have a clear, consistent icon and label, mapped semantically per theme and role.
 * **FR6**: Persistent Navigation:
@@ -119,7 +119,7 @@ post_date: 2025-07-15
 
 ## 6. Narrative
 
-When a user logs in, the bottom navigation bar appears, tailored to their role—Child or Caregiver. Children see tabs for Home, Rewards, Tasks, and Achievements, each with playful icons and labels matching the Mario Classic theme. Caregivers see Dashboard, Tasks, Rewards, and either Users or Children, depending on their admin status, styled in the Material theme. The navigation bar remains visible and consistent, adapting instantly to theme or role changes, ensuring every user can quickly access the app's core features with clarity and confidence.
+When a user logs in, the bottom navigation bar appears, tailored to their role—Child or Caregiver. The navigation bar adapts to the user's selected theme, displaying appropriate terminology and icons based on their theme preference (Mario Classic for game-like experience or Material Light/Dark for professional interface). The navigation bar remains visible and consistent, adapting instantly to theme changes, ensuring every user can quickly access the app's core features with clarity and confidence.
 
 ## 7. Success metrics
 
@@ -142,7 +142,7 @@ When a user logs in, the bottom navigation bar appears, tailored to their role�
 
 ### 8.1 Integration points
 * Presentation layer: Jetpack Compose UI
-* Theme system: Mario Classic and Material themes
+* Theme system: Mario Classic, Material Light, and Material Dark themes available to all users
 * Role management: User session and role switching logic
 * Navigation controller: MainAppNavigation.kt
 

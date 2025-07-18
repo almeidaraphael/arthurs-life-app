@@ -5,9 +5,9 @@ post_slug: top-navigation-bar
 microsoft_alias: n/a
 featured_image: n/a
 categories: [UI, Navigation, Accessibility]
-tags: [top navigation bar, dialogs, role-based UI, accessibility, theme]
+tags: [top navigation bar, dialogs, user-based UI, accessibility, theme]
 ai_note: true
-summary: Comprehensive requirements for the Top Navigation Bar in Arthur's Life App, covering persistent visibility, role-based content, dialog triggers, accessibility, and theme awareness.
+summary: Comprehensive requirements for the Top Navigation Bar in Arthur's Life App, covering persistent visibility, role-based content, dialog triggers, accessibility, and user-selectable theme awareness.
 post_date: 2025-07-15
 ---
 
@@ -20,7 +20,7 @@ post_date: 2025-07-15
 * Version: 1.0
 
 ### 1.2 Product summary
-* The Top Navigation Bar is a persistent, transparent UI element present on all screens in Arthur's Life App. It adapts its content based on user role (Child, Caregiver) and current screen, providing quick access to profile, settings, and contextual information (tokens, progress, rewards, achievements, child selector). It is the primary entry point for dialogs (profile, settings, user selector) and supports accessibility and theme standards.
+* The Top Navigation Bar is a persistent, transparent UI element present on all screens in Arthur's Life App. It adapts its content based on user role (Child, Caregiver) and current screen, providing quick access to profile, settings, and contextual information (tokens, progress, rewards, achievements, child selector). It displays content according to the user's selected theme and is the primary entry point for dialogs (profile, settings, user selector) with full accessibility support.
 
 ## 2. Goals
 

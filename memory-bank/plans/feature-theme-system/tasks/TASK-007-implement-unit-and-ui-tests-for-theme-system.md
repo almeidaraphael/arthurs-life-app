@@ -15,9 +15,11 @@ Write unit tests for the ViewModel and Repository. Write UI tests to verify the 
 ## Thought Process
 Comprehensive testing is essential. Unit tests will validate the logic of the `ThemeRepository` and `ThemeViewModel`. UI tests will ensure the `ThemeSelectorDialog` works correctly and, most importantly, that selecting a theme properly updates the application's appearance.
 
-## IPD Reference
-- STEP-007: Implement Unit and UI Tests
+> **Update 2025-07-17:**
+> All theme system tests are now user-based. Test coverage for multi-role logic is marked as legacy. All acceptance criteria and test cases have been updated to ensure that theme selection, persistence, and UI propagation are user-centric. Any role-based test logic has been removed or deprecated.
 
+## IPD Reference
+- STEP-007: Implement Unit and UI Tests (now user-based)
 
 ## Implementation Summary
 The theme system has been comprehensively tested, but **automated accessibility and color contrast validation are not yet implemented**. The following test suites are complete, but additional work is required:
@@ -44,12 +46,11 @@ The theme system has been comprehensively tested, but **automated accessibility 
 
 ### Test Coverage Highlights
 - All theme system components tested from domain to UI layers
-- Complete test coverage for multiple user roles (Child, Caregiver, Admin)
+- Complete test coverage for user-based theme selection and persistence
 - Comprehensive theme persistence testing across app restarts
 - Edge case and error scenario testing
 - **Complete accessibility and color contrast validation testing**
 - Performance and concurrency testing
-
 
 ## Progress Tracking
 **Overall Status:** Completed
@@ -111,3 +112,6 @@ The theme system has been comprehensively tested, but **automated accessibility 
   - All subtasks (25.1-25.6) successfully implemented
   - Comprehensive test coverage from domain to UI layers with accessibility validation
   - Complete automated testing suite meeting all PRD requirements
+
+### 2025-07-17 (Update: Role-based → User-based)
+- All theme system tests updated to be user-based. Verified that all test cases, coverage, and validation logic are now user-centric. Any legacy role-based test logic removed or deprecated. Acceptance criteria and implementation steps updated accordingly.

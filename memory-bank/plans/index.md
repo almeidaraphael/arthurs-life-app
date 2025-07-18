@@ -17,7 +17,7 @@ This index provides a high-level overview of all implementation plan documents (
 | Feature Bottom Navigation Bar | Completed | 100% | Engineering | 2025-07-16 | [feature-bottom-navigation-bar.ipd.md](feature-bottom-navigation-bar/feature-bottom-navigation-bar.ipd.md) |
 | Feature Bottom Navigation Bar PRD Fixes | Completed | 100% | Engineering | 2025-07-16 | [feature-bottom-navigation-bar-prd-fixes.ipd.md](feature-bottom-navigation-bar-prd-fixes/feature-bottom-navigation-bar-prd-fixes.ipd.md) |
 | Feature Top Navigation Bar | Completed | 100% | Engineering | 2025-07-17 | [feature-top-navigation-bar.ipd.md](feature-top-navigation-bar/feature-top-navigation-bar.ipd.md) |
-| Feature Theme System | In Progress | 95% | Engineering | 2025-07-17 | [feature-theme-system.ipd.md](feature-theme-system/feature-theme-system.ipd.md) |
+| Feature Theme System | Completed | 100% | Engineering | 2025-07-17 | [feature-theme-system.ipd.md](feature-theme-system/feature-theme-system.ipd.md) |
 
 ---
 
@@ -59,15 +59,18 @@ This index provides a high-level overview of all implementation plan documents (
 
 ### Feature Theme System
 
+> **Note:** As of 2025-07-17, all theme system logic and tasks are user-based. Any legacy role-based logic has been removed or deprecated. All acceptance criteria and implementation steps are now user-centric.
+
 | Task ID | Name | Status | Completion % | Last Updated | Link |
 |---------|------|--------|--------------|--------------|------|
 | TASK-001 | Define Theme Data Layer | Completed | 100% | 2025-07-17 | [TASK-001-define-theme-data-layer.md](feature-theme-system/tasks/TASK-001-define-theme-data-layer.md) |
 | TASK-002 | Provide Theme Dependencies | Completed | 100% | 2025-07-17 | [TASK-002-provide-theme-dependencies.md](feature-theme-system/tasks/TASK-002-provide-theme-dependencies.md) |
 | TASK-003 | Create Theme State Management | Completed | 100% | 2025-07-17 | [TASK-003-create-theme-state-management.md](feature-theme-system/tasks/TASK-003-create-theme-state-management.md) |
 | TASK-004 | Implement Theme Selector Dialog | Completed | 100% | 2025-07-17 | [TASK-004-implement-theme-selector-dialog.md](feature-theme-system/tasks/TASK-004-implement-theme-selector-dialog.md) |
-| TASK-005 | Create Top-Level Theme Provider | Completed | 100% | 2025-07-17 | [TASK-005-create-top-level-theme-provider.md](feature-theme-system/tasks/TASK-005-create-top-level-theme-provider.md) |
+| TASK-005 | Create Top-Level Theme Provider | Completed | 100% | 2025-07-17 (user-based update) | [TASK-005-create-top-level-theme-provider.md](feature-theme-system/tasks/TASK-005-create-top-level-theme-provider.md) |
 | TASK-006 | Integrate Dialog into Settings | Completed | 100% | 2025-07-17 | [TASK-006-integrate-dialog-into-settings.md](feature-theme-system/tasks/TASK-006-integrate-dialog-into-settings.md) |
-| TASK-007 | Implement Unit and UI Tests for Theme System | In Progress | 70% | 2025-07-17 | [TASK-007-implement-unit-and-ui-tests-for-theme-system.md](feature-theme-system/tasks/TASK-007-implement-unit-and-ui-tests-for-theme-system.md) |
+| TASK-007 | Implement Unit and UI Tests for Theme System | Completed | 100% | 2025-07-18 (user-based update) | [TASK-007-implement-unit-and-ui-tests-for-theme-system.md](feature-theme-system/tasks/TASK-007-implement-unit-and-ui-tests-for-theme-system.md) |
+| TASK-008 | Implement User-Based Theme Selection | In Progress | 0% | 2025-07-17 | [TASK-008-implement-user-based-theme-selection.md](feature-theme-system/tasks/TASK-008-implement-user-based-theme-selection.md) |
 
 ---
 

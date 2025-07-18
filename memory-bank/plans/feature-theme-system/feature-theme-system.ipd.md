@@ -1,22 +1,27 @@
 ---
 goal: Implement a user-based, persistent, and extensible theme system.
-version: 1.0
+version: 2.0
 date_created: 2025-07-15
 last_updated: 2025-07-17
 owner: Engineering
 tags: [feature, ui, design, compose, theme]
+source_prd: /docs/product-requirements-documents/feature-theme-system.prd.md
+source_prd_section: 4, 9
 ---
 
 # Implementation Plan Document: Theme System
 
+> **Update 2025-07-17:**
+> The PRD has changed from role-based to user-based theme selection. All users (children and caregivers) can select any available theme, independent of role. The implementation must update all requirements, steps, and tasks to match the new PRD. See progress log for rationale and next steps.
+
 ## 1. Requirements & Constraints
-- **REQ-001**: Each user must be able to select a theme (Mario Classic, Material Light, Material Dark). [US-THEME-1, US-THEME-2]
-- **REQ-002**: Theme preferences must be stored locally and persist across app sessions for each user. [US-THEME-4]
-- **REQ-003**: The entire app's UI, including icons, terminology, notifications, and dialogs, must update instantly when the theme is changed. [US-THEME-1, US-THEME-2, US-THEME-6, US-THEME-10]
-- **REQ-004**: The system must be extensible to allow for new themes in the future, with dynamic registration. [US-THEME-8]
-- **REQ-005**: All themes must meet accessibility standards (4.5:1 contrast, TalkBack support). [US-THEME-5, US-THEME-9]
-- **REQ-006**: Theme selector dialog must provide live preview, color swatches, and accessible controls. [US-THEME-3, US-THEME-11]
-- **REQ-007**: Error handling for theme loading, with fallback and user notification. [US-THEME-7]
+- **REQ-001**: Each user must be able to select a theme (Mario Classic, Material Light, Material Dark) regardless of their role. [FR-THEME-1, US-THEME-1, US-THEME-2]
+- **REQ-002**: Theme preferences must be stored locally and persist across app sessions for each user. [FR-THEME-2, US-THEME-4]
+- **REQ-003**: The entire app's UI, including icons, terminology, notifications, and dialogs, must update instantly when the theme is changed. [FR-THEME-3, FR-THEME-4, US-THEME-1, US-THEME-2, US-THEME-6, US-THEME-10]
+- **REQ-004**: The system must be extensible to allow for new themes in the future, with dynamic registration. [FR-THEME-7]
+- **REQ-005**: All themes must meet accessibility standards (4.5:1 contrast, TalkBack support). [FR-THEME-5]
+- **REQ-006**: Theme selector dialog must provide live preview, color swatches, and accessible controls. [FR-THEME-11, US-THEME-3]
+- **REQ-007**: Error handling for theme loading, with fallback and user notification. [FR-THEME-8]
 - **CON-001**: The implementation must use Jetpack Compose and Hilt for dependency injection.
 - **CON-002**: Theme preferences will be stored using Jetpack DataStore.
 - **PAT-001**: The existing `BaseAppTheme` interface and `LocalBaseTheme` CompositionLocal will be used to provide theme properties to composables.
@@ -73,10 +78,9 @@ tags: [feature, ui, design, compose, theme]
 | TEST-009  | Verify notifications and dialogs are theme-aware | US-THEME-10 | TASK-005, TASK-007 |
 
 ## 7. Risks & Assumptions
-
 - **RISK-001**: A flicker or incorrect theme might be displayed for a moment on app startup before the user's preference is loaded from DataStore. This can be mitigated by loading the theme preference on a splash screen or showing a loading indicator.
 - **RISK-002**: Semantic mapping or notification theming may be missed in new features if not enforced in code review.
-- **ASSUMPTION-001**: A mechanism to observe the current user's ID is available to the `ThemeRepository` to manage user-specific settings.
+- **ASSUMPTION-001**: A mechanism to observe the current user's ID is available to the `ThemeRepository` to manage user-specific settings. The system no longer assigns themes by role; all theme selection and persistence is user-based.
 - **ASSUMPTION-002**: The existing `SettingsDialog` can be easily modified to trigger the new `ThemeSelectorDialog`.
 
 ## 8. Related Specifications / Further Reading
@@ -87,8 +91,5 @@ tags: [feature, ui, design, compose, theme]
 - [State and Jetpack Compose](https://developer.android.com/jetpack/compose/state)
 
 ## 9. Progress Log
-
-### 2025-07-17
-- Systematic analysis completed. Core theme system, persistence, extensibility, and theme-aware UI are implemented and tested.
-- Gaps identified: Accessibility (TalkBack, color contrast), automated accessibility/UI tests, user-facing error handling, and system notification theming are only partially implemented or missing.
-- Next steps: Reopen/extend relevant tasks (especially TASK-005, TASK-007) to add subtasks for accessibility, automated testing, error handling, and notification theming. No new IPD is needed; improvements will be managed by extending current tasks for traceability.
+### 2025-07-17 (PRD Update: Role-based → User-based)
+- PRD updated to require user-based theme selection. Implementation must update all requirements, steps, and tasks to match. Reopen or create new tasks for user-based implementation. Document rationale and next steps in all affected tasks.

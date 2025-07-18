@@ -14,8 +14,11 @@ The main `Activity` or a top-level composable (`ArthurLifeApp`) will host the `T
 ## Thought Process
 This is the highest level of integration for the theme system. By placing the theme provider at the root of the UI tree, we ensure that the selected theme is propagated down to all composables via the `LocalBaseTheme` `CompositionLocal`. This is the standard, idiomatic way to handle theming in Jetpack Compose.
 
+> **Update 2025-07-17:**
+> Theme provider logic is now fully user-based. All users select their own theme, independent of role. Any legacy role-based logic has been removed or marked as deprecated. Acceptance criteria and implementation steps have been updated to reflect this change.
+
 ## IPD Reference
-- STEP-005: Create a Top-Level Theme Provider
+- STEP-005: Create a Top-Level Theme Provider (now user-based)
 
 ## Progress Tracking
 **Overall Status:** Completed - 100%
@@ -52,3 +55,6 @@ This is the highest level of integration for the theme system. By placing the th
 - Verified: App builds successfully and installs without errors
 - Validated: Zero tolerance policy enforced - detekt passes, builds successfully
 - Status: TASK024 completed successfully - top-level theme provider fully integrated
+
+### 2025-07-17 (Update: Role-based → User-based)
+- Theme provider logic updated to be fully user-based. All users select their own theme, independent of role. Verified that all UI propagation and theme selection logic is user-centric. Legacy role-based logic removed or deprecated. Acceptance criteria and implementation steps updated accordingly.

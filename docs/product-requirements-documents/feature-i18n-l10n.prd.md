@@ -50,7 +50,7 @@ post_date: 2025-07-15
 * Admins (family organizers)
 
 ### 3.2 Basic persona details
-* **Lucas (Child, PT-BR)**: 9-year-old in Brazil, prefers Mario Classic theme, needs clear, fun language and icons.
+* **Lucas (Child, PT-BR)**: 9-year-old in Brazil, has selected Mario Classic theme preference, needs clear, fun language and icons.
 * **Sarah (Caregiver, EN-US)**: Parent in the US, values clarity, accessibility, and easy navigation.
 * **Ana (Admin, PT-BR)**: Family organizer, manages children and rewards, expects professional, localized terminology.
 
@@ -151,7 +151,7 @@ When a user launches Arthur's Life App, they are greeted in their device's langu
 ### 8.1 Integration points
 * Presentation layer: All screens, dialogs, and navigation
 * Domain layer: No business logic in localization, but all domain-driven text must be translatable
-* Theme system: Role-based terminology and icon mapping
+* Theme system: User-based terminology and icon mapping based on selected theme
 * Settings: Language/region selection and persistence
 * Testing: Automated UI and unit tests for all locales
 
@@ -193,8 +193,8 @@ When a user launches Arthur's Life App, they are greeted in their device's langu
 * **ID**: US-I18N-03
 * **Description**: As a user, I want terminology and icons to match my culture and role so that the app feels familiar and engaging.
 * **Acceptance criteria**:
-  * Given I am a child in PT-BR, When I view the dashboard, Then I see "Quests" and Mario-themed icons.
-  * Given I am a caregiver in EN-US, When I view the dashboard, Then I see "Tasks" and Material icons.
+  * Given I am a child user in PT-BR with Mario Classic theme selected, When I view the dashboard, Then I see "Quests" and Mario-themed icons.
+  * Given I am a caregiver user in EN-US with Material theme selected, When I view the dashboard, Then I see "Tasks" and Material icons.
   * Given I switch roles or languages, When I navigate the app, Then terminology and icons update accordingly.
 
 ### 9.4. Accessibility and performance
