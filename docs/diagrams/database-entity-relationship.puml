@@ -1,7 +1,7 @@
 @startuml database-entity-relationship
 !theme plain
 
-title Arthur's Life App - Database Entity Relationship Diagram (v1, 2025-07)
+title LemonQwest App - Database Entity Relationship Diagram (v1, 2025-07)
 
 !define ENTITY entity
 

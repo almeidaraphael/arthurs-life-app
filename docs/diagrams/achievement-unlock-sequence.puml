@@ -1,7 +1,7 @@
 @startuml achievement-unlock-sequence
 !theme plain
 
-title Arthur's Life App - Achievement Unlock Sequence (v1, 2025-07)
+title LemonQwest App - Achievement Unlock Sequence (v1, 2025-07)
 
 actor User
 participant "App UI" as UI

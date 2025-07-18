@@ -1,9 +1,9 @@
 @startuml sequence-task-completion
 !theme vibrant
 
-title Arthur Completes a Task - Sequence Diagram (v1, 2025-07)
+title Lemmy Completes a Task - Sequence Diagram (v1, 2025-07)
 
-actor Arthur as "Arthur"
+actor Lemmy as "Lemmy"
 participant "TaskButton\n(Compose UI)" as UI
 participant "TasksViewModel" as VM
 participant "EarnTokenUseCase" as UC
@@ -15,13 +15,13 @@ participant "TalkBack" as TB
 participant "FraudDetectionService" as FDS
 participant "AuditTrail" as Audit
 
-note over Arthur, TB : Arthur's Daily Routine Flow
+note over Lemmy, TB : Lemmy's Daily Routine Flow
 
-Arthur -> UI : Taps "Brush Teeth" task
+Lemmy -> UI : Taps "Brush Teeth" task
 activate UI
 
 UI -> TB : Announces "Task completed!"
-TB -> Arthur : Speaks announcement
+TB -> Lemmy : Speaks announcement
 
 UI -> VM : onTaskCompleted(taskId)
 activate VM

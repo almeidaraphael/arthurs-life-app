@@ -9,7 +9,7 @@ tags: [feature, navigation, ui, compose, dialog]
 
 # Introduction
 
-This document provides the implementation plan for the top navigation bar in Arthur's Life App, based on the `feature-top-navigation-bar.md` PRD. The plan details the creation of a persistent, transparent, and context-aware top bar that provides access to profiles, settings, and role-specific information. It will integrate with the existing theme, navigation, and dialog systems.
+This document provides the implementation plan for the top navigation bar in LemonQwest App, based on the `feature-top-navigation-bar.md` PRD. The plan details the creation of a persistent, transparent, and context-aware top bar that provides access to profiles, settings, and role-specific information. It will integrate with the existing theme, navigation, and dialog systems.
 
 ## 1. Requirements & Constraints
 
@@ -50,13 +50,13 @@ This document provides the implementation plan for the top navigation bar in Art
 
 ## 5. Files
 
-- **CREATE**: `android-kotlin/app/src/main/java/com/arthurslife/app/presentation/viewmodels/TopBarViewModel.kt`
-- **CREATE**: `android-kotlin/app/src/main/java/com/arthurslife/app/presentation/components/TopAppBar.kt`
-- **CREATE/MODIFY**: `android-kotlin/app/src/main/java/com/arthurslife/app/presentation/components/dialogs/*.kt` (for all required dialogs including ProfileDialog, SettingsDialog, UserSelectorDialog, AvatarDialog, ChildSelectorDialog, LanguageSelectorDialog)
-- **CREATE**: `android-kotlin/app/src/main/java/com/arthurslife/app/presentation/navigation/DialogManager.kt`
-- **MODIFY**: `android-kotlin/app/src/main/java/com/arthurslife/app/presentation/screens/MainScreen.kt`
-- **CREATE**: `android-kotlin/app/src/test/java/com/arthurslife/app/presentation/viewmodels/TopBarViewModelTest.kt`
-- **CREATE**: `android-kotlin/app/src/androidTest/java/com/arthurslife/app/presentation/components/TopAppBarTest.kt`
+- **CREATE**: `android-kotlin/app/src/main/java/com/lemonqwest/app/presentation/viewmodels/TopBarViewModel.kt`
+- **CREATE**: `android-kotlin/app/src/main/java/com/lemonqwest/app/presentation/components/TopAppBar.kt`
+- **CREATE/MODIFY**: `android-kotlin/app/src/main/java/com/lemonqwest/app/presentation/components/dialogs/*.kt` (for all required dialogs including ProfileDialog, SettingsDialog, UserSelectorDialog, AvatarDialog, ChildSelectorDialog, LanguageSelectorDialog)
+- **CREATE**: `android-kotlin/app/src/main/java/com/lemonqwest/app/presentation/navigation/DialogManager.kt`
+- **MODIFY**: `android-kotlin/app/src/main/java/com/lemonqwest/app/presentation/screens/MainScreen.kt`
+- **CREATE**: `android-kotlin/app/src/test/java/com/lemonqwest/app/presentation/viewmodels/TopBarViewModelTest.kt`
+- **CREATE**: `android-kotlin/app/src/androidTest/java/com/lemonqwest/app/presentation/components/TopAppBarTest.kt`
 - **MODIFY**: All dialog files for accessibility compliance
 
 ## 6. Testing
@@ -82,4 +82,3 @@ This document provides the implementation plan for the top navigation bar in Art
 - `docs/theme-system.md`
 - `docs/architecture.md`
 - [Jetpack Compose Dialogs](https://developer.android.com/jetpack/compose/dialogs)
-

@@ -1,7 +1,7 @@
 @startuml onboarding-flow
 !theme plain
 
-title Arthur's Life App - Onboarding & Family Setup Flow (v1, 2025-07)
+title LemonQwest App - Onboarding & Family Setup Flow (v1, 2025-07)
 
 actor NewUser
 participant "App UI" as UI

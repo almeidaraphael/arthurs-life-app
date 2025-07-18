@@ -1,7 +1,7 @@
 @startuml token-economy-state-machine
 !theme plain
 
-title Arthur's Life App - Token Economy State Machine (v1, 2025-07)
+title LemonQwest App - Token Economy State Machine (v1, 2025-07)
 
 [*] --> UserRegistered : User joins family
 

@@ -10,17 +10,17 @@ plugins {
 }
 
 android {
-    namespace = "com.arthurslife.app"
+    namespace = "com.lemonqwest.app"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.arthurslife.app"
+        applicationId = "com.lemonqwest.app"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "com.arthurslife.app.HiltTestRunner"
+        testInstrumentationRunner = "com.lemonqwest.app.HiltTestRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -59,7 +59,17 @@ android {
         unitTests.all {
             it.useJUnitPlatform()
             // Modern JVM configuration to avoid sharing warnings in tests
-            it.jvmArgs("-Xshare:off", "-XX:+HeapDumpOnOutOfMemoryError")
+            it.jvmArgs(
+                "-Xshare:off",
+                "-XX:+HeapDumpOnOutOfMemoryError",
+                "-Xmx2048m",
+                "-XX:MaxMetaspaceSize=512m"
+            )
+            // Enable JUnit parallel execution
+            it.systemProperty("junit.jupiter.execution.parallel.enabled", "true")
+            it.systemProperty("junit.jupiter.execution.parallel.mode.default", "concurrent")
+            it.systemProperty("junit.jupiter.execution.parallel.mode.classes.default", "concurrent")
+            it.maxParallelForks = Runtime.getRuntime().availableProcessors()
         }
         unitTests {
             isIncludeAndroidResources = true

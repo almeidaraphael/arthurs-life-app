@@ -9,7 +9,7 @@ tags: [feature, navigation, ui, compose]
 
 # Introduction
 
-This document outlines the implementation plan for creating a unified bottom navigation bar in the Arthur's Life App. The plan is derived from the `feature-bottom-navigation-bar.md` PRD and considers the existing application architecture. The goal is to provide a persistent, role-based navigation component that integrates seamlessly with the existing theme system and navigation controller.
+This document outlines the implementation plan for creating a unified bottom navigation bar in the LemonQwest App. The plan is derived from the `feature-bottom-navigation-bar.md` PRD and considers the existing application architecture. The goal is to provide a persistent, role-based navigation component that integrates seamlessly with the existing theme system and navigation controller.
 
 ## 1. Requirements & Constraints
 
@@ -54,15 +54,15 @@ The implementation will be broken down into the following tasks:
 
 ## 5. Files
 
-- **CREATE**: `android-kotlin/app/src/main/java/com/arthurslife/app/presentation/navigation/BottomNavItem.kt`
-- **CREATE**: `android-kotlin/app/src/main/java/com/arthurslife/app/presentation/viewmodels/BottomNavViewModel.kt`
-- **CREATE**: `android-kotlin/app/src/main/java/com/arthurslife/app/presentation/components/BottomNavigationBar.kt`
-- **MODIFY**: `android-kotlin/app/src/main/java/com/arthurslife/app/presentation/navigation/MainAppNavigation.kt`
-- **MODIFY**: `android-kotlin/app/src/main/java/com/arthurslife/app/presentation/screens/MainScreen.kt` (or equivalent top-level screen composable)
-- **CREATE**: `android-kotlin/app/src/test/java/com/arthurslife/app/presentation/viewmodels/BottomNavViewModelTest.kt`
-- **CREATE**: `android-kotlin/app/src/test/java/com/arthurslife/app/presentation/navigation/BottomNavItemTest.kt`
-- **CREATE**: `android-kotlin/app/src/androidTest/java/com/arthurslife/app/presentation/theme/components/ThemeAwareBottomNavigationBarTest.kt`
-- **EXISTS**: `android-kotlin/app/src/androidTest/java/com/arthurslife/app/ui/navigation/MainAppNavigationTest.kt` (integration tests)
+- **CREATE**: `android-kotlin/app/src/main/java/com/lemonqwest/app/presentation/navigation/BottomNavItem.kt`
+- **CREATE**: `android-kotlin/app/src/main/java/com/lemonqwest/app/presentation/viewmodels/BottomNavViewModel.kt`
+- **CREATE**: `android-kotlin/app/src/main/java/com/lemonqwest/app/presentation/components/BottomNavigationBar.kt`
+- **MODIFY**: `android-kotlin/app/src/main/java/com/lemonqwest/app/presentation/navigation/MainAppNavigation.kt`
+- **MODIFY**: `android-kotlin/app/src/main/java/com/lemonqwest/app/presentation/screens/MainScreen.kt` (or equivalent top-level screen composable)
+- **CREATE**: `android-kotlin/app/src/test/java/com/lemonqwest/app/presentation/viewmodels/BottomNavViewModelTest.kt`
+- **CREATE**: `android-kotlin/app/src/test/java/com/lemonqwest/app/presentation/navigation/BottomNavItemTest.kt`
+- **CREATE**: `android-kotlin/app/src/androidTest/java/com/lemonqwest/app/presentation/theme/components/ThemeAwareBottomNavigationBarTest.kt`
+- **EXISTS**: `android-kotlin/app/src/androidTest/java/com/lemonqwest/app/ui/navigation/MainAppNavigationTest.kt` (integration tests)
 
 ## 6. Testing
 
@@ -85,4 +85,3 @@ The implementation will be broken down into the following tasks:
 - `docs/theme-system.md`
 - `docs/architecture.md`
 - [Jetpack Compose Navigation Documentation](https://developer.android.com/jetpack/compose/navigation)
-

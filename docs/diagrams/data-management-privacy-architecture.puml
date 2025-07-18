@@ -3,7 +3,7 @@
 
 LAYOUT_WITH_LEGEND()
 
-title Arthur's Life App - Data Management & Privacy Architecture (v1, 2025-07)
+title LemonQwest App - Data Management & Privacy Architecture (v1, 2025-07)
 
 Container_Boundary(domain, "Domain Layer") {
   Component(user, "User Aggregate", "Kotlin", "Profile, privacy preferences, consent status, COPPA compliance")

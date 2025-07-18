@@ -3,15 +3,15 @@
 
 LAYOUT_WITH_LEGEND()
 
-title Arthur's Life App - Container Diagram (v1, 2025-07)
+title LemonQwest App - Container Diagram (v1, 2025-07)
 
-Person(arthur, "Arthur", "Child user")
+Person(child, "Child", "Child user")
 Person(parent, "Parent/Caregiver", "App administrator")
 System_Ext(talkback, "Android TalkBack", "Accessibility service")
 System_Ext(coppa, "COPPA Compliance", "Child privacy and parental consent requirements")
 System_Ext(gdpr, "GDPR Compliance", "Data minimization and consent management")
 
-System_Boundary(arthurslife, "Arthur's Life App") {
+System_Boundary(lemonqwest, "LemonQwest App") {
   Container(mainactivity, "MainActivity", "Kotlin + Jetpack Compose", "Single activity hosting all screens with accessibility-first UI design and privacy compliance")
   Container(presentation, "Presentation Layer", "Kotlin + Compose + ViewModels", "MVVM architecture with reactive UI state management, accessibility semantics, and theme-aware components")
   Container(application, "Application Layer", "Kotlin", "Use cases orchestrating domain operations: EarnTokenUseCase, RedeemRewardUseCase, TrackProgressUseCase, ConsentManagementUseCase")
@@ -21,7 +21,7 @@ System_Boundary(arthurslife, "Arthur's Life App") {
   ContainerDb(datastore, "DataStore", "Preferences", "Encrypted storage for user/app settings, accessibility, and theme preferences")
 }
 
-arthur --> mainactivity : "Interacts with\naccessible UI"
+child --> mainactivity : "Interacts with\naccessible UI"
 parent --> mainactivity : "Configures app\nthrough admin screens"
 mainactivity --> talkback : "Provides content\ndescriptions"
 mainactivity --> coppa : "Enforces child privacy\nand consent"

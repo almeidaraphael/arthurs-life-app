@@ -1,7 +1,7 @@
 @startuml user-authentication-flow
 !theme plain
 
-title Arthur's Life App - User Authentication Flow (v1, 2025-07)
+title LemonQwest App - User Authentication Flow (v1, 2025-07)
 
 actor Child as "Child User"
 actor Parent as "Parent/Caregiver"

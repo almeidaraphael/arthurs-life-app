@@ -13,5 +13,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Family Task Management"
+rootProject.name = "LemonQwest"
 include(":app")
