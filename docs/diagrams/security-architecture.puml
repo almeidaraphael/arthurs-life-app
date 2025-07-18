@@ -3,7 +3,7 @@
 
 LAYOUT_WITH_LEGEND()
 
-title Arthur's Life App - Security Architecture (v1, 2025-07)
+title LemonQwest App - Security Architecture (v1, 2025-07)
 
 Container_Boundary(application, "Application Layer Security") {
   Component(inputvalidation, "Input Validation", "Security", "SecureTokenValidator validates all token operations and user inputs")

@@ -35,7 +35,7 @@ source_prd_section: 4, 9
 | TASK-002  | Provide Theme Dependencies | US-THEME-1,2,4,8 | Dependency injection for theme system | `DataModule.kt` | Add Hilt providers in a `DataModule` for `ThemeRepository` and `ThemeDataStore`. |
 | TASK-003  | Create Theme State Management | US-THEME-1,2,4,7 | Expose and update current theme, handle errors | `ThemeViewModel.kt` | Create a `ThemeViewModel` responsible for fetching the available themes, getting the current user's theme from the `ThemeRepository`, and providing a function to update the theme. It will expose the current theme via a `StateFlow`. Handle error fallback and user notification. |
 | TASK-004  | Implement Theme Selector Dialog | US-THEME-3,11 | Live preview, swatches, accessible controls | `ThemeSelectorDialog.kt` | Create a composable dialog that displays the list of available themes. It will observe the current theme from `ThemeViewModel` and call the update function upon user selection. It will include previews for each theme, color swatches, and accessible controls. |
-| TASK-005  | Create a Top-Level Theme Provider | US-THEME-1,2,3,4,5,6,10 | UI, icons, terminology, dialogs, notifications update instantly | `ArthurLifeApp.kt`, `MainViewModel.kt` | The main `Activity` or a top-level composable (`ArthurLifeApp`) will host the `ThemeViewModel` (likely via a `MainViewModel`). It will collect the current `AppTheme` from the ViewModel and wrap the entire UI content in the corresponding theme provider (`MarioClassicTheme`, `MaterialTheme`, etc.), making it available via `LocalBaseTheme`. Ensure all UI, icons, terminology, dialogs, and notifications are theme-aware. |
+| TASK-005  | Create a Top-Level Theme Provider | US-THEME-1,2,3,4,5,6,10 | UI, icons, terminology, dialogs, notifications update instantly | `LemonQwestApp.kt`, `MainViewModel.kt` | The main `Activity` or a top-level composable (`LemonQwestApp`) will host the `ThemeViewModel` (likely via a `MainViewModel`). It will collect the current `AppTheme` from the ViewModel and wrap the entire UI content in the corresponding theme provider (`MarioClassicTheme`, `MaterialTheme`, etc.), making it available via `LocalBaseTheme`. Ensure all UI, icons, terminology, dialogs, and notifications are theme-aware. |
 | TASK-006  | Integrate Dialog into Settings | US-THEME-1,2,3,11 | Settings dialog triggers theme selector | `SettingsDialog.kt` | Add a "Change Theme" option to the existing `SettingsDialog` that triggers the `ThemeSelectorDialog`. |
 | TASK-007  | Implement Unit, UI, and Accessibility Tests | US-THEME-4,5,6,7,9,10 | Persistence, accessibility, semantic mapping, error handling, notifications | `ThemeViewModelTest.kt`, `ThemeRepositoryTest.kt`, `ThemeSelectorDialogTest.kt` | Write unit tests for the ViewModel and Repository. Write UI tests to verify the dialog's functionality and that theme changes are correctly applied across the app. Include accessibility and semantic mapping tests, error handling, and notification/dialog theming. |
 | TASK-009  | Fix Theme Selector Dialog Bug | US-THEME-3,11 | Dialog must show all available themes (Material Light, Material Dark, Mario Classic) for any user, with live preview and accessible controls. When a theme is selected, the app's theme must update immediately for the current user. | `ThemeSelectorDialog.kt`, `ThemeViewModel.kt`, `ThemeRepository.kt` | Investigate and fix bug where only Material Light Theme is shown. Ensure dialog fetches and displays all available themes. On selection, update the app's theme for the current user and persist the change. Verify with UI and accessibility tests. |
@@ -53,17 +53,17 @@ source_prd_section: 4, 9
 
 ## 5. Files
 
-- **CREATE**: `android-kotlin/app/src/main/java/com/arthurslife/app/data/theme/ThemeRepository.kt`
-- **CREATE**: `android-kotlin/app/src/main/java/com/arthurslife/app/data/theme/ThemeDataStore.kt`
-- **CREATE**: `android-kotlin/app/src/main/java/com/arthurslife/app/presentation/theme/AppTheme.kt`
-- **MODIFY**: `android-kotlin/app/src/main/java/com/arthurslife/app/di/DataModule.kt`
-- **CREATE**: `android-kotlin/app/src/main/java/com/arthurslife/app/presentation/viewmodels/ThemeViewModel.kt`
-- **CREATE**: `android-kotlin/app/src/main/java/com/arthurslife/app/presentation/components/dialogs/ThemeSelectorDialog.kt`
-- **MODIFY**: `android-kotlin/app/src/main/java/com/arthurslife/app/presentation/ArthurLifeApp.kt`
-- **MODIFY**: `android-kotlin/app/src/main/java/com/arthurslife/app/presentation/components/dialogs/SettingsDialog.kt`
-- **CREATE**: `android-kotlin/app/src/test/java/com/arthurslife/app/presentation/viewmodels/ThemeViewModelTest.kt`
-- **CREATE**: `android-kotlin/app/src/test/java/com/arthurslife/app/data/theme/ThemeRepositoryTest.kt`
-- **CREATE**: `android-kotlin/app/src/androidTest/java/com/arthurslife/app/presentation/components/dialogs/ThemeSelectorDialogTest.kt`
+- **CREATE**: `android-kotlin/app/src/main/java/com/lemonqwest/app/data/theme/ThemeRepository.kt`
+- **CREATE**: `android-kotlin/app/src/main/java/com/lemonqwest/app/data/theme/ThemeDataStore.kt`
+- **CREATE**: `android-kotlin/app/src/main/java/com/lemonqwest/app/presentation/theme/AppTheme.kt`
+- **MODIFY**: `android-kotlin/app/src/main/java/com/lemonqwest/app/di/DataModule.kt`
+- **CREATE**: `android-kotlin/app/src/main/java/com/lemonqwest/app/presentation/viewmodels/ThemeViewModel.kt`
+- **CREATE**: `android-kotlin/app/src/main/java/com/lemonqwest/app/presentation/components/dialogs/ThemeSelectorDialog.kt`
+- **MODIFY**: `android-kotlin/app/src/main/java/com/lemonqwest/app/presentation/LemonQwestApp.kt`
+- **MODIFY**: `android-kotlin/app/src/main/java/com/lemonqwest/app/presentation/components/dialogs/SettingsDialog.kt`
+- **CREATE**: `android-kotlin/app/src/test/java/com/lemonqwest/app/presentation/viewmodels/ThemeViewModelTest.kt`
+- **CREATE**: `android-kotlin/app/src/test/java/com/lemonqwest/app/data/theme/ThemeRepositoryTest.kt`
+- **CREATE**: `android-kotlin/app/src/androidTest/java/com/lemonqwest/app/presentation/components/dialogs/ThemeSelectorDialogTest.kt`
 
 ## 6. Testing
 

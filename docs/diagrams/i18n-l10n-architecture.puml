@@ -1,7 +1,7 @@
 @startuml i18n-l10n-architecture
 !theme plain
 
-title Arthur's Life App - i18n/l10n Architecture (v1, 2025-07)
+title LemonQwest App - i18n/l10n Architecture (v1, 2025-07)
 
 package "App UI" {
   [MainScreen]

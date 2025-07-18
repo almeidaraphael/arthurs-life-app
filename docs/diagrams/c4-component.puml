@@ -3,7 +3,7 @@
 
 LAYOUT_WITH_LEGEND()
 
-title Arthur's Life App - Domain Layer Components (v1, 2025-07)
+title LemonQwest App - Domain Layer Components (v1, 2025-07)
 
 Container_Boundary(domain, "Domain Layer - Arthur's Core Business Logic") {
   Component(user, "User Aggregate", "Kotlin", "Profile, token balance, level progression, accessibility preferences, role-based theme settings, privacy consent, COPPA compliance")
