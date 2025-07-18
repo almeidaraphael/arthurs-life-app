@@ -10,6 +10,7 @@ import com.arthurslife.app.domain.user.TokenBalance
 import com.arthurslife.app.domain.user.UserRole
 import com.arthurslife.app.presentation.theme.ArthursLifeTheme
 import com.arthurslife.app.presentation.theme.mario.MarioClassicTheme
+import com.arthurslife.app.presentation.theme.materialdark.MaterialDarkTheme
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
@@ -57,7 +58,6 @@ class TopBarDialogsTest {
                 settingsDialog(
                     actions = actions,
                     theme = ArthursLifeTheme,
-                    currentLanguage = "English (US)",
                 )
             }
         }
@@ -99,7 +99,6 @@ class TopBarDialogsTest {
                 settingsDialog(
                     actions = actions,
                     theme = ArthursLifeTheme,
-                    currentLanguage = "English (US)",
                 )
             }
         }
@@ -129,7 +128,6 @@ class TopBarDialogsTest {
                 settingsDialog(
                     actions = actions,
                     theme = ArthursLifeTheme,
-                    currentLanguage = "English (US)",
                 )
             }
         }
@@ -159,7 +157,6 @@ class TopBarDialogsTest {
                 settingsDialog(
                     actions = actions,
                     theme = ArthursLifeTheme,
-                    currentLanguage = "English (US)",
                 )
             }
         }
@@ -178,16 +175,16 @@ class TopBarDialogsTest {
         // Given
         val testUser = createTestUser()
         val state = UserProfileDialogState(
-            name = testUser.name,
-            displayName = testUser.displayName ?: testUser.name,
-            avatarData = testUser.avatarData,
-            role = testUser.role,
+            user = testUser,
+            editedName = testUser.displayName ?: testUser.name,
         )
         val actions = UserProfileDialogActions(
             onDismiss = { dismissCount++ },
-            onSaveProfile = { saveProfileCount++ },
+            onSave = { saveProfileCount++ },
+            onCancel = { dismissCount++ },
             onChangeAvatar = { },
             onChangePIN = { },
+            onNameChange = { },
         )
 
         // When
@@ -221,16 +218,16 @@ class TopBarDialogsTest {
         // Given
         val testUser = createTestUser()
         val state = UserProfileDialogState(
-            name = testUser.name,
-            displayName = testUser.displayName ?: testUser.name,
-            avatarData = testUser.avatarData,
-            role = testUser.role,
+            user = testUser,
+            editedName = testUser.displayName ?: testUser.name,
         )
         val actions = UserProfileDialogActions(
             onDismiss = { dismissCount++ },
-            onSaveProfile = { saveProfileCount++ },
+            onSave = { saveProfileCount++ },
+            onCancel = { dismissCount++ },
             onChangeAvatar = { },
             onChangePIN = { },
+            onNameChange = { },
         )
 
         // When
@@ -265,9 +262,9 @@ class TopBarDialogsTest {
         composeTestRule.setContent {
             ArthursLifeTheme {
                 languageSelectorDialog(
+                    currentLanguage = "en-US",
                     actions = actions,
                     theme = ArthursLifeTheme,
-                    currentLanguage = "en-US",
                 )
             }
         }
@@ -293,14 +290,20 @@ class TopBarDialogsTest {
             onDismiss = { dismissCount++ },
             onThemeSelected = { },
         )
+        val availableThemes = listOf(
+            ArthursLifeTheme,
+            MaterialDarkTheme,
+            MarioClassicTheme,
+        )
 
         // When
         composeTestRule.setContent {
             ArthursLifeTheme {
                 themeSelectorDialog(
+                    currentTheme = ArthursLifeTheme,
+                    availableThemes = availableThemes,
                     actions = actions,
                     theme = ArthursLifeTheme,
-                    currentTheme = ArthursLifeTheme,
                 )
             }
         }
@@ -340,10 +343,10 @@ class TopBarDialogsTest {
         composeTestRule.setContent {
             ArthursLifeTheme {
                 childSelectorDialog(
+                    children = children,
+                    selectedChildId = "child-1",
                     actions = actions,
                     theme = ArthursLifeTheme,
-                    availableChildren = children,
-                    selectedChildId = "child-1",
                 )
             }
         }
@@ -380,9 +383,10 @@ class TopBarDialogsTest {
         composeTestRule.setContent {
             ArthursLifeTheme {
                 userSelectorDialog(
+                    users = users,
+                    currentUserId = "test-child-123",
                     actions = actions,
                     theme = ArthursLifeTheme,
-                    availableUsers = users,
                 )
             }
         }
@@ -419,7 +423,6 @@ class TopBarDialogsTest {
                 settingsDialog(
                     actions = actions,
                     theme = MarioClassicTheme,
-                    currentLanguage = "English (US)",
                 )
             }
         }
@@ -451,7 +454,6 @@ class TopBarDialogsTest {
                 settingsDialog(
                     actions = actions,
                     theme = ArthursLifeTheme,
-                    currentLanguage = "English (US)",
                 )
             }
         }

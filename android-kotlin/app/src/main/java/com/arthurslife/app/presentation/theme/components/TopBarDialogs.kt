@@ -1,21 +1,16 @@
 package com.arthurslife.app.presentation.theme.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
@@ -736,112 +731,12 @@ private fun themeSelectorContent(
     actions: ThemeSelectorDialogActions,
     theme: BaseAppTheme,
 ) {
-    Column(
+    ThemeSelector(
+        currentTheme = currentTheme,
+        availableThemes = availableThemes,
+        onThemeSelected = actions.onThemeSelected,
         modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(DIALOG_ITEM_SPACING),
-    ) {
-        availableThemes.forEach { themeOption ->
-            themeSelectionItem(
-                themeOption = themeOption,
-                isSelected = themeOption.displayName == currentTheme.displayName,
-                theme = theme,
-                onClick = { actions.onThemeSelected(themeOption) },
-            )
-        }
-    }
-}
-
-@Composable
-private fun themeSelectionItem(
-    themeOption: com.arthurslife.app.presentation.theme.BaseAppTheme,
-    isSelected: Boolean,
-    theme: BaseAppTheme,
-    onClick: () -> Unit,
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .semantics {
-                contentDescription = "${themeOption.displayName}${if (isSelected) ", currently selected" else ""}"
-                role = Role.Button
-            },
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(DIALOG_ITEM_SPACING),
-    ) {
-        themeAwareIconButton(
-            onClick = onClick,
-        ) {
-            themeColorPreview(
-                themeOption = themeOption,
-                theme = theme,
-            )
-        }
-
-        themeItemDetails(
-            themeOption = themeOption,
-            isSelected = isSelected,
-            theme = theme,
-        )
-
-        if (isSelected) {
-            Icon(
-                imageVector = theme.icons(SemanticIconType.CHECK_SELECTED),
-                contentDescription = "Selected",
-                tint = theme.colorScheme.primary,
-                modifier = Modifier.size(SELECTION_ICON_SIZE),
-            )
-        }
-    }
-}
-
-@Composable
-private fun themeColorPreview(
-    themeOption: com.arthurslife.app.presentation.theme.BaseAppTheme,
-    theme: BaseAppTheme,
-) {
-    Row {
-        val colors = listOf(
-            themeOption.colorScheme.primary,
-            themeOption.colorScheme.secondary,
-            themeOption.colorScheme.tertiary,
-        )
-        colors.forEach { color ->
-            androidx.compose.foundation.layout.Box(
-                modifier = Modifier
-                    .size(12.dp)
-                    .clip(theme.shapes.small)
-                    .background(color),
-            )
-            if (color != colors.last()) {
-                androidx.compose.foundation.layout.Spacer(
-                    modifier = Modifier.width(2.dp),
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun RowScope.themeItemDetails(
-    themeOption: com.arthurslife.app.presentation.theme.BaseAppTheme,
-    isSelected: Boolean,
-    theme: BaseAppTheme,
-) {
-    Column(
-        modifier = Modifier.weight(1f),
-    ) {
-        Text(
-            text = themeOption.displayName,
-            style = theme.typography.bodyLarge,
-            color = theme.colorScheme.onSurface,
-            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-        )
-        Text(
-            text = themeOption.description,
-            style = theme.typography.bodySmall,
-            color = theme.colorScheme.onSurfaceVariant,
-        )
-    }
+    )
 }
 
 // Default data

@@ -135,6 +135,7 @@ fun MainScreen(
         dialogViewModel = dialogViewModel,
         authViewModel = authViewModel,
         navController = navController,
+        themeViewModel = themeViewModel,
     )
 }
 
@@ -428,6 +429,7 @@ private fun mainScreenDialogs(
     dialogViewModel: DialogManagementViewModel,
     authViewModel: com.arthurslife.app.presentation.viewmodels.AuthViewModel,
     navController: NavHostController,
+    themeViewModel: ThemeViewModel,
 ) {
     dialogManager(
         theme = currentTheme,
@@ -448,7 +450,11 @@ private fun mainScreenDialogs(
         onSwitchUsers = { navController.navigate("user_selection") },
         onThemeClick = { navController.navigate("theme_settings") },
         onThemeSelected = { selectedTheme ->
-            // TODO: Implement theme switching through ThemeViewModel
+            com.arthurslife.app.presentation.theme.ThemeManager.getAppThemeKey(
+                selectedTheme,
+            )?.let { appTheme ->
+                themeViewModel.saveTheme(appTheme)
+            }
         },
     )
 }

@@ -4,7 +4,7 @@ description: Overview and progress tracking for all IPDs and their tasks in the 
 last_updated: 2025-07-17
 ---
 
-# 🗂️ Implementation Plan Documents & Tasks – Master Index
+## 🗂️ Implementation Plan Documents & Tasks – Master Index
 
 This index provides a high-level overview of all implementation plan documents (IPDs) and their associated tasks. Use this file to quickly assess project progress, identify bottlenecks, and navigate to detailed tracking in each task file.
 
@@ -22,7 +22,6 @@ This index provides a high-level overview of all implementation plan documents (
 ---
 
 ## Task Summary by IPD
-
 
 ### Feature Bottom Navigation Bar
 
@@ -71,6 +70,7 @@ This index provides a high-level overview of all implementation plan documents (
 | TASK-006 | Integrate Dialog into Settings | Completed | 100% | 2025-07-17 | [TASK-006-integrate-dialog-into-settings.md](feature-theme-system/tasks/TASK-006-integrate-dialog-into-settings.md) |
 | TASK-007 | Implement Unit and UI Tests for Theme System | Completed | 100% | 2025-07-18 (user-based update) | [TASK-007-implement-unit-and-ui-tests-for-theme-system.md](feature-theme-system/tasks/TASK-007-implement-unit-and-ui-tests-for-theme-system.md) |
 | TASK-008 | Implement User-Based Theme Selection | In Progress | 0% | 2025-07-17 | [TASK-008-implement-user-based-theme-selection.md](feature-theme-system/tasks/TASK-008-implement-user-based-theme-selection.md) |
+| TASK-009 | Fix Theme Selector Dialog Bug | Pending | 0% | 2025-07-18 | [TASK-009-fix-theme-selector-dialog.md](feature-theme-system/tasks/TASK-009-fix-theme-selector-dialog.md) |
 
 ---
 

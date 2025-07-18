@@ -15,6 +15,7 @@ source_prd_section: 4, 9
 > The PRD has changed from role-based to user-based theme selection. All users (children and caregivers) can select any available theme, independent of role. The implementation must update all requirements, steps, and tasks to match the new PRD. See progress log for rationale and next steps.
 
 ## 1. Requirements & Constraints
+
 - **REQ-001**: Each user must be able to select a theme (Mario Classic, Material Light, Material Dark) regardless of their role. [FR-THEME-1, US-THEME-1, US-THEME-2]
 - **REQ-002**: Theme preferences must be stored locally and persist across app sessions for each user. [FR-THEME-2, US-THEME-4]
 - **REQ-003**: The entire app's UI, including icons, terminology, notifications, and dialogs, must update instantly when the theme is changed. [FR-THEME-3, FR-THEME-4, US-THEME-1, US-THEME-2, US-THEME-6, US-THEME-10]
@@ -37,6 +38,7 @@ source_prd_section: 4, 9
 | TASK-005  | Create a Top-Level Theme Provider | US-THEME-1,2,3,4,5,6,10 | UI, icons, terminology, dialogs, notifications update instantly | `ArthurLifeApp.kt`, `MainViewModel.kt` | The main `Activity` or a top-level composable (`ArthurLifeApp`) will host the `ThemeViewModel` (likely via a `MainViewModel`). It will collect the current `AppTheme` from the ViewModel and wrap the entire UI content in the corresponding theme provider (`MarioClassicTheme`, `MaterialTheme`, etc.), making it available via `LocalBaseTheme`. Ensure all UI, icons, terminology, dialogs, and notifications are theme-aware. |
 | TASK-006  | Integrate Dialog into Settings | US-THEME-1,2,3,11 | Settings dialog triggers theme selector | `SettingsDialog.kt` | Add a "Change Theme" option to the existing `SettingsDialog` that triggers the `ThemeSelectorDialog`. |
 | TASK-007  | Implement Unit, UI, and Accessibility Tests | US-THEME-4,5,6,7,9,10 | Persistence, accessibility, semantic mapping, error handling, notifications | `ThemeViewModelTest.kt`, `ThemeRepositoryTest.kt`, `ThemeSelectorDialogTest.kt` | Write unit tests for the ViewModel and Repository. Write UI tests to verify the dialog's functionality and that theme changes are correctly applied across the app. Include accessibility and semantic mapping tests, error handling, and notification/dialog theming. |
+| TASK-009  | Fix Theme Selector Dialog Bug | US-THEME-3,11 | Dialog must show all available themes (Material Light, Material Dark, Mario Classic) for any user, with live preview and accessible controls. When a theme is selected, the app's theme must update immediately for the current user. | `ThemeSelectorDialog.kt`, `ThemeViewModel.kt`, `ThemeRepository.kt` | Investigate and fix bug where only Material Light Theme is shown. Ensure dialog fetches and displays all available themes. On selection, update the app's theme for the current user and persist the change. Verify with UI and accessibility tests. |
 
 ## 3. Alternatives
 
@@ -78,6 +80,7 @@ source_prd_section: 4, 9
 | TEST-009  | Verify notifications and dialogs are theme-aware | US-THEME-10 | TASK-005, TASK-007 |
 
 ## 7. Risks & Assumptions
+
 - **RISK-001**: A flicker or incorrect theme might be displayed for a moment on app startup before the user's preference is loaded from DataStore. This can be mitigated by loading the theme preference on a splash screen or showing a loading indicator.
 - **RISK-002**: Semantic mapping or notification theming may be missed in new features if not enforced in code review.
 - **ASSUMPTION-001**: A mechanism to observe the current user's ID is available to the `ThemeRepository` to manage user-specific settings. The system no longer assigns themes by role; all theme selection and persistence is user-based.
@@ -85,11 +88,10 @@ source_prd_section: 4, 9
 
 ## 8. Related Specifications / Further Reading
 
-- `docs/product-requirements-documents/feature-theme-system.md`
-- `docs/architecture.md`
-- [Jetpack DataStore Guide](https://developer.android.com/topic/libraries/architecture/datastore)
-- [State and Jetpack Compose](https://developer.android.com/jetpack/compose/state)
-
 ## 9. Progress Log
+
 ### 2025-07-17 (PRD Update: Role-based → User-based)
-- PRD updated to require user-based theme selection. Implementation must update all requirements, steps, and tasks to match. Reopen or create new tasks for user-based implementation. Document rationale and next steps in all affected tasks.
+
+### 2025-07-18 (Bug: Theme Selector Dialog Only Shows Material Light)
+
+- Discovered bug: Theme selector dialog only displays Material Light Theme. Created TASK-009 to track investigation and resolution. Will ensure dialog displays all available themes for any user, and that selecting a theme immediately updates the app's theme for the current user. Live preview and accessibility features required by PRD and IPD will be verified with tests.
