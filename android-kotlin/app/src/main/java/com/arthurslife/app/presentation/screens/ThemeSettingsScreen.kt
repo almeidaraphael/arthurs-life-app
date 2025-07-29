@@ -14,7 +14,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -22,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.arthurslife.app.domain.user.UserRole
 import com.arthurslife.app.presentation.theme.BaseAppTheme
 import com.arthurslife.app.presentation.theme.ThemeManager
 import com.arthurslife.app.presentation.theme.ThemeViewModel
@@ -34,17 +32,12 @@ import com.arthurslife.app.presentation.theme.components.themeAwareIconButton
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ThemeSettingsScreen(
-    userRole: UserRole,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
     themeViewModel: ThemeViewModel = hiltViewModel(),
 ) {
     val currentTheme by themeViewModel.currentTheme.collectAsState()
     val availableThemes by themeViewModel.availableThemes.collectAsState()
-
-    LaunchedEffect(userRole) {
-        themeViewModel.loadTheme(userRole)
-    }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),

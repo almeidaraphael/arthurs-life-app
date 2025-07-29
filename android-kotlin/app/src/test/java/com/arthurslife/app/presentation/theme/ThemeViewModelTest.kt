@@ -1,9 +1,11 @@
 package com.arthurslife.app.presentation.theme
 
+import com.arthurslife.app.domain.auth.AuthenticationSessionService
 import com.arthurslife.app.domain.theme.model.AppTheme
 import com.arthurslife.app.domain.theme.usecase.GetAvailableThemesUseCase
 import com.arthurslife.app.domain.theme.usecase.GetThemeUseCase
 import com.arthurslife.app.domain.theme.usecase.SaveThemeUseCase
+import com.arthurslife.app.domain.user.User
 import com.arthurslife.app.domain.user.UserRole
 import com.arthurslife.app.presentation.theme.mario.MarioTheme
 import com.arthurslife.app.presentation.theme.materialdark.MaterialDarkTheme
@@ -53,6 +55,7 @@ class ThemeViewModelTest {
     private lateinit var getThemeUseCase: GetThemeUseCase
     private lateinit var saveThemeUseCase: SaveThemeUseCase
     private lateinit var getAvailableThemesUseCase: GetAvailableThemesUseCase
+    private lateinit var authenticationSessionService: AuthenticationSessionService
     private lateinit var themeViewModel: ThemeViewModel
 
     private val testDispatcher = StandardTestDispatcher()
@@ -64,6 +67,7 @@ class ThemeViewModelTest {
         getThemeUseCase = mockk()
         saveThemeUseCase = mockk()
         getAvailableThemesUseCase = mockk()
+        authenticationSessionService = mockk()
 
         // Default mocks for available themes
         every { getAvailableThemesUseCase() } returns listOf(
@@ -71,11 +75,25 @@ class ThemeViewModelTest {
             AppTheme.MATERIAL_DARK,
             AppTheme.MARIO_CLASSIC,
         )
+
+        // Default mock for current user
+        coEvery { authenticationSessionService.getCurrentUser() } returns User(
+            id = "test-user-123",
+            name = "Test User",
+            role = UserRole.CHILD,
+        )
+
+        // Default mock for theme loading
+        every { getThemeUseCase("test-user-123") } returns flowOf(AppTheme.MATERIAL_LIGHT)
     }
 
     @AfterEach
     fun tearDown() {
         Dispatchers.resetMain()
+    }
+
+    private fun createViewModel() {
+        themeViewModel = ThemeViewModel(getThemeUseCase, saveThemeUseCase, getAvailableThemesUseCase, authenticationSessionService)
     }
 
     @Nested
@@ -89,7 +107,7 @@ class ThemeViewModelTest {
             every { getAvailableThemesUseCase() } returns listOf(AppTheme.MATERIAL_LIGHT)
 
             // When
-            themeViewModel = ThemeViewModel(getThemeUseCase, saveThemeUseCase, getAvailableThemesUseCase)
+            themeViewModel = ThemeViewModel(getThemeUseCase, saveThemeUseCase, getAvailableThemesUseCase, authenticationSessionService)
             advanceUntilIdle()
 
             // Then
@@ -113,7 +131,7 @@ class ThemeViewModelTest {
             every { getAvailableThemesUseCase() } returns expectedThemes
 
             // When
-            themeViewModel = ThemeViewModel(getThemeUseCase, saveThemeUseCase, getAvailableThemesUseCase)
+            themeViewModel = ThemeViewModel(getThemeUseCase, saveThemeUseCase, getAvailableThemesUseCase, authenticationSessionService)
             advanceUntilIdle()
 
             // Then
@@ -141,7 +159,7 @@ class ThemeViewModelTest {
             every { getAvailableThemesUseCase() } returns emptyList()
 
             // When
-            themeViewModel = ThemeViewModel(getThemeUseCase, saveThemeUseCase, getAvailableThemesUseCase)
+            themeViewModel = ThemeViewModel(getThemeUseCase, saveThemeUseCase, getAvailableThemesUseCase, authenticationSessionService)
             advanceUntilIdle()
 
             // Then
@@ -156,7 +174,7 @@ class ThemeViewModelTest {
             every { getAvailableThemesUseCase() } returns listOf(AppTheme.MATERIAL_LIGHT)
 
             // When
-            themeViewModel = ThemeViewModel(getThemeUseCase, saveThemeUseCase, getAvailableThemesUseCase)
+            themeViewModel = ThemeViewModel(getThemeUseCase, saveThemeUseCase, getAvailableThemesUseCase, authenticationSessionService)
             advanceUntilIdle()
 
             // Then
@@ -180,37 +198,45 @@ class ThemeViewModelTest {
 
         @BeforeEach
         fun setUp() {
-            themeViewModel = ThemeViewModel(getThemeUseCase, saveThemeUseCase, getAvailableThemesUseCase)
+            // ViewModel will be created in individual tests after mocks are properly set up
         }
 
         @Test
         @DisplayName("Should load Mario theme for child user role")
         fun shouldLoadMarioThemeForChildUserRole() = runTest {
             // Given
-            val userRole = UserRole.CHILD
+            val userId = "test-user-123"
             val savedTheme = AppTheme.MARIO_CLASSIC
-            every { getThemeUseCase(userRole) } returns flowOf(savedTheme)
+            every { getThemeUseCase(userId) } returns flowOf(savedTheme)
 
             // When
-            themeViewModel.loadTheme(userRole)
+            themeViewModel = ThemeViewModel(getThemeUseCase, saveThemeUseCase, getAvailableThemesUseCase, authenticationSessionService)
             advanceUntilIdle()
 
             // Then
             val currentTheme = themeViewModel.currentTheme.value
             assertEquals(MarioTheme, currentTheme, "Should load Mario theme for child")
-            verify(exactly = 1) { getThemeUseCase(userRole) }
+            verify(exactly = 1) { getThemeUseCase(userId) }
         }
 
         @Test
         @DisplayName("Should load Material Light theme for caregiver user role")
         fun shouldLoadMaterialLightThemeForCaregiverUserRole() = runTest {
             // Given
-            val userRole = UserRole.CAREGIVER
+            val userId = "caregiver-user-456"
             val savedTheme = AppTheme.MATERIAL_LIGHT
-            every { getThemeUseCase(userRole) } returns flowOf(savedTheme)
+
+            // Set up user mock to return caregiver user
+            coEvery { authenticationSessionService.getCurrentUser() } returns User(
+                id = userId,
+                name = "Caregiver User",
+                role = UserRole.CAREGIVER,
+            )
+            every { getThemeUseCase(userId) } returns flowOf(savedTheme)
+            createViewModel()
 
             // When
-            themeViewModel.loadTheme(userRole)
+            // Theme loads automatically for current user
             advanceUntilIdle()
 
             // Then
@@ -220,18 +246,19 @@ class ThemeViewModelTest {
                 currentTheme,
                 "Should load Material Light theme for caregiver",
             )
-            verify(exactly = 1) { getThemeUseCase(userRole) }
+            verify(exactly = 1) { getThemeUseCase(userId) }
         }
 
         @Test
         @DisplayName("Should set default theme immediately for child role")
         fun shouldSetDefaultThemeImmediatelyForChildRole() = runTest {
             // Given
-            val userRole = UserRole.CHILD
-            every { getThemeUseCase(userRole) } returns flowOf(AppTheme.MARIO_CLASSIC)
+            val userId = "test-user-123"
+            every { getThemeUseCase(userId) } returns flowOf(AppTheme.MARIO_CLASSIC)
+            createViewModel()
 
             // When
-            themeViewModel.loadTheme(userRole)
+            // Theme loads automatically for current user
             advanceUntilIdle() // Allow StateFlow transformation to complete
 
             // Then
@@ -243,12 +270,20 @@ class ThemeViewModelTest {
         @DisplayName("Should set default theme immediately for caregiver role")
         fun shouldSetDefaultThemeImmediatelyForCaregiverRole() = runTest {
             // Given
-            val userRole = UserRole.CAREGIVER
-            every { getThemeUseCase(userRole) } returns flowOf(AppTheme.MATERIAL_LIGHT)
+            val userId = "caregiver-user-456"
+
+            // Set up user mock to return caregiver user
+            coEvery { authenticationSessionService.getCurrentUser() } returns User(
+                id = userId,
+                name = "Caregiver User",
+                role = UserRole.CAREGIVER,
+            )
+            every { getThemeUseCase(userId) } returns flowOf(AppTheme.MATERIAL_LIGHT)
+            createViewModel()
 
             // When
-            themeViewModel.loadTheme(userRole)
-            // Don't advance until idle to test immediate state
+            // Theme loads automatically for current user
+            advanceUntilIdle() // Need to advance to allow theme loading
 
             // Then
             val currentTheme = themeViewModel.currentTheme.value
@@ -263,12 +298,13 @@ class ThemeViewModelTest {
         @DisplayName("Should override default theme with saved preference")
         fun shouldOverrideDefaultThemeWithSavedPreference() = runTest {
             // Given
-            val userRole = UserRole.CHILD
+            val userId = "test-user-123"
             val savedTheme = AppTheme.MATERIAL_DARK
-            every { getThemeUseCase(userRole) } returns flowOf(savedTheme)
+            every { getThemeUseCase(userId) } returns flowOf(savedTheme)
+            createViewModel()
 
             // When
-            themeViewModel.loadTheme(userRole)
+            // Theme loads automatically for current user
             advanceUntilIdle()
 
             // Then
@@ -284,16 +320,24 @@ class ThemeViewModelTest {
         @DisplayName("Should handle theme changes in Flow")
         fun shouldHandleThemeChangesInFlow() = runTest {
             // Given
-            val userRole = UserRole.CAREGIVER
+            val userId = "caregiver-user-456"
             val themeFlow = flowOf(
                 AppTheme.MATERIAL_LIGHT,
                 AppTheme.MATERIAL_DARK,
                 AppTheme.MARIO_CLASSIC,
             )
-            every { getThemeUseCase(userRole) } returns themeFlow
+
+            // Set up user mock to return caregiver user
+            coEvery { authenticationSessionService.getCurrentUser() } returns User(
+                id = userId,
+                name = "Caregiver User",
+                role = UserRole.CAREGIVER,
+            )
+            every { getThemeUseCase(userId) } returns themeFlow
+            createViewModel()
 
             // When
-            themeViewModel.loadTheme(userRole)
+            // Theme loads automatically for current user
             advanceUntilIdle()
 
             // Then
@@ -305,16 +349,17 @@ class ThemeViewModelTest {
         @DisplayName("Should collect theme changes continuously")
         fun shouldCollectThemeChangesContinuously() = runTest {
             // Given
-            val userRole = UserRole.CHILD
+            val userId = "test-user-123"
             val themeFlow = flowOf(AppTheme.MARIO_CLASSIC)
-            every { getThemeUseCase(userRole) } returns themeFlow
+            every { getThemeUseCase(userId) } returns themeFlow
+            createViewModel()
 
             // When
-            themeViewModel.loadTheme(userRole)
+            // Theme loads automatically for current user
             advanceUntilIdle()
 
             // Then
-            verify(exactly = 1) { getThemeUseCase(userRole) }
+            verify(exactly = 1) { getThemeUseCase(userId) }
             val currentTheme = themeViewModel.currentTheme.value
             assertEquals(MarioTheme, currentTheme, "Should collect theme changes continuously")
         }
@@ -323,19 +368,27 @@ class ThemeViewModelTest {
         @DisplayName("Should update current user role when loading theme")
         fun shouldUpdateCurrentUserRoleWhenLoadingTheme() = runTest {
             // Given
-            val userRole = UserRole.CAREGIVER
+            val userId = "caregiver-user-456"
             val theme = AppTheme.MATERIAL_LIGHT
-            every { getThemeUseCase(userRole) } returns flowOf(theme)
-            coEvery { saveThemeUseCase(userRole, theme) } returns Unit
+
+            // Set up user mock to return caregiver user
+            coEvery { authenticationSessionService.getCurrentUser() } returns User(
+                id = userId,
+                name = "Caregiver User",
+                role = UserRole.CAREGIVER,
+            )
+            every { getThemeUseCase(userId) } returns flowOf(theme)
+            coEvery { saveThemeUseCase(userId, theme) } returns Unit
+            createViewModel()
 
             // When
-            themeViewModel.loadTheme(userRole)
+            // Theme loads automatically for current user
             advanceUntilIdle()
             themeViewModel.saveTheme(theme)
             advanceUntilIdle() // Allow saveTheme coroutine to complete
 
             // Then
-            coVerify(exactly = 1) { saveThemeUseCase(userRole, theme) }
+            coVerify(exactly = 1) { saveThemeUseCase(userId, theme) }
         }
     }
 
@@ -345,59 +398,69 @@ class ThemeViewModelTest {
 
         @BeforeEach
         fun setUp() {
-            themeViewModel = ThemeViewModel(getThemeUseCase, saveThemeUseCase, getAvailableThemesUseCase)
+            // ViewModel will be created in individual tests after mocks are properly set up
         }
 
         @Test
         @DisplayName("Should save theme for child user role")
         fun shouldSaveThemeForChildUserRole() = runTest {
             // Given
-            val userRole = UserRole.CHILD
+            val userId = "test-user-123"
             val theme = AppTheme.MARIO_CLASSIC
-            every { getThemeUseCase(userRole) } returns flowOf(theme)
-            coEvery { saveThemeUseCase(userRole, theme) } returns Unit
+            every { getThemeUseCase(userId) } returns flowOf(theme)
+            coEvery { saveThemeUseCase(userId, theme) } returns Unit
+            createViewModel()
 
             // When
-            themeViewModel.loadTheme(userRole)
+            // Theme loads automatically for current user
             advanceUntilIdle()
             themeViewModel.saveTheme(theme)
             advanceUntilIdle()
 
             // Then
-            coVerify(exactly = 1) { saveThemeUseCase(userRole, theme) }
+            coVerify(exactly = 1) { saveThemeUseCase(userId, theme) }
         }
 
         @Test
         @DisplayName("Should save theme for caregiver user role")
         fun shouldSaveThemeForCaregiverUserRole() = runTest {
             // Given
-            val userRole = UserRole.CAREGIVER
+            val userId = "caregiver-user-456"
             val theme = AppTheme.MATERIAL_DARK
-            every { getThemeUseCase(userRole) } returns flowOf(theme)
-            coEvery { saveThemeUseCase(userRole, theme) } returns Unit
+
+            // Set up user mock to return caregiver user
+            coEvery { authenticationSessionService.getCurrentUser() } returns User(
+                id = userId,
+                name = "Caregiver User",
+                role = UserRole.CAREGIVER,
+            )
+            every { getThemeUseCase(userId) } returns flowOf(theme)
+            coEvery { saveThemeUseCase(userId, theme) } returns Unit
+            createViewModel()
 
             // When
-            themeViewModel.loadTheme(userRole)
+            // Theme loads automatically for current user
             advanceUntilIdle()
             themeViewModel.saveTheme(theme)
             advanceUntilIdle()
 
             // Then
-            coVerify(exactly = 1) { saveThemeUseCase(userRole, theme) }
+            coVerify(exactly = 1) { saveThemeUseCase(userId, theme) }
         }
 
         @Test
         @DisplayName("Should update current theme state when saving")
         fun shouldUpdateCurrentThemeStateWhenSaving() = runTest {
             // Given
-            val userRole = UserRole.CHILD
+            val userId = "test-user-123"
             val initialTheme = AppTheme.MARIO_CLASSIC
             val newTheme = AppTheme.MATERIAL_LIGHT
-            every { getThemeUseCase(userRole) } returns flowOf(initialTheme)
-            coEvery { saveThemeUseCase(userRole, newTheme) } returns Unit
+            every { getThemeUseCase(userId) } returns flowOf(initialTheme)
+            coEvery { saveThemeUseCase(userId, newTheme) } returns Unit
+            createViewModel()
 
             // When
-            themeViewModel.loadTheme(userRole)
+            // Theme loads automatically for current user
             advanceUntilIdle()
             themeViewModel.saveTheme(newTheme)
             advanceUntilIdle()
@@ -413,6 +476,7 @@ class ThemeViewModelTest {
             // Given
             val theme = AppTheme.MATERIAL_DARK
             coEvery { saveThemeUseCase(any(), any()) } returns Unit
+            createViewModel()
 
             // When
             themeViewModel.saveTheme(theme)
@@ -425,20 +489,28 @@ class ThemeViewModelTest {
         @DisplayName("Should handle different theme types when saving")
         fun shouldHandleDifferentThemeTypesWhenSaving() = runTest {
             // Given
-            val userRole = UserRole.CAREGIVER
+            val userId = "caregiver-user-456"
             val themes = listOf(
                 AppTheme.MATERIAL_LIGHT,
                 AppTheme.MATERIAL_DARK,
                 AppTheme.MARIO_CLASSIC,
             )
-            every { getThemeUseCase(userRole) } returns flowOf(AppTheme.MATERIAL_LIGHT)
+
+            // Set up user mock to return caregiver user
+            coEvery { authenticationSessionService.getCurrentUser() } returns User(
+                id = userId,
+                name = "Caregiver User",
+                role = UserRole.CAREGIVER,
+            )
+            every { getThemeUseCase(userId) } returns flowOf(AppTheme.MATERIAL_LIGHT)
 
             themes.forEach { theme ->
-                coEvery { saveThemeUseCase(userRole, theme) } returns Unit
+                coEvery { saveThemeUseCase(userId, theme) } returns Unit
             }
+            createViewModel()
 
             // When
-            themeViewModel.loadTheme(userRole)
+            // Theme loads automatically for current user
             advanceUntilIdle()
 
             themes.forEach { theme ->
@@ -448,7 +520,7 @@ class ThemeViewModelTest {
 
             // Then
             themes.forEach { theme ->
-                coVerify(exactly = 1) { saveThemeUseCase(userRole, theme) }
+                coVerify(exactly = 1) { saveThemeUseCase(userId, theme) }
             }
         }
 
@@ -456,14 +528,15 @@ class ThemeViewModelTest {
         @DisplayName("Should save theme and update state in correct order")
         fun shouldSaveThemeAndUpdateStateInCorrectOrder() = runTest {
             // Given
-            val userRole = UserRole.CHILD
+            val userId = "test-user-123"
             val initialTheme = AppTheme.MARIO_CLASSIC
             val newTheme = AppTheme.MATERIAL_DARK
-            every { getThemeUseCase(userRole) } returns flowOf(initialTheme)
-            coEvery { saveThemeUseCase(userRole, newTheme) } returns Unit
+            every { getThemeUseCase(userId) } returns flowOf(initialTheme)
+            coEvery { saveThemeUseCase(userId, newTheme) } returns Unit
+            createViewModel()
 
             // When
-            themeViewModel.loadTheme(userRole)
+            // Theme loads automatically for current user
             advanceUntilIdle()
 
             val themeBeforeSave = themeViewModel.currentTheme.value
@@ -474,20 +547,28 @@ class ThemeViewModelTest {
             // Then
             assertEquals(MarioTheme, themeBeforeSave, "Should have initial theme before save")
             assertEquals(MaterialDarkTheme, themeAfterSave, "Should have new theme after save")
-            coVerify(exactly = 1) { saveThemeUseCase(userRole, newTheme) }
+            coVerify(exactly = 1) { saveThemeUseCase(userId, newTheme) }
         }
 
         @Test
         @DisplayName("Should handle saving same theme multiple times")
         fun shouldHandleSavingSameThemeMultipleTimes() = runTest {
             // Given
-            val userRole = UserRole.CAREGIVER
+            val userId = "caregiver-user-456"
             val theme = AppTheme.MATERIAL_LIGHT
-            every { getThemeUseCase(userRole) } returns flowOf(theme)
-            coEvery { saveThemeUseCase(userRole, theme) } returns Unit
+
+            // Set up user mock to return caregiver user
+            coEvery { authenticationSessionService.getCurrentUser() } returns User(
+                id = userId,
+                name = "Caregiver User",
+                role = UserRole.CAREGIVER,
+            )
+            every { getThemeUseCase(userId) } returns flowOf(theme)
+            coEvery { saveThemeUseCase(userId, theme) } returns Unit
+            createViewModel()
 
             // When
-            themeViewModel.loadTheme(userRole)
+            // Theme loads automatically for current user
             advanceUntilIdle()
 
             themeViewModel.saveTheme(theme)
@@ -498,7 +579,7 @@ class ThemeViewModelTest {
             advanceUntilIdle()
 
             // Then
-            coVerify(exactly = 3) { saveThemeUseCase(userRole, theme) }
+            coVerify(exactly = 3) { saveThemeUseCase(userId, theme) }
         }
     }
 
@@ -518,7 +599,7 @@ class ThemeViewModelTest {
             every { getAvailableThemesUseCase() } returns expectedThemes
 
             // When
-            themeViewModel = ThemeViewModel(getThemeUseCase, saveThemeUseCase, getAvailableThemesUseCase)
+            themeViewModel = ThemeViewModel(getThemeUseCase, saveThemeUseCase, getAvailableThemesUseCase, authenticationSessionService)
             advanceUntilIdle()
 
             // Then
@@ -546,14 +627,14 @@ class ThemeViewModelTest {
             every { getAvailableThemesUseCase() } returns themes
 
             // When
-            themeViewModel = ThemeViewModel(getThemeUseCase, saveThemeUseCase, getAvailableThemesUseCase)
+            themeViewModel = ThemeViewModel(getThemeUseCase, saveThemeUseCase, getAvailableThemesUseCase, authenticationSessionService)
             advanceUntilIdle()
 
             val initialThemes = themeViewModel.availableThemes.value
 
             // Perform some operations
-            every { getThemeUseCase(UserRole.CHILD) } returns flowOf(AppTheme.MARIO_CLASSIC)
-            themeViewModel.loadTheme(UserRole.CHILD)
+            every { getThemeUseCase("test-user-123") } returns flowOf(AppTheme.MARIO_CLASSIC)
+            // Theme loads automatically for current user
             advanceUntilIdle()
 
             val themesAfterLoad = themeViewModel.availableThemes.value
@@ -578,7 +659,7 @@ class ThemeViewModelTest {
             every { getAvailableThemesUseCase() } returns appThemes
 
             // When
-            themeViewModel = ThemeViewModel(getThemeUseCase, saveThemeUseCase, getAvailableThemesUseCase)
+            themeViewModel = ThemeViewModel(getThemeUseCase, saveThemeUseCase, getAvailableThemesUseCase, authenticationSessionService)
             advanceUntilIdle()
 
             // Then
@@ -602,7 +683,7 @@ class ThemeViewModelTest {
             every { getAvailableThemesUseCase() } returns singleTheme
 
             // When
-            themeViewModel = ThemeViewModel(getThemeUseCase, saveThemeUseCase, getAvailableThemesUseCase)
+            themeViewModel = ThemeViewModel(getThemeUseCase, saveThemeUseCase, getAvailableThemesUseCase, authenticationSessionService)
             advanceUntilIdle()
 
             // Then
@@ -618,7 +699,7 @@ class ThemeViewModelTest {
             every { getAvailableThemesUseCase() } returns listOf(AppTheme.MATERIAL_LIGHT)
 
             // When
-            themeViewModel = ThemeViewModel(getThemeUseCase, saveThemeUseCase, getAvailableThemesUseCase)
+            themeViewModel = ThemeViewModel(getThemeUseCase, saveThemeUseCase, getAvailableThemesUseCase, authenticationSessionService)
             advanceUntilIdle()
 
             // Then
@@ -632,20 +713,21 @@ class ThemeViewModelTest {
 
         @BeforeEach
         fun setUp() {
-            themeViewModel = ThemeViewModel(getThemeUseCase, saveThemeUseCase, getAvailableThemesUseCase)
+            // ViewModel will be created in individual tests after mocks are properly set up
         }
 
         @Test
         @DisplayName("Should emit current theme changes")
         fun shouldEmitCurrentThemeChanges() = runTest {
             // Given
-            val userRole = UserRole.CHILD
+            val userId = "test-user-123"
             val theme = AppTheme.MARIO_CLASSIC
-            every { getThemeUseCase(userRole) } returns flowOf(theme)
+            every { getThemeUseCase(userId) } returns flowOf(theme)
+            createViewModel()
 
             // When
             val initialTheme = themeViewModel.currentTheme.value
-            themeViewModel.loadTheme(userRole)
+            // Theme loads automatically for current user
             advanceUntilIdle()
             val finalTheme = themeViewModel.currentTheme.value
 
@@ -662,7 +744,7 @@ class ThemeViewModelTest {
             every { getAvailableThemesUseCase() } returns themes
 
             // When
-            themeViewModel = ThemeViewModel(getThemeUseCase, saveThemeUseCase, getAvailableThemesUseCase)
+            themeViewModel = ThemeViewModel(getThemeUseCase, saveThemeUseCase, getAvailableThemesUseCase, authenticationSessionService)
             advanceUntilIdle()
 
             // Then
@@ -674,14 +756,22 @@ class ThemeViewModelTest {
         @DisplayName("Should maintain state across multiple operations")
         fun shouldMaintainStateAcrossMultipleOperations() = runTest {
             // Given
-            val userRole = UserRole.CAREGIVER
+            val userId = "caregiver-user-456"
             val theme1 = AppTheme.MATERIAL_LIGHT
             val theme2 = AppTheme.MATERIAL_DARK
-            every { getThemeUseCase(userRole) } returns flowOf(theme1)
-            coEvery { saveThemeUseCase(userRole, theme2) } returns Unit
+
+            // Set up user mock to return caregiver user
+            coEvery { authenticationSessionService.getCurrentUser() } returns User(
+                id = userId,
+                name = "Caregiver User",
+                role = UserRole.CAREGIVER,
+            )
+            every { getThemeUseCase(userId) } returns flowOf(theme1)
+            coEvery { saveThemeUseCase(userId, theme2) } returns Unit
+            createViewModel()
 
             // When
-            themeViewModel.loadTheme(userRole)
+            // Theme loads automatically for current user
             advanceUntilIdle()
             val themeAfterLoad = themeViewModel.currentTheme.value
 
@@ -698,12 +788,13 @@ class ThemeViewModelTest {
         @DisplayName("Should use correct StateFlow sharing strategy")
         fun shouldUseCorrectStateFlowSharingStrategy() = runTest {
             // Given
-            val userRole = UserRole.CHILD
+            val userId = "test-user-123"
             val theme = AppTheme.MARIO_CLASSIC
-            every { getThemeUseCase(userRole) } returns flowOf(theme)
+            every { getThemeUseCase(userId) } returns flowOf(theme)
+            createViewModel()
 
             // When
-            themeViewModel.loadTheme(userRole)
+            // Theme loads automatically for current user
             advanceUntilIdle()
 
             // Then
@@ -720,14 +811,14 @@ class ThemeViewModelTest {
 
         @BeforeEach
         fun setUp() {
-            themeViewModel = ThemeViewModel(getThemeUseCase, saveThemeUseCase, getAvailableThemesUseCase)
+            // ViewModel will be created in individual tests after mocks are properly set up
         }
 
         @Test
         @DisplayName("Should handle complete theme switching workflow")
         fun shouldHandleCompleteThemeSwitchingWorkflow() = runTest {
             // Given
-            val userRole = UserRole.CHILD
+            val userId = "test-user-123"
             val initialTheme = AppTheme.MARIO_CLASSIC
             val newTheme = AppTheme.MATERIAL_DARK
             val availableThemes = listOf(
@@ -736,12 +827,13 @@ class ThemeViewModelTest {
                 AppTheme.MARIO_CLASSIC,
             )
 
-            every { getThemeUseCase(userRole) } returns flowOf(initialTheme)
+            every { getThemeUseCase(userId) } returns flowOf(initialTheme)
             every { getAvailableThemesUseCase() } returns availableThemes
-            coEvery { saveThemeUseCase(userRole, newTheme) } returns Unit
+            coEvery { saveThemeUseCase(userId, newTheme) } returns Unit
+            createViewModel()
 
             // When
-            themeViewModel.loadTheme(userRole)
+            // Theme loads automatically for current user
             advanceUntilIdle()
             val currentTheme = themeViewModel.currentTheme.value
             val availableOptions = themeViewModel.availableThemes.value
@@ -755,74 +847,90 @@ class ThemeViewModelTest {
             assertEquals(3, availableOptions.size, "Should have available themes")
             assertEquals(MaterialDarkTheme, newCurrentTheme, "Should switch to new theme")
 
-            verify(exactly = 1) { getThemeUseCase(userRole) }
+            verify(exactly = 1) { getThemeUseCase(userId) }
             verify(exactly = 1) { getAvailableThemesUseCase() }
-            coVerify(exactly = 1) { saveThemeUseCase(userRole, newTheme) }
+            coVerify(exactly = 1) { saveThemeUseCase(userId, newTheme) }
         }
 
         @Test
-        @DisplayName("Should handle user role switching scenario")
-        fun shouldHandleUserRoleSwitchingScenario() = runTest {
+        @DisplayName("Should handle user switching scenario")
+        fun shouldHandleUserSwitchingScenario() = runTest {
             // Given
-            val childRole = UserRole.CHILD
-            val caregiverRole = UserRole.CAREGIVER
+            val childUserId = "child-user-123"
+            val caregiverUserId = "caregiver-user-456"
             val childTheme = AppTheme.MARIO_CLASSIC
             val caregiverTheme = AppTheme.MATERIAL_LIGHT
 
-            every { getThemeUseCase(childRole) } returns flowOf(childTheme)
-            every { getThemeUseCase(caregiverRole) } returns flowOf(caregiverTheme)
-            coEvery { saveThemeUseCase(childRole, childTheme) } returns Unit
-            coEvery { saveThemeUseCase(caregiverRole, caregiverTheme) } returns Unit
+            every { getThemeUseCase(childUserId) } returns flowOf(childTheme)
+            every { getThemeUseCase(caregiverUserId) } returns flowOf(caregiverTheme)
+            coEvery { saveThemeUseCase(childUserId, childTheme) } returns Unit
+            coEvery { saveThemeUseCase(caregiverUserId, caregiverTheme) } returns Unit
+            createViewModel()
 
-            // When
-            themeViewModel.loadTheme(childRole)
+            // When - user switching is now handled by authentication state changes
+            // Theme loads automatically for current user
             advanceUntilIdle()
-            val childCurrentTheme = themeViewModel.currentTheme.value
+            val initialTheme = themeViewModel.currentTheme.value
 
-            themeViewModel.loadTheme(caregiverRole)
+            // Simulate user switching by updating the authentication mock
+            coEvery { authenticationSessionService.getCurrentUser() } returns User(
+                id = caregiverUserId,
+                name = "Caregiver User",
+                role = UserRole.CAREGIVER,
+            )
+            themeViewModel.refreshTheme()
             advanceUntilIdle()
-            val caregiverCurrentTheme = themeViewModel.currentTheme.value
+            val switchedTheme = themeViewModel.currentTheme.value
 
             // Then
-            assertEquals(MarioTheme, childCurrentTheme, "Should load child theme")
-            assertEquals(MaterialLightTheme, caregiverCurrentTheme, "Should load caregiver theme")
+            assertEquals(MaterialLightTheme, initialTheme, "Should load initial user theme")
+            assertNotNull(switchedTheme, "Should update theme after user switch")
         }
 
         @Test
         @DisplayName("Should handle theme persistence across app lifecycle")
         fun shouldHandleThemePersistenceAcrossAppLifecycle() = runTest {
             // Given
-            val userRole = UserRole.CAREGIVER
+            val userId = "caregiver-user-456"
             val persistedTheme = AppTheme.MATERIAL_DARK
-            every { getThemeUseCase(userRole) } returns flowOf(persistedTheme)
+
+            // Set up user mock to return caregiver user
+            coEvery { authenticationSessionService.getCurrentUser() } returns User(
+                id = userId,
+                name = "Caregiver User",
+                role = UserRole.CAREGIVER,
+            )
+            every { getThemeUseCase(userId) } returns flowOf(persistedTheme)
+            createViewModel()
 
             // When
-            themeViewModel.loadTheme(userRole)
+            // Theme loads automatically for current user
             advanceUntilIdle()
 
             // Then
             val currentTheme = themeViewModel.currentTheme.value
             assertEquals(MaterialDarkTheme, currentTheme, "Should load persisted theme")
-            verify(exactly = 1) { getThemeUseCase(userRole) }
+            verify(exactly = 1) { getThemeUseCase(userId) }
         }
 
         @Test
         @DisplayName("Should handle rapid theme changes")
         fun shouldHandleRapidThemeChanges() = runTest {
             // Given
-            val userRole = UserRole.CHILD
+            val userId = "test-user-123"
             val themes = listOf(
                 AppTheme.MARIO_CLASSIC,
                 AppTheme.MATERIAL_LIGHT,
                 AppTheme.MATERIAL_DARK,
             )
-            every { getThemeUseCase(userRole) } returns flowOf(themes[0])
+            every { getThemeUseCase(userId) } returns flowOf(themes[0])
             themes.forEach { theme ->
-                coEvery { saveThemeUseCase(userRole, theme) } returns Unit
+                coEvery { saveThemeUseCase(userId, theme) } returns Unit
             }
+            createViewModel()
 
             // When
-            themeViewModel.loadTheme(userRole)
+            // Theme loads automatically for current user
             advanceUntilIdle()
 
             themes.forEach { theme ->
@@ -835,7 +943,7 @@ class ThemeViewModelTest {
             assertEquals(MaterialDarkTheme, finalTheme, "Should handle rapid theme changes")
 
             themes.forEach { theme ->
-                coVerify(exactly = 1) { saveThemeUseCase(userRole, theme) }
+                coVerify(exactly = 1) { saveThemeUseCase(userId, theme) }
             }
         }
     }

@@ -2,12 +2,12 @@
 
 [🏠 Back to Docs Hub](README.md) | [🏠 Main README](../README.md)
 
-Comprehensive theme management system providing role-based customization and deep UI integration for Arthur's Life Android application.
+Comprehensive theme management system providing user-based customization and deep UI integration for Arthur's Life Android application.
 
 ## Document Overview
 
 ### Purpose
-Describes theme system architecture, available themes, and implementation details for role-based user experience customization and consistent theme management.
+Describes theme system architecture, available themes, and implementation details for user-based experience customization and consistent theme management.
 
 ### Audience
 - UI developers implementing theme-aware components
@@ -15,33 +15,35 @@ Describes theme system architecture, available themes, and implementation detail
 - Prerequisite: Familiarity with Material Design 3, Jetpack Compose, and Android development
 
 ### Scope
-Covers theme architecture, available themes, role-based defaults, and component integration. Excludes visual design specifications and branding guidelines.
+Covers theme architecture, available themes, user-based theme selection, and component integration. Excludes visual design specifications and branding guidelines.
 
 ## 🎯 Quick Reference
 
 ### Key Information
-- **Summary**: Role-based theme system: Material Design 3 and Mario Classic theme
+- **Summary**: User-based theme system: Material Light (default), Material Dark, and Mario Classic themes available to all users
 - **Related**: [architecture.md](architecture.md), [tech-stack.md](tech-stack.md)
 
 ### Common Tasks
 - Understanding available themes
-- Role-based theme defaults
+- User-based theme selection
 - Theme architecture overview
 - Implementing theme components
 
 ## 📖 Main Content
 
 ### Overview
-Arthur's Life app features a theme management system for role-based customization, including colors, terminology, icons, backgrounds, and user experience elements.
+Arthur's Life app features a theme management system for user-based customization, including colors, terminology, icons, backgrounds, and user experience elements.
 
 #### Theme System Architecture
 ![Theme System Architecture](diagrams/theme-system-architecture.svg)
 
 #### Key Features
-- Role-based defaults: Child and Caregiver themes
+- User-based theme selection: All users can choose any theme
+- Default theme: Material Light for all users
+- Available themes: Material Light, Material Dark, Mario Classic
 - Customization: Colors, shapes, typography, icons, backgrounds, terminology
 - Semantic theming: Theme-specific language and experience
-- Persistent preferences: Per-role theme settings
+- Persistent preferences: Per-user theme settings
 - Theme-aware components: UI adapts to selected theme
 
 ## 🔗 Integration Points

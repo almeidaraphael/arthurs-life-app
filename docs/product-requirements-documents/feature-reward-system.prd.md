@@ -211,9 +211,9 @@ Children are motivated to complete tasks and earn tokens, which they can redeem 
 
 ### 9.6. Theme switching
 * **ID**: RS-TH-01
-* **Description**: As a child, I want the reward catalog to match my selected theme and terminology, even offline.
+* **Description**: As a user, I want the reward catalog to match my selected theme and terminology, even offline.
 * **Acceptance criteria**:
-  * Given I am a child, when I change the theme, then the catalog UI and terminology update instantly using local data.
+  * Given I am a user, when I change the theme, then the catalog UI and terminology update instantly using local data.
 
 ### 9.7. Error handling
 * **ID**: RS-ERR-01

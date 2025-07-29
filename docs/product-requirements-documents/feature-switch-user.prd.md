@@ -20,7 +20,7 @@ post_date: 2025-07-15
 * Version: 1.0
 
 ### 1.2 Product summary
-The Switch User feature allows families to use Arthur's Life App on shared devices, enabling seamless switching between any available profiles. Any user can switch to any profile at any time, with PIN authentication required only for elevated (Caregiver) roles. This ensures session integrity, privacy, and child safety while maintaining a trusted, accessible, and theme-aware experience. The feature is integrated into the top navigation bar for easy access.
+The Switch User feature allows families to use Arthur's Life App on shared devices, enabling seamless switching between any available profiles. Any user can switch to any profile at any time, with PIN authentication required only for elevated (Caregiver) roles. This ensures session integrity, privacy, and child safety while maintaining a trusted, accessible, and user-customizable theme experience. The feature is integrated into the top navigation bar for easy access.
 
 ## 2. Goals
 
@@ -46,7 +46,7 @@ The Switch User feature allows families to use Arthur's Life App on shared devic
 * Caregiver
 
 ### 3.2 Basic persona details
-* **Child**: Can switch to any available profile using the Switch User dialog; game-themed UI; PIN is only required for switching to elevated (Caregiver) roles.
+* **Child**: Can switch to any available profile using the Switch User dialog; UI adapts to their selected theme preference; PIN is only required for switching to elevated (Caregiver) roles.
 * **Caregiver**: Can switch to any available profile, including Child and Caregiver roles; PIN is required for switching to Caregiver role.
 
 ### 3.3 Role-based access

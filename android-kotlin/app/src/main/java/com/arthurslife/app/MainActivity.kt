@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,6 +23,7 @@ import androidx.navigation.compose.rememberNavController
 import com.arthurslife.app.presentation.navigation.AuthenticationNavigation
 import com.arthurslife.app.presentation.navigation.MainAppNavigation
 import com.arthurslife.app.presentation.navigation.onboardingNavigation
+import com.arthurslife.app.presentation.theme.AppTheme
 import com.arthurslife.app.presentation.theme.ThemeViewModel
 import com.arthurslife.app.presentation.viewmodels.AppState
 import com.arthurslife.app.presentation.viewmodels.AppViewModel
@@ -47,22 +47,18 @@ fun ArthursLifeTheme(
     themeViewModel: ThemeViewModel = hiltViewModel(),
 ) {
     val authState by authViewModel.authState.collectAsState()
-    val currentTheme by themeViewModel.currentTheme.collectAsState()
+    val currentAppTheme by themeViewModel.currentAppTheme.collectAsState()
 
-    // Load theme when user role changes
-    LaunchedEffect(authState.currentRole) {
-        authState.currentRole?.let { role ->
-            themeViewModel.loadTheme(role)
+    // Refresh theme when authentication state changes
+    LaunchedEffect(authState.currentUser) {
+        authState.currentUser?.let {
+            themeViewModel.refreshTheme()
         }
     }
 
-    // Use the selected theme from ThemeViewModel (already a BaseAppTheme)
-    val activeTheme = currentTheme
-
-    MaterialTheme(
-        colorScheme = activeTheme.colorScheme,
-        typography = activeTheme.typography,
-        shapes = activeTheme.shapes,
+    // Use the AppTheme composable which provides LocalBaseTheme
+    AppTheme(
+        appTheme = currentAppTheme,
     ) {
         ArthursLifeApp(authViewModel = authViewModel, themeViewModel = themeViewModel)
     }

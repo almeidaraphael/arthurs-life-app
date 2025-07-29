@@ -107,7 +107,7 @@ This PRD defines the Task Management System for caregivers in Arthur's Life App.
 
 ### 5.4 UI/UX highlights
 - Animated task management and analytics at 60 FPS
-- Theme-aware, role-based UI
+- Theme-aware, user-selectable UI with terminology adaptation
 - Responsive design
 - Accessibility and child safety standards
 

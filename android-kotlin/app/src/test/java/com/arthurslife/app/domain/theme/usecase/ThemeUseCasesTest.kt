@@ -2,7 +2,6 @@ package com.arthurslife.app.domain.theme.usecase
 
 import com.arthurslife.app.domain.theme.model.AppTheme
 import com.arthurslife.app.domain.theme.repository.ThemeRepository
-import com.arthurslife.app.domain.user.UserRole
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -55,54 +54,58 @@ class ThemeUseCasesTest {
         }
 
         @Test
-        @DisplayName("Should get theme for child user role")
-        fun shouldGetThemeForChildUserRole() = runTest {
+        @DisplayName("Should get theme for user by ID")
+        fun shouldGetThemeForUserById() = runTest {
             // Given
-            val userRole = UserRole.CHILD
+            val userId = "child-user-123"
             val expectedTheme = AppTheme.MARIO_CLASSIC
-            every { themeRepository.getTheme(userRole) } returns flowOf(expectedTheme)
+            every { themeRepository.getTheme(userId) } returns flowOf(expectedTheme)
 
             // When
-            val result = getThemeUseCase(userRole).first()
+            val result = getThemeUseCase(userId).first()
 
             // Then
-            assertEquals(expectedTheme, result, "Should return Mario Classic theme for child")
-            verify(exactly = 1) { themeRepository.getTheme(userRole) }
+            assertEquals(expectedTheme, result, "Should return Mario Classic theme for user")
+            verify(exactly = 1) { themeRepository.getTheme(userId) }
         }
 
         @Test
-        @DisplayName("Should get theme for caregiver user role")
-        fun shouldGetThemeForCaregiverUserRole() = runTest {
+        @DisplayName("Should get theme for different user ID")
+        fun shouldGetThemeForDifferentUserId() = runTest {
             // Given
-            val userRole = UserRole.CAREGIVER
+            val userId = "caregiver-user-456"
             val expectedTheme = AppTheme.MATERIAL_LIGHT
-            every { themeRepository.getTheme(userRole) } returns flowOf(expectedTheme)
+            every { themeRepository.getTheme(userId) } returns flowOf(expectedTheme)
 
             // When
-            val result = getThemeUseCase(userRole).first()
+            val result = getThemeUseCase(userId).first()
 
             // Then
-            assertEquals(expectedTheme, result, "Should return Material Light theme for caregiver")
-            verify(exactly = 1) { themeRepository.getTheme(userRole) }
+            assertEquals(
+                expectedTheme,
+                result,
+                "Should return Material Light theme for different user",
+            )
+            verify(exactly = 1) { themeRepository.getTheme(userId) }
         }
 
         @Test
-        @DisplayName("Should handle multiple theme changes for same user role")
-        fun shouldHandleMultipleThemeChangesForSameUserRole() = runTest {
+        @DisplayName("Should handle multiple theme changes for same user")
+        fun shouldHandleMultipleThemeChangesForSameUser() = runTest {
             // Given
-            val userRole = UserRole.CHILD
+            val userId = "user-123"
             val themes = listOf(
                 AppTheme.MARIO_CLASSIC,
                 AppTheme.MATERIAL_LIGHT,
                 AppTheme.MATERIAL_DARK,
             )
-            every { themeRepository.getTheme(userRole) } returns flowOf(
+            every { themeRepository.getTheme(userId) } returns flowOf(
                 themes[0], themes[1], themes[2],
             )
 
             // When
             val results = mutableListOf<AppTheme>()
-            getThemeUseCase(userRole).collect { theme ->
+            getThemeUseCase(userId).collect { theme ->
                 results.add(theme)
             }
 
@@ -111,70 +114,70 @@ class ThemeUseCasesTest {
             assertEquals(themes[0], results[0], "First theme should match")
             assertEquals(themes[1], results[1], "Second theme should match")
             assertEquals(themes[2], results[2], "Third theme should match")
-            verify(exactly = 1) { themeRepository.getTheme(userRole) }
+            verify(exactly = 1) { themeRepository.getTheme(userId) }
         }
 
         @Test
         @DisplayName("Should return Flow from repository")
         fun shouldReturnFlowFromRepository() = runTest {
             // Given
-            val userRole = UserRole.CAREGIVER
+            val userId = "user-456"
             val expectedTheme = AppTheme.MATERIAL_DARK
             val themeFlow = flowOf(expectedTheme)
-            every { themeRepository.getTheme(userRole) } returns themeFlow
+            every { themeRepository.getTheme(userId) } returns themeFlow
 
             // When
-            val resultFlow = getThemeUseCase(userRole)
+            val resultFlow = getThemeUseCase(userId)
             val result = resultFlow.first()
 
             // Then
             assertEquals(expectedTheme, result, "Should return theme from repository Flow")
-            verify(exactly = 1) { themeRepository.getTheme(userRole) }
+            verify(exactly = 1) { themeRepository.getTheme(userId) }
         }
 
         @Test
         @DisplayName("Should handle all available themes")
         fun shouldHandleAllAvailableThemes() = runTest {
             // Given
-            val userRole = UserRole.CHILD
+            val userId = "child-user-123"
             val allThemes = AppTheme.values().toList()
 
             // When/Then
             allThemes.forEach { theme ->
-                every { themeRepository.getTheme(userRole) } returns flowOf(theme)
+                every { themeRepository.getTheme(userId) } returns flowOf(theme)
 
-                val result = getThemeUseCase(userRole).first()
+                val result = getThemeUseCase(userId).first()
                 assertEquals(theme, result, "Should handle $theme correctly")
             }
 
-            verify(exactly = allThemes.size) { themeRepository.getTheme(userRole) }
+            verify(exactly = allThemes.size) { themeRepository.getTheme(userId) }
         }
 
         @Test
         @DisplayName("Should delegate to repository correctly")
         fun shouldDelegateToRepositoryCorrectly() = runTest {
             // Given
-            val userRole = UserRole.CAREGIVER
+            val userId = "caregiver-user-456"
             val expectedTheme = AppTheme.MATERIAL_LIGHT
-            every { themeRepository.getTheme(userRole) } returns flowOf(expectedTheme)
+            every { themeRepository.getTheme(userId) } returns flowOf(expectedTheme)
 
             // When
-            getThemeUseCase(userRole).first()
+            getThemeUseCase(userId).first()
 
             // Then
-            verify(exactly = 1) { themeRepository.getTheme(userRole) }
+            verify(exactly = 1) { themeRepository.getTheme(userId) }
         }
 
         @Test
         @DisplayName("Should support operator invoke syntax")
         fun shouldSupportOperatorInvokeSyntax() = runTest {
             // Given
-            val userRole = UserRole.CHILD
+            val userId = "child-user-123"
             val expectedTheme = AppTheme.MARIO_CLASSIC
-            every { themeRepository.getTheme(userRole) } returns flowOf(expectedTheme)
+            every { themeRepository.getTheme(userId) } returns flowOf(expectedTheme)
 
             // When
-            val result = getThemeUseCase.invoke(userRole).first()
+            val result = getThemeUseCase.invoke(userId).first()
 
             // Then
             assertEquals(expectedTheme, result, "Should support operator invoke syntax")
@@ -193,54 +196,54 @@ class ThemeUseCasesTest {
         }
 
         @Test
-        @DisplayName("Should save theme for child user role")
-        fun shouldSaveThemeForChildUserRole() = runTest {
+        @DisplayName("Should save theme for user by ID")
+        fun shouldSaveThemeForUserById() = runTest {
             // Given
-            val userRole = UserRole.CHILD
+            val userId = "child-user-123"
             val theme = AppTheme.MARIO_CLASSIC
-            coEvery { themeRepository.saveTheme(userRole, theme) } returns Unit
+            coEvery { themeRepository.saveTheme(userId, theme) } returns Unit
 
             // When
-            saveThemeUseCase(userRole, theme)
+            saveThemeUseCase(userId, theme)
 
             // Then
-            coVerify(exactly = 1) { themeRepository.saveTheme(userRole, theme) }
+            coVerify(exactly = 1) { themeRepository.saveTheme(userId, theme) }
         }
 
         @Test
-        @DisplayName("Should save theme for caregiver user role")
-        fun shouldSaveThemeForCaregiverUserRole() = runTest {
+        @DisplayName("Should save theme for different user ID")
+        fun shouldSaveThemeForDifferentUserId() = runTest {
             // Given
-            val userRole = UserRole.CAREGIVER
+            val userId = "caregiver-user-456"
             val theme = AppTheme.MATERIAL_DARK
-            coEvery { themeRepository.saveTheme(userRole, theme) } returns Unit
+            coEvery { themeRepository.saveTheme(userId, theme) } returns Unit
 
             // When
-            saveThemeUseCase(userRole, theme)
+            saveThemeUseCase(userId, theme)
 
             // Then
-            coVerify(exactly = 1) { themeRepository.saveTheme(userRole, theme) }
+            coVerify(exactly = 1) { themeRepository.saveTheme(userId, theme) }
         }
 
         @Test
         @DisplayName("Should handle saving all available themes")
         fun shouldHandleSavingAllAvailableThemes() = runTest {
             // Given
-            val userRole = UserRole.CHILD
+            val userId = "child-user-123"
             val allThemes = AppTheme.values().toList()
 
             allThemes.forEach { theme ->
-                coEvery { themeRepository.saveTheme(userRole, theme) } returns Unit
+                coEvery { themeRepository.saveTheme(userId, theme) } returns Unit
             }
 
             // When
             allThemes.forEach { theme ->
-                saveThemeUseCase(userRole, theme)
+                saveThemeUseCase(userId, theme)
             }
 
             // Then
             allThemes.forEach { theme ->
-                coVerify(exactly = 1) { themeRepository.saveTheme(userRole, theme) }
+                coVerify(exactly = 1) { themeRepository.saveTheme(userId, theme) }
             }
         }
 
@@ -248,7 +251,7 @@ class ThemeUseCasesTest {
         @DisplayName("Should handle multiple saves for same user role")
         fun shouldHandleMultipleSavesForSameUserRole() = runTest {
             // Given
-            val userRole = UserRole.CAREGIVER
+            val userId = "caregiver-user-456"
             val themes = listOf(
                 AppTheme.MATERIAL_LIGHT,
                 AppTheme.MATERIAL_DARK,
@@ -256,17 +259,17 @@ class ThemeUseCasesTest {
             )
 
             themes.forEach { theme ->
-                coEvery { themeRepository.saveTheme(userRole, theme) } returns Unit
+                coEvery { themeRepository.saveTheme(userId, theme) } returns Unit
             }
 
             // When
             themes.forEach { theme ->
-                saveThemeUseCase(userRole, theme)
+                saveThemeUseCase(userId, theme)
             }
 
             // Then
             themes.forEach { theme ->
-                coVerify(exactly = 1) { themeRepository.saveTheme(userRole, theme) }
+                coVerify(exactly = 1) { themeRepository.saveTheme(userId, theme) }
             }
         }
 
@@ -274,55 +277,55 @@ class ThemeUseCasesTest {
         @DisplayName("Should delegate to repository correctly")
         fun shouldDelegateToRepositoryCorrectly() = runTest {
             // Given
-            val userRole = UserRole.CHILD
+            val userId = "child-user-123"
             val theme = AppTheme.MARIO_CLASSIC
-            coEvery { themeRepository.saveTheme(userRole, theme) } returns Unit
+            coEvery { themeRepository.saveTheme(userId, theme) } returns Unit
 
             // When
-            saveThemeUseCase(userRole, theme)
+            saveThemeUseCase(userId, theme)
 
             // Then
-            coVerify(exactly = 1) { themeRepository.saveTheme(userRole, theme) }
+            coVerify(exactly = 1) { themeRepository.saveTheme(userId, theme) }
         }
 
         @Test
         @DisplayName("Should support operator invoke syntax")
         fun shouldSupportOperatorInvokeSyntax() = runTest {
             // Given
-            val userRole = UserRole.CAREGIVER
+            val userId = "caregiver-user-456"
             val theme = AppTheme.MATERIAL_LIGHT
-            coEvery { themeRepository.saveTheme(userRole, theme) } returns Unit
+            coEvery { themeRepository.saveTheme(userId, theme) } returns Unit
 
             // When
-            saveThemeUseCase.invoke(userRole, theme)
+            saveThemeUseCase.invoke(userId, theme)
 
             // Then
-            coVerify(exactly = 1) { themeRepository.saveTheme(userRole, theme) }
+            coVerify(exactly = 1) { themeRepository.saveTheme(userId, theme) }
         }
 
         @Test
-        @DisplayName("Should handle theme changes for both user roles")
-        fun shouldHandleThemeChangesForBothUserRoles() = runTest {
+        @DisplayName("Should handle theme changes for different users")
+        fun shouldHandleThemeChangesForDifferentUsers() = runTest {
             // Given
             val scenarios = listOf(
-                UserRole.CHILD to AppTheme.MARIO_CLASSIC,
-                UserRole.CHILD to AppTheme.MATERIAL_LIGHT,
-                UserRole.CAREGIVER to AppTheme.MATERIAL_DARK,
-                UserRole.CAREGIVER to AppTheme.MARIO_CLASSIC,
+                "child-user-1" to AppTheme.MARIO_CLASSIC,
+                "child-user-2" to AppTheme.MATERIAL_LIGHT,
+                "caregiver-user-1" to AppTheme.MATERIAL_DARK,
+                "caregiver-user-2" to AppTheme.MARIO_CLASSIC,
             )
 
-            scenarios.forEach { (role, theme) ->
-                coEvery { themeRepository.saveTheme(role, theme) } returns Unit
+            scenarios.forEach { (userId, theme) ->
+                coEvery { themeRepository.saveTheme(userId, theme) } returns Unit
             }
 
             // When
-            scenarios.forEach { (role, theme) ->
-                saveThemeUseCase(role, theme)
+            scenarios.forEach { (userId, theme) ->
+                saveThemeUseCase(userId, theme)
             }
 
             // Then
-            scenarios.forEach { (role, theme) ->
-                coVerify(exactly = 1) { themeRepository.saveTheme(role, theme) }
+            scenarios.forEach { (userId, theme) ->
+                coVerify(exactly = 1) { themeRepository.saveTheme(userId, theme) }
             }
         }
     }
@@ -481,7 +484,7 @@ class ThemeUseCasesTest {
         @DisplayName("Should work together in realistic theme switching scenario")
         fun shouldWorkTogetherInRealisticThemeSwitchingScenario() = runTest {
             // Given
-            val userRole = UserRole.CHILD
+            val userId = "child-user-123"
             val currentTheme = AppTheme.MARIO_CLASSIC
             val newTheme = AppTheme.MATERIAL_LIGHT
             val availableThemes = listOf(
@@ -490,43 +493,43 @@ class ThemeUseCasesTest {
                 AppTheme.MARIO_CLASSIC,
             )
 
-            every { themeRepository.getTheme(userRole) } returns flowOf(currentTheme, newTheme)
+            every { themeRepository.getTheme(userId) } returns flowOf(currentTheme, newTheme)
             every { themeRepository.getAvailableThemes() } returns availableThemes
-            coEvery { themeRepository.saveTheme(userRole, newTheme) } returns Unit
+            coEvery { themeRepository.saveTheme(userId, newTheme) } returns Unit
 
             // When
-            val initialTheme = getThemeUseCase(userRole).first()
+            val initialTheme = getThemeUseCase(userId).first()
             val availableOptions = getAvailableThemesUseCase()
-            saveThemeUseCase(userRole, newTheme)
+            saveThemeUseCase(userId, newTheme)
 
             // Then
             assertEquals(currentTheme, initialTheme, "Should get initial theme")
             assertEquals(availableThemes, availableOptions, "Should get available themes")
 
-            verify(exactly = 1) { themeRepository.getTheme(userRole) }
+            verify(exactly = 1) { themeRepository.getTheme(userId) }
             verify(exactly = 1) { themeRepository.getAvailableThemes() }
-            coVerify(exactly = 1) { themeRepository.saveTheme(userRole, newTheme) }
+            coVerify(exactly = 1) { themeRepository.saveTheme(userId, newTheme) }
         }
 
         @Test
-        @DisplayName("Should handle different user roles independently")
-        fun shouldHandleDifferentUserRolesIndependently() = runTest {
+        @DisplayName("Should handle different users independently")
+        fun shouldHandleDifferentUsersIndependently() = runTest {
             // Given
-            val childRole = UserRole.CHILD
-            val caregiverRole = UserRole.CAREGIVER
+            val childUserId = "child-user-123"
+            val caregiverUserId = "caregiver-user-456"
             val childTheme = AppTheme.MARIO_CLASSIC
             val caregiverTheme = AppTheme.MATERIAL_DARK
 
-            every { themeRepository.getTheme(childRole) } returns flowOf(childTheme)
-            every { themeRepository.getTheme(caregiverRole) } returns flowOf(caregiverTheme)
-            coEvery { themeRepository.saveTheme(childRole, childTheme) } returns Unit
-            coEvery { themeRepository.saveTheme(caregiverRole, caregiverTheme) } returns Unit
+            every { themeRepository.getTheme(childUserId) } returns flowOf(childTheme)
+            every { themeRepository.getTheme(caregiverUserId) } returns flowOf(caregiverTheme)
+            coEvery { themeRepository.saveTheme(childUserId, childTheme) } returns Unit
+            coEvery { themeRepository.saveTheme(caregiverUserId, caregiverTheme) } returns Unit
 
             // When
-            val childResult = getThemeUseCase(childRole).first()
-            val caregiverResult = getThemeUseCase(caregiverRole).first()
-            saveThemeUseCase(childRole, childTheme)
-            saveThemeUseCase(caregiverRole, caregiverTheme)
+            val childResult = getThemeUseCase(childUserId).first()
+            val caregiverResult = getThemeUseCase(caregiverUserId).first()
+            saveThemeUseCase(childUserId, childTheme)
+            saveThemeUseCase(caregiverUserId, caregiverTheme)
 
             // Then
             assertEquals(childTheme, childResult, "Should handle child theme independently")
@@ -536,51 +539,51 @@ class ThemeUseCasesTest {
                 "Should handle caregiver theme independently",
             )
 
-            verify(exactly = 1) { themeRepository.getTheme(childRole) }
-            verify(exactly = 1) { themeRepository.getTheme(caregiverRole) }
-            coVerify(exactly = 1) { themeRepository.saveTheme(childRole, childTheme) }
-            coVerify(exactly = 1) { themeRepository.saveTheme(caregiverRole, caregiverTheme) }
+            verify(exactly = 1) { themeRepository.getTheme(childUserId) }
+            verify(exactly = 1) { themeRepository.getTheme(caregiverUserId) }
+            coVerify(exactly = 1) { themeRepository.saveTheme(childUserId, childTheme) }
+            coVerify(exactly = 1) { themeRepository.saveTheme(caregiverUserId, caregiverTheme) }
         }
 
         @Test
         @DisplayName("Should maintain consistent repository interactions")
         fun shouldMaintainConsistentRepositoryInteractions() = runTest {
             // Given
-            val userRole = UserRole.CAREGIVER
+            val userId = "caregiver-user-456"
             val theme = AppTheme.MATERIAL_LIGHT
             val availableThemes = listOf(AppTheme.MATERIAL_LIGHT, AppTheme.MATERIAL_DARK)
 
-            every { themeRepository.getTheme(userRole) } returns flowOf(theme)
+            every { themeRepository.getTheme(userId) } returns flowOf(theme)
             every { themeRepository.getAvailableThemes() } returns availableThemes
-            coEvery { themeRepository.saveTheme(userRole, theme) } returns Unit
+            coEvery { themeRepository.saveTheme(userId, theme) } returns Unit
 
             // When
-            getThemeUseCase(userRole).first()
+            getThemeUseCase(userId).first()
             getAvailableThemesUseCase()
-            saveThemeUseCase(userRole, theme)
+            saveThemeUseCase(userId, theme)
 
             // Then
-            verify(exactly = 1) { themeRepository.getTheme(userRole) }
+            verify(exactly = 1) { themeRepository.getTheme(userId) }
             verify(exactly = 1) { themeRepository.getAvailableThemes() }
-            coVerify(exactly = 1) { themeRepository.saveTheme(userRole, theme) }
+            coVerify(exactly = 1) { themeRepository.saveTheme(userId, theme) }
         }
 
         @Test
         @DisplayName("Should support concurrent use case execution")
         fun shouldSupportConcurrentUseCaseExecution() = runTest {
             // Given
-            val userRole = UserRole.CHILD
+            val userId = "child-user-123"
             val theme = AppTheme.MARIO_CLASSIC
             val availableThemes = listOf(AppTheme.MARIO_CLASSIC, AppTheme.MATERIAL_LIGHT)
 
-            every { themeRepository.getTheme(userRole) } returns flowOf(theme)
+            every { themeRepository.getTheme(userId) } returns flowOf(theme)
             every { themeRepository.getAvailableThemes() } returns availableThemes
-            coEvery { themeRepository.saveTheme(userRole, theme) } returns Unit
+            coEvery { themeRepository.saveTheme(userId, theme) } returns Unit
 
             // When
-            val getThemeResult = getThemeUseCase(userRole).first()
+            val getThemeResult = getThemeUseCase(userId).first()
             val availableThemesResult = getAvailableThemesUseCase()
-            saveThemeUseCase(userRole, theme)
+            saveThemeUseCase(userId, theme)
 
             // Then
             assertEquals(theme, getThemeResult, "Should handle concurrent get theme")
@@ -590,9 +593,9 @@ class ThemeUseCasesTest {
                 "Should handle concurrent get available themes",
             )
 
-            verify(exactly = 1) { themeRepository.getTheme(userRole) }
+            verify(exactly = 1) { themeRepository.getTheme(userId) }
             verify(exactly = 1) { themeRepository.getAvailableThemes() }
-            coVerify(exactly = 1) { themeRepository.saveTheme(userRole, theme) }
+            coVerify(exactly = 1) { themeRepository.saveTheme(userId, theme) }
         }
     }
 }

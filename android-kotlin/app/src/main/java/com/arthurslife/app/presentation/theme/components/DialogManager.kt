@@ -3,9 +3,9 @@ package com.arthurslife.app.presentation.theme.components
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.arthurslife.app.presentation.theme.BaseAppTheme
+import com.arthurslife.app.presentation.theme.ThemeViewModel
 import com.arthurslife.app.presentation.viewmodels.DialogManagementViewModel
 import com.arthurslife.app.presentation.viewmodels.DialogType
 
@@ -114,14 +114,8 @@ private fun themeSelectorDialogContent(
     theme: BaseAppTheme,
     onThemeSelected: (com.arthurslife.app.presentation.theme.BaseAppTheme) -> Unit,
 ) {
-    // We need to get available themes from somewhere
-    // For now, create a simple implementation that works with the theme system
-    val availableThemes = remember {
-        // This should ideally come from ThemeViewModel or a use case
-        listOf(
-            theme, // Current theme is always available
-        )
-    }
+    val themeViewModel: ThemeViewModel = hiltViewModel()
+    val availableThemes by themeViewModel.availableThemes.collectAsState()
 
     themeSelectorDialog(
         currentTheme = theme,

@@ -53,7 +53,6 @@ fun MainAppNavigation(
     MainScreen(
         navController = navController,
         navigationItems = navigationItems,
-        userRole = userRole,
         themeViewModel = themeViewModel,
         authViewModel = authViewModel,
         modifier = modifier,
@@ -73,7 +72,6 @@ data class TopBarCallbacks(
 fun MainScreen(
     navController: NavHostController,
     navigationItems: List<BottomNavItem>,
-    userRole: UserRole,
     themeViewModel: ThemeViewModel,
     authViewModel: com.arthurslife.app.presentation.viewmodels.AuthViewModel,
     modifier: Modifier = Modifier,
@@ -121,7 +119,6 @@ fun MainScreen(
         AppNavHost(
             navController = navController,
             startDestination = navigationItems[0].route,
-            userRole = userRole,
             themeViewModel = themeViewModel,
             authViewModel = authViewModel,
             modifier = Modifier
@@ -138,6 +135,7 @@ fun MainScreen(
         dialogViewModel = dialogViewModel,
         authViewModel = authViewModel,
         navController = navController,
+        themeViewModel = themeViewModel,
     )
 }
 
@@ -161,7 +159,6 @@ fun getCurrentTopBarScreen(route: String?): TopBarScreen {
 private fun AppNavHost(
     navController: NavHostController,
     startDestination: String,
-    userRole: UserRole,
     themeViewModel: ThemeViewModel,
     authViewModel: com.arthurslife.app.presentation.viewmodels.AuthViewModel,
     modifier: Modifier = Modifier,
@@ -174,7 +171,7 @@ private fun AppNavHost(
     ) {
         setupChildScreens(themeViewModel, navController, onRequestUserSwitch)
         setupCaregiverScreens(themeViewModel, navController, onRequestUserSwitch)
-        setupCommonScreens(userRole, themeViewModel, navController)
+        setupCommonScreens(themeViewModel, navController)
         setupUserSwitchingScreens(authViewModel, themeViewModel, navController)
     }
 }
@@ -378,13 +375,11 @@ private fun NavGraphBuilder.setupCaregiverScreens(
 }
 
 private fun NavGraphBuilder.setupCommonScreens(
-    userRole: UserRole,
     themeViewModel: ThemeViewModel,
     navController: NavHostController,
 ) {
     composable("theme_settings") {
         ThemeSettingsScreen(
-            userRole = userRole,
             themeViewModel = themeViewModel,
             onBackClick = {
                 navController.popBackStack()
@@ -434,6 +429,7 @@ private fun mainScreenDialogs(
     dialogViewModel: DialogManagementViewModel,
     authViewModel: com.arthurslife.app.presentation.viewmodels.AuthViewModel,
     navController: NavHostController,
+    themeViewModel: ThemeViewModel,
 ) {
     dialogManager(
         theme = currentTheme,
@@ -454,7 +450,11 @@ private fun mainScreenDialogs(
         onSwitchUsers = { navController.navigate("user_selection") },
         onThemeClick = { navController.navigate("theme_settings") },
         onThemeSelected = { selectedTheme ->
-            // TODO: Implement theme switching through ThemeViewModel
+            com.arthurslife.app.presentation.theme.ThemeManager.getAppThemeKey(
+                selectedTheme,
+            )?.let { appTheme ->
+                themeViewModel.saveTheme(appTheme)
+            }
         },
     )
 }

@@ -119,7 +119,7 @@ post_date: 2025-07-15
 ### 5.4 UI/UX highlights
 - Status tracking and notifications
 - Accessible suggestion forms and status indicators
-- Theme-aware terminology for reward types
+- Theme-aware terminology for reward types based on user's selected theme
 - Feedback and decision visibility for children
 
 ## 6. Narrative

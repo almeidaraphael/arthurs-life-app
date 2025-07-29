@@ -1,6 +1,7 @@
 package com.arthurslife.app.di
 
 import android.content.Context
+import com.arthurslife.app.data.theme.ThemePreferencesDataStore
 import com.arthurslife.app.domain.auth.AuthRepository
 import com.arthurslife.app.domain.user.UserDataSource
 import com.arthurslife.app.infrastructure.auth.AuthRepositoryImpl
@@ -20,6 +21,12 @@ object DataStoreModule {
     fun provideAuthPreferencesDataStore(
         @ApplicationContext context: Context,
     ): AuthPreferencesDataStore = AuthPreferencesDataStore(context)
+
+    @Provides
+    @Singleton
+    fun provideThemePreferencesDataStore(
+        @ApplicationContext context: Context,
+    ): ThemePreferencesDataStore = ThemePreferencesDataStore(context)
 
     // Keep AuthRepository for backward compatibility during migration
     @Provides
