@@ -23,7 +23,7 @@ import javax.inject.Singleton
  */
 @Singleton
 class ProfileImageDataSource @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
 ) {
     private val profileImagesDir = File(context.filesDir, "profile_images")
 

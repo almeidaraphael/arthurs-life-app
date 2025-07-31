@@ -84,8 +84,8 @@ private const val FALL_OFFSET = 600f
 @Composable
 fun PositiveFeedbackAnimation(
     isVisible: Boolean,
-    onAnimationEnd: () -> Unit = {},
     modifier: Modifier = Modifier,
+    onAnimationEnd: () -> Unit = {},
 ) {
     if (!isVisible) return
 

@@ -68,7 +68,7 @@ class LemonQwestTestExtension : BeforeEachCallback, AfterEachCallback {
     }
 
     override fun beforeEach(context: ExtensionContext) {
-        val threadId = Thread.currentThread().id
+        val threadId = Thread.currentThread().threadId()
         val threadLock = threadLocks.computeIfAbsent(threadId) { Any() }
 
         synchronized(threadLock) {
@@ -104,7 +104,7 @@ class LemonQwestTestExtension : BeforeEachCallback, AfterEachCallback {
     }
 
     override fun afterEach(context: ExtensionContext) {
-        val threadId = Thread.currentThread().id
+        val threadId = Thread.currentThread().threadId()
         val threadLock = threadLocks[threadId]
 
         if (threadLock != null) {
@@ -148,7 +148,7 @@ class LemonQwestTestExtension : BeforeEachCallback, AfterEachCallback {
      * Useful for tests that need direct access to the dispatcher.
      */
     fun getTestDispatcher(): TestDispatcher? {
-        val threadId = Thread.currentThread().id
+        val threadId = Thread.currentThread().threadId()
         return testDispatchers[threadId]
     }
 }

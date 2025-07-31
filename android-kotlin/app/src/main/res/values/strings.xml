@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">LemonQwest</string>
-    <string name="avatar_selection_title">Select your avatar</string>
-    <string name="upload_avatar_content_desc">Upload a custom avatar image</string>
-    <string name="upload_avatar_button">Upload Avatar</string>
-    <string name="select_predefined_avatar_button">Choose Predefined Avatar</string>
     <string name="caregiver_setup_header">Let\'s set up your caregiver profile</string>
     <string name="caregiver_setup_subheader">As a caregiver, you\'ll be able to create tasks, manage rewards, and track your family\'s progress.</string>
     <string name="caregiver_name_label">Your Name</string>
@@ -22,7 +18,6 @@
     <string name="pin_length_error">PIN must be 4 digits</string>
     <string name="hide_pin">Hide PIN</string>
     <string name="show_pin">Show PIN</string>
-    <string name="role_selector_title">Who\'s using the app?</string>
     <string name="user_selection_title">Select User</string>
     <string name="child_role">Child</string>
     <string name="caregiver_role">Caregiver</string>

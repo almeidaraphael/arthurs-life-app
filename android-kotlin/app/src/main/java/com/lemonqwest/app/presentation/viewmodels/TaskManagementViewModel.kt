@@ -40,7 +40,7 @@ data class TaskManagementDependencies(
 @HiltViewModel
 class TaskManagementViewModel @Inject constructor(
     private val dependencies: TaskManagementDependencies,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+    @param:IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     private val scope: CoroutineScope,
 ) : ViewModel() {
 

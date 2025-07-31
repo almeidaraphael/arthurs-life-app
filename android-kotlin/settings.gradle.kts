@@ -11,6 +11,11 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
     }
+    versionCatalogs {
+        create("vclibs") {
+            from(files("gradle/libs.versions.toml"))
+        }
+    }
 }
 
 rootProject.name = "LemonQwest"

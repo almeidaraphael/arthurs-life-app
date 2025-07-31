@@ -118,6 +118,7 @@ fun ProfileCustomizationScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ProfileCustomizationTopBar(
     theme: BaseAppTheme,

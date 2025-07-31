@@ -68,7 +68,7 @@ abstract class LemonQwestDatabase : RoomDatabase() {
                     context.applicationContext,
                     LemonQwestDatabase::class.java,
                     "lemonqwest_database",
-                ).fallbackToDestructiveMigration()
+                ).fallbackToDestructiveMigration(dropAllTables = true)
                     .build()
                 INSTANCE = instance
                 instance

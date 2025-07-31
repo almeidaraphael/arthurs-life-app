@@ -20,8 +20,8 @@ class RoomAchievementDataSource @Inject constructor(
     private val achievementDao: AchievementDao,
 ) : AchievementDataSource {
 
-    override suspend fun findById(achievementId: String): Achievement? {
-        return achievementDao.findById(achievementId)?.toDomain()
+    override suspend fun findById(id: String): Achievement? {
+        return achievementDao.findById(id)?.toDomain()
     }
 
     override suspend fun findByUserId(userId: String): List<Achievement> {

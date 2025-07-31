@@ -1,22 +1,22 @@
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.hilt)
-    alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.detekt)
-    alias(libs.plugins.jacoco)
+    alias(vclibs.plugins.android.application)
+    alias(vclibs.plugins.kotlin.android)
+    alias(vclibs.plugins.kotlin.compose)
+    alias(vclibs.plugins.ksp)
+    alias(vclibs.plugins.hilt)
+    alias(vclibs.plugins.kotlin.serialization)
+    alias(vclibs.plugins.detekt)
+    alias(vclibs.plugins.jacoco)
 }
 
 android {
     namespace = "com.lemonqwest.app"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.lemonqwest.app"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -42,8 +42,8 @@ android {
     kotlinOptions {
         jvmTarget = "21"
         freeCompilerArgs += listOf(
-            "-opt-in=kotlin.RequiresOptIn",
-            "-opt-in=androidx.compose.material3.ExperimentalMaterial3Api"
+            "-Xcontext-parameters",
+            "-Xjvm-default=all"
         )
     }
     buildFeatures {
@@ -79,7 +79,7 @@ android {
     }
 
     testCoverage {
-        jacocoVersion = libs.versions.jacoco.get()
+        jacocoVersion = vclibs.versions.jacoco.get()
     }
 }
 
@@ -103,78 +103,78 @@ java {
 }
 
 dependencies {
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.bundles.compose)
+    implementation(vclibs.androidx.core.ktx)
+    implementation(vclibs.androidx.lifecycle.runtime.ktx)
+    implementation(vclibs.androidx.activity.compose)
+    implementation(platform(vclibs.androidx.compose.bom))
+    implementation(vclibs.bundles.compose)
 
-    // Explicit Kotlin standard library dependency
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.1.0")
+    // Explicit Kotlin standard library dependency (use catalog version)
+    implementation(vclibs.kotlin.stdlib)
 
     // Navigation
-    implementation(libs.androidx.navigation.compose)
+    implementation(vclibs.androidx.navigation.compose)
 
     // Hilt
-    implementation(libs.hilt.android)
-    implementation(libs.androidx.hilt.navigation.compose)
-    ksp(libs.hilt.android.compiler)
+    implementation(vclibs.hilt.android)
+    implementation(vclibs.androidx.hilt.navigation.compose)
+    ksp(vclibs.hilt.android.compiler)
 
     // Room
-    implementation(libs.bundles.room)
-    ksp(libs.androidx.room.compiler)
+    implementation(vclibs.bundles.room)
+    ksp(vclibs.androidx.room.compiler)
 
     // DataStore
-    implementation(libs.androidx.datastore.preferences)
+    implementation(vclibs.androidx.datastore.preferences)
 
     // Serialization
-    implementation(libs.kotlinx.serialization.json)
+    implementation(vclibs.kotlinx.serialization.json)
 
     // Security
-    implementation(libs.bcrypt)
+    implementation(vclibs.bcrypt)
 
     // Logging
-    implementation(libs.timber)
+    implementation(vclibs.timber)
 
     // Static Analysis
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.7")
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:${vclibs.versions.detekt.get()}")
 
     // Testing
-    testImplementation(libs.junit)
-    testImplementation(libs.bundles.junit.jupiter)
-    testImplementation(libs.bundles.testing.unit)
-    testImplementation(libs.hilt.android.testing)
-    kspTest(libs.hilt.android.compiler)
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-    testRuntimeOnly("org.junit.vintage:junit-vintage-engine")
+    testImplementation(vclibs.junit)
+    testImplementation(vclibs.bundles.junit.jupiter)
+    testImplementation(vclibs.bundles.testing.unit)
+    testImplementation(vclibs.hilt.android.testing)
+    kspTest(vclibs.hilt.android.compiler)
+    testRuntimeOnly(vclibs.junit.platform.launcher)
+    testRuntimeOnly(vclibs.junit.jupiter.engine)
+    testRuntimeOnly(vclibs.junit.vintage.engine)
 
     // Android instrumentation testing
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    androidTestImplementation(libs.bundles.junit.jupiter)
-    androidTestImplementation(libs.androidx.test.core)
-    androidTestImplementation(libs.androidx.test.core.ktx)
-    androidTestImplementation(libs.androidx.room.testing)
-    androidTestImplementation("io.mockk:mockk-android:1.13.10")
-    androidTestImplementation(libs.hilt.android.testing)
-    kspAndroidTest(libs.hilt.android.compiler)
+    androidTestImplementation(vclibs.androidx.junit)
+    androidTestImplementation(vclibs.androidx.espresso.core)
+    androidTestImplementation(platform(vclibs.androidx.compose.bom))
+    androidTestImplementation(vclibs.androidx.ui.test.junit4)
+    androidTestImplementation(vclibs.bundles.junit.jupiter)
+    androidTestImplementation(vclibs.androidx.test.core)
+    androidTestImplementation(vclibs.androidx.test.core.ktx)
+    androidTestImplementation(vclibs.androidx.room.testing)
+    androidTestImplementation("io.mockk:mockk-android:${vclibs.versions.mockk.get()}")
+    androidTestImplementation(vclibs.hilt.android.testing)
+    kspAndroidTest(vclibs.hilt.android.compiler)
 
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
+    debugImplementation(vclibs.androidx.ui.tooling)
+    debugImplementation(vclibs.androidx.ui.test.manifest)
 
     // Coroutine testing - using version catalog versions
-    testImplementation(libs.coroutines.test)
-    androidTestImplementation(libs.coroutines.test)
+    testImplementation(vclibs.coroutines.test)
+    androidTestImplementation(vclibs.coroutines.test)
 
     // MockK for mocking in unit tests - using version catalog version
-    testImplementation("app.cash.turbine:turbine:1.0.0")
-    testImplementation(libs.mockk)
+    testImplementation(vclibs.turbine)
+    testImplementation(vclibs.mockk)
 
     // Kotlinx datetime for test utilities
-    testImplementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
+    testImplementation(vclibs.kotlinx.datetime)
 }
 
 

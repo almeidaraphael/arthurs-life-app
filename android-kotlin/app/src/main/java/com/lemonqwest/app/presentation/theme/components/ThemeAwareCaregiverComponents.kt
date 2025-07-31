@@ -26,8 +26,8 @@ import com.lemonqwest.app.presentation.theme.BaseAppTheme
 @Composable
 fun ThemeAwareChildSelectorHeader(
     currentTheme: BaseAppTheme,
-    childName: String = "Arthur", // Default for backward compatibility
     modifier: Modifier = Modifier,
+    childName: String = "Arthur", // Default for backward compatibility
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -104,11 +104,11 @@ private fun ThemeAwareCaregiverRoleLabel(currentTheme: BaseAppTheme) {
 @Composable
 fun ThemeAwareChildOverviewCard(
     currentTheme: BaseAppTheme,
+    modifier: Modifier = Modifier,
     tokenBalance: Int = 85, // Default for backward compatibility
     weeklyProgress: String = "+15%", // Default for backward compatibility
     completedTasks: Int = 12,
     totalTasks: Int = 15,
-    modifier: Modifier = Modifier,
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
