@@ -2,28 +2,33 @@
 
 [🏠 Back to Docs Hub](README.md) | [🏠 Main README](../README.md)
 
-Comprehensive development workflow guide covering coding standards, build processes, IDE setup, and quality assurance for Arthur's Life app development.
+Comprehensive development workflow guide covering coding standards, build processes, IDE setup, and quality assurance for LemonQwest app development.
 
 ## 📋 Document Overview
 
 ### Purpose
+
 Provide developers with comprehensive guidance on development workflows, coding standards, build processes, and quality assurance practices to ensure consistent, high-quality code.
 
 ### Audience
+
 - **Primary**: Developers implementing features and maintaining the codebase
 - **Secondary**: Technical leads and code reviewers
 - **Prerequisites**: Basic Android development knowledge, Kotlin familiarity
 
 ### Scope
+
 Covers development workflow, code quality standards, build commands, IDE configuration, and performance optimization. Does not include deployment or production operations.
 
 ## 🎯 Quick Reference
 
 ### Key Information
+
 - **Summary**: Development workflow with quality gates and coding standards
 - **Related**: [Architecture](architecture.md), [Testing Guide](testing.md)
 
 ### Common Tasks
+
 - [Feature Development Process](#feature-development-process)
 - [Code Quality Standards](#code-quality-standards)
 - [Build Commands](#build-commands)
@@ -32,6 +37,7 @@ Covers development workflow, code quality standards, build commands, IDE configu
 ## 📖 Main Content
 
 ### Section 1: Core Concepts
+
 #### Development Workflow
 
 1. **Architecture Planning**
@@ -45,28 +51,33 @@ Covers development workflow, code quality standards, build commands, IDE configu
    - Build use cases to orchestrate business logic
    - Create UI components following Material Design 3
 
-3. **Quality Assurance**
-   - Write unit tests for domain logic (80%+ coverage required)
+3. **Quality Assurance (Modernized)**
+   - Write unit tests using modern LemonQwestTestExtension pattern (focus on essential business rules)
+   - Use parallel test execution for faster feedback
    - Run static analysis tools (Detekt, KtLint)
    - Test accessibility features with TalkBack
    - Validate UI responsiveness across screen sizes
 
 #### Branch Strategy
+
 - **main**: Production-ready code
 - **develop**: Integration branch for features
 - **feature/***: Individual feature development
 - **hotfix/***: Critical bug fixes
 
 ### Section 2: Implementation Details
+
 #### Code Quality Standards
 
 ##### Kotlin Coding Standards
+
 - **Classes**: PascalCase (`TaskRepository`, `UserViewModel`)
 - **Functions**: camelCase (`createTask()`, `validateInput()`)
 - **Constants**: SCREAMING_SNAKE_CASE (`MAX_TASK_NAME_LENGTH`)
-- **Packages**: lowercase (`com.arthurslife.app.domain.task`)
+- **Packages**: lowercase (`com.lemonqwest.app.domain.task`)
 
 ##### Code Style Requirements
+
 ```kotlin
 // Good: Clear, descriptive naming
 class TaskCompletionUseCase(
@@ -98,12 +109,14 @@ class Service {
 ```
 
 ##### Architecture Compliance
+
 - **Entities** must encapsulate business logic
 - **Value Objects** must be immutable
 - **Repositories** must use interfaces in domain layer
 - **Domain Events** must represent business concepts
 
 ##### SOLID Principles Application
+
 ```kotlin
 // Single Responsibility: One purpose per class
 class TokenCalculator {
@@ -140,6 +153,7 @@ interface TaskWriter {
 ```
 
 ##### DRY Implementation
+
 ```kotlin
 // Shared validation logic
 object ValidationRules {
@@ -178,48 +192,59 @@ fun StandardButton(
 ```
 
 ### Section 3: Configuration
+
 #### Build Commands
 
 ##### Essential Commands
-```bash
-# Navigate to Android project
-cd android-kotlin
 
+```bash
 # Build and install
-./gradlew build                    # Build entire project
-./gradlew installDebug            # Install debug APK
-./gradlew assembleDebug           # Create debug APK
-./gradlew assembleRelease         # Create release APK
+make build                        # Build entire project
+make install                      # Install debug APK
+make build-debug                  # Create debug APK
+make build-release                # Create release APK
 
 
 # Code quality
-./gradlew detektFormat            # Auto-format code (Detekt formatting only)
-./gradlew detekt                  # Run static analysis (Detekt, zero violations required)
-./gradlew check                   # Run all quality checks
+make format                       # Auto-format code (Detekt formatting only)
+make lint                         # Run static analysis (Detekt, zero violations required)
+make qa                           # Run all quality checks
 
-# Testing
-./gradlew test                    # Run unit tests
-./gradlew testDebugUnitTest       # Run debug unit tests
-./gradlew connectedAndroidTest    # Run instrumented tests
-./gradlew testCoverage            # Generate coverage report
+# Testing (Modernized)
+make test                         # Run unit tests with parallel execution
+make test-unit                    # Run debug unit tests (48 modernized test files)
+make test-integration             # Run instrumented tests
+make test-coverage                # Generate coverage report
+
+# Parallel execution (faster)
+./gradlew testDebugUnitTest --parallel   # Run all tests concurrently
 ```
 
-##### Quality Gates
+##### Quality Gates (Modernized)
+
 ```bash
-# Mandatory sequence (all must pass)
-./gradlew detektFormat && ./gradlew detekt && ./gradlew build && ./gradlew test && ./gradlew installDebug
+# Mandatory sequence (all must pass) - includes modernized tests
+make copilot-pipeline             # Complete pipeline: format → lint → build → test → install
+# OR step by step:
+make format && make lint && make build && make test && make install
+
+# Faster execution with parallel tests
+make format && make lint && make build && ./gradlew testDebugUnitTest --parallel && make install
 ```
 
 ##### Java Version Verification
+
 ```bash
 # Verify Java 21 (preferred) or Java 17 (fallback)
 java -version
-./gradlew -version
-./gradlew compileDebugKotlin
+make version                      # Show version information including Gradle
+make build-debug                  # Verify debug build compilation
 ```
 
 #### IDE Configuration
+
 ##### Android Studio Setup
+
 1. Go to **File → Project Structure → Project**
 2. Set **Project SDK** to Java 21 (preferred) or Java 17 (fallback)
 3. Set **Project Language Level** to 21 (or 17)
@@ -230,10 +255,12 @@ java -version
 See `.editorconfig` in `android-kotlin/` for enforced formatting. Detekt handles all Kotlin-specific formatting rules.
 
 ##### Useful Plugins
+
 - **Detekt** - Static analysis integration (mandatory)
 - **GitToolBox** - Git integration enhancements
 
 ##### VS Code Configuration
+
 ```json
 {
   "java.configuration.runtimes": [
@@ -252,9 +279,11 @@ See `.editorconfig` in `android-kotlin/` for enforced formatting. Detekt handles
 ```
 
 ### Section 4: Examples
+
 #### Performance Optimization
 
 ##### Jetpack Compose Best Practices
+
 ```kotlin
 // Use remember for expensive calculations
 @Composable
@@ -282,6 +311,7 @@ fun TaskItem(
 ```
 
 ##### Database Optimization
+
 ```kotlin
 // Efficient queries with Room
 @Dao
@@ -295,33 +325,42 @@ interface TaskDao {
 ```
 
 ### Section 5: Best Practices
+
 #### Security Considerations
 
 ##### Input Validation
+
 All user input must be validated according to business rules. Use domain-level validators and ensure compliance with COPPA and child safety standards.
 
 ##### Data Protection
+
 Sensitive data (e.g., PINs, tokens) must be stored securely using Android Keystore. Never store sensitive information in plain text or shared preferences.
 
-### Section 6: Troubleshooting
+### Section 6: Troubleshooting (Modernized)
+
 Common issues and their solutions:
 
-- **Detekt violations**: Run `./gradlew detektFormat` and fix all issues before proceeding. Zero violations required.
-- **Build failures**: Check for missing dependencies, incorrect Java version, or misconfigured Gradle files.
-- **Test failures**: Ensure all domain logic is covered and mocks are properly configured.
-- **IDE configuration issues**: Verify `.editorconfig` and SDK settings match project requirements.
+- **Detekt violations**: Run `make format` and fix all issues before proceeding. Zero violations required.
+- **Build failures**: Check for missing dependencies, incorrect Java version, or misconfigured Gradle files. Use `make debug-info` for troubleshooting.
+- **Test failures (Modernized)**: All tests use LemonQwestTestExtension - no manual MockK setup needed. Use `make test` or parallel execution with `./gradlew testDebugUnitTest --parallel`.
+- **Legacy test patterns**: Convert old tests to use `@RegisterExtension` with `LemonQwestTestExtension` - see [Testing Guide](testing.md).
+- **IDE configuration issues**: Verify `.editorconfig` and SDK settings match project requirements. Use `make check-env` to validate environment.
+
 ## 🔗 Integration Points
 
 ### Dependencies
+
 - **Internal**: [Architecture](architecture.md) - Design principles and patterns
 - **Internal**: [Getting Started](getting-started.md) - Development environment setup
 - **Internal**: [Testing Guide](testing.md) - Testing strategies and implementation
 
 ### Related Modules
+
 - **Dependency Injection**: See `di/DataStoreModule.kt` for Hilt setup and repository bindings.
 - **Domain Events**: See `domain/common/AchievementUpdateEvent.kt` for event-driven architecture.
 
 ### Related Features
+
 - **Code Quality**: Static analysis with Detekt and KtLint
 - **Build Process**: Gradle-based build system with quality gates
 - **IDE Integration**: Android Studio and VS Code configuration
@@ -330,18 +369,21 @@ Common issues and their solutions:
 ## 📚 Additional Resources
 
 ### Internal Documentation
+
 - [Getting Started](getting-started.md) - Initial setup and configuration
 - [Architecture](architecture.md) - Design principles and patterns
 - [Testing Guide](testing.md) - Testing strategies and implementation
 - [Contributing Guide](contributing.md) - Contribution guidelines
 
 ### External Resources
+
 - [Kotlin Style Guide](https://kotlinlang.org/docs/coding-conventions.html) - Official Kotlin conventions
 - [Android Development](https://developer.android.com/guide) - Official Android documentation
 - [Jetpack Compose](https://developer.android.com/jetpack/compose) - UI framework documentation
 - [Detekt](https://detekt.dev/) - Static analysis tool
 
 ### Tools and Utilities
+
 - [Gradle](https://gradle.org/) - Build automation tool
 - [Android Studio](https://developer.android.com/studio) - Primary IDE
 - [VS Code](https://code.visualstudio.com/) - Alternative editor
@@ -352,18 +394,21 @@ Common issues and their solutions:
 ## 📝 Contributing
 
 ### How to Contribute
+
 1. **Follow Standards**: Adhere to established coding standards and workflows
 2. **Run Quality Gates**: Execute all quality checks before submitting
 3. **Document Changes**: Update documentation when modifying workflows
 4. **Test Thoroughly**: Ensure all changes are properly tested
 
 ### Review Process
+
 1. **Code Review**: Validate adherence to standards and patterns
 2. **Quality Gates**: Ensure all automated checks pass
 3. **Manual Testing**: Verify functionality works as expected
 4. **Documentation Review**: Update relevant documentation
 
 ### Style Guidelines
+
 - Follow Kotlin coding conventions
 - Use clear, descriptive naming
 - Include appropriate comments and documentation

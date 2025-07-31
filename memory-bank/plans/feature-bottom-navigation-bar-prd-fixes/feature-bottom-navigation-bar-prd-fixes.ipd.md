@@ -51,13 +51,13 @@ The implementation will be broken down into the following tasks:
 
 ## 5. Files
 
-- **MODIFY**: `android-kotlin/app/src/main/java/com/arthurslife/app/domain/user/User.kt`
-- **MODIFY**: `android-kotlin/app/src/main/java/com/arthurslife/app/infrastructure/preferences/AuthPreferencesDataStore.kt`
-- **MODIFY**: `android-kotlin/app/src/main/java/com/arthurslife/app/presentation/navigation/BottomNavItem.kt`
-- **MODIFY**: `android-kotlin/app/src/main/java/com/arthurslife/app/presentation/viewmodels/BottomNavViewModel.kt`
-- **MODIFY**: `android-kotlin/app/src/test/java/com/arthurslife/app/presentation/navigation/BottomNavItemTest.kt`
-- **MODIFY**: `android-kotlin/app/src/test/java/com/arthurslife/app/presentation/viewmodels/BottomNavViewModelTest.kt`
-- **MODIFY**: `android-kotlin/app/src/androidTest/java/com/arthurslife/app/presentation/theme/components/ThemeAwareBottomNavigationBarTest.kt`
+- **MODIFY**: `android-kotlin/app/src/main/java/com/lemonqwest/app/domain/user/User.kt`
+- **MODIFY**: `android-kotlin/app/src/main/java/com/lemonqwest/app/infrastructure/preferences/AuthPreferencesDataStore.kt`
+- **MODIFY**: `android-kotlin/app/src/main/java/com/lemonqwest/app/presentation/navigation/BottomNavItem.kt`
+- **MODIFY**: `android-kotlin/app/src/main/java/com/lemonqwest/app/presentation/viewmodels/BottomNavViewModel.kt`
+- **MODIFY**: `android-kotlin/app/src/test/java/com/lemonqwest/app/presentation/navigation/BottomNavItemTest.kt`
+- **MODIFY**: `android-kotlin/app/src/test/java/com/lemonqwest/app/presentation/viewmodels/BottomNavViewModelTest.kt`
+- **MODIFY**: `android-kotlin/app/src/androidTest/java/com/lemonqwest/app/presentation/theme/components/ThemeAwareBottomNavigationBarTest.kt`
 
 ## 6. Testing
 
@@ -79,4 +79,3 @@ The implementation will be broken down into the following tasks:
 - `docs/product-requirements-documents/feature-bottom-navigation-bar.md`
 - `docs/implementation-plans/feature-bottom-navigation-bar.md`
 - `docs/architecture.md`
-

@@ -10,17 +10,17 @@ plugins {
 }
 
 android {
-    namespace = "com.arthurslife.app"
+    namespace = "com.lemonqwest.app"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.arthurslife.app"
+        applicationId = "com.lemonqwest.app"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "com.arthurslife.app.HiltTestRunner"
+        testInstrumentationRunner = "com.lemonqwest.app.HiltTestRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -59,7 +59,17 @@ android {
         unitTests.all {
             it.useJUnitPlatform()
             // Modern JVM configuration to avoid sharing warnings in tests
-            it.jvmArgs("-Xshare:off", "-XX:+HeapDumpOnOutOfMemoryError")
+            it.jvmArgs(
+                "-Xshare:off",
+                "-XX:+HeapDumpOnOutOfMemoryError",
+                "-Xmx2048m",
+                "-XX:MaxMetaspaceSize=512m"
+            )
+            // Disable JUnit parallel execution for test isolation
+            it.systemProperty("junit.jupiter.execution.parallel.enabled", "false")
+            it.systemProperty("junit.jupiter.execution.parallel.mode.default", "same_thread")
+            it.systemProperty("junit.jupiter.execution.parallel.mode.classes.default", "same_thread")
+            it.maxParallelForks = 1
         }
         unitTests {
             isIncludeAndroidResources = true
@@ -133,6 +143,8 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.bundles.junit.jupiter)
     testImplementation(libs.bundles.testing.unit)
+    testImplementation(libs.hilt.android.testing)
+    kspTest(libs.hilt.android.compiler)
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
     testRuntimeOnly("org.junit.vintage:junit-vintage-engine")

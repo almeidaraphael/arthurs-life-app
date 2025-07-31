@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Arthur\'s Life</string>
+    <string name="app_name">LemonQwest</string>
     <string name="avatar_selection_title">Select your avatar</string>
     <string name="upload_avatar_content_desc">Upload a custom avatar image</string>
     <string name="upload_avatar_button">Upload Avatar</string>

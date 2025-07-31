@@ -3,7 +3,7 @@
 
 LAYOUT_WITH_LEGEND()
 
-title Arthur's Life App - Family Setup & Onboarding Flow (v1, 2025-07)
+title LemonQwest App - Family Setup & Onboarding Flow (v1, 2025-07)
 
 actor User
 participant "OnboardingScreen" as onboarding

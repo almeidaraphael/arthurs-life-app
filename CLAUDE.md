@@ -1,380 +1,398 @@
-# Arthur's Life App - Claude Code Instructions
+# CLAUDE.md
 
-## 📋 Project Overview
-**Arthur's Life** is a family task management Android app built with Clean Architecture and Domain-Driven Design. It provides a gamified token-based reward system with role-based access for Children, Caregivers, and Admins.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-**NOTE**: This file works in conjunction with `~/.claude/CLAUDE.md` which contains universal development standards and practices. Read both files for complete context.
+## 🚨 CRITICAL CLAUDE CODE OPERATING PRINCIPLES
 
-## 🧠 Memory Bank Workflow
+### ❌ PROHIBITED BEHAVIORS (NEVER)
 
-**CRITICAL**: This project uses a Memory Bank workflow designed for AI memory resets. Before any work:
+- 🚫 **NEVER mark tasks as complete without verifiable evidence** - Require concrete proof such as:
+  - Build command outputs showing success/failure
+  - Test execution results with pass/fail counts
+  - Lint reports showing zero violations
+  - Actual file diffs showing changes made
+  - Error logs or stack traces for debugging
 
-1. **Read ALL Memory Bank Files** (required for every session):
-   - `memory-bank/projectbrief.md` - Core requirements and goals
-   - `memory-bank/productContext.md` - Project purpose and user experience
-   - `memory-bank/activeContext.md` - Current focus and next steps
-   - `memory-bank/systemPatterns.md` - Architecture and design patterns
-   - `memory-bank/techContext.md` - Technologies and constraints
-   - `memory-bank/progress.md` - Current status and known issues
-   - `memory-bank/plans/index.md` - Master index of all IPDs and tasks
+- 🚫 **NEVER abandon tasks due to complexity** - Do not stop, delay, or switch tasks because of:
+  - Perceived difficulty or time constraints
+  - Complex error messages or build failures
+  - Multiple failed attempts or setbacks
+  - Subjective assessments of task complexity
 
-2. **Follow Document Hierarchy**:
-   - **PRDs** (read-only): `/docs/product-requirements-documents/`
-   - **IPDs** (editable): `/memory-bank/plans/[ipd-folder]/[ipd-file].ipd.md`
-   - **Tasks** (editable): `/memory-bank/plans/[ipd-folder]/tasks/TASKID-taskname.md`
+- 🚫 **NEVER present assumptions as facts** - Avoid:
+  - Guessing what code does without reading it
+  - Inferring build results without running commands
+  - Assuming test outcomes without execution
+  - Deriving conclusions from partial information
 
-3. **Task Management Rules**:
-   - Cannot create tasks without corresponding IPD
-   - Cannot create IPD without referenced PRD
-   - Must update `memory-bank/plans/index.md` for all changes
-   - Must reference source documents in all IPDs and tasks
+- 🚫 **NEVER make inferences without evidence** - Only rely on:
+  - Confirmed command outputs and logs
+  - Observable file contents and changes
+  - Actual test execution results
+  - Concrete error messages and stack traces
 
-## 🏗️ Arthur's Life App Context
+### ✅ MANDATORY BEHAVIORS (ALWAYS)
 
-### Core Features
-- **Task System**: Children complete tasks, earn tokens, unlock achievements
-- **Task Management**: Caregivers create, assign, monitor tasks across multiple children
-- **Reward System**: Token-based local reward catalog and redemption
-- **Achievement System**: Milestone-based badges and celebrations
-- **Theme System**: User-based UI themes (Material Light default, with Material Dark and Mario Classic options available to all users)
+- ✅ **ALWAYS request clarification for ambiguity** - Ask for specifics when:
+  - Task requirements are unclear or underspecified
+  - Error messages need interpretation or context
+  - Multiple solution approaches are possible
+  - Expected outcomes are not clearly defined
 
-### Technology Stack
-- **Platform**: Android (API 24+, Target SDK 35)
-- **Language**: Kotlin 2.1.0 with Java 21 (fallback Java 17)
-- **UI**: Jetpack Compose with Material Design 3
-- **Architecture**: Clean Architecture + DDD (Domain → Infrastructure → Presentation)
-- **Database**: Room with SQLite, offline-first with encryption
-- **DI**: Hilt with feature-based modules
-- **Testing**: JUnit, Espresso, MockK (80%+ domain coverage required)
-- **Static Analysis**: Detekt, KtLint (zero violations policy)
+- ✅ **ALWAYS maintain persistent task focus** - Continue working until:
+  - Task is completely finished with evidence
+  - Explicit instruction is given to stop or pivot
+  - All quality gates pass with concrete proof
+  - Documentation is updated with progress
 
-## 📁 Project Structure
+- ✅ **ALWAYS document progress thoroughly** - Record:
+  - Intermediate steps and their outcomes
+  - Command outputs and their interpretation
+  - Failed attempts and lessons learned
+  - Final results with verifiable evidence
 
-```
-android-kotlin/app/src/main/java/com/arthurslife/app/
-├── domain/           # Business logic, aggregates, value objects
-│   ├── user/         # User aggregate (User, UserRole, TokenBalance)
-│   ├── task/         # Task aggregate (Task, TaskCategory, TaskStatus)
-│   ├── token/        # Token economy (TokenTransaction, TokenBalance)
-│   ├── reward/       # Reward system (Reward, RewardCategory)
-│   └── achievement/  # Achievement system (Achievement, AchievementType)
-├── infrastructure/   # Repository implementations, DAOs, data sources
-│   ├── database/     # Room database, entities, DAOs
-│   ├── preferences/  # DataStore implementations
-│   └── repository/   # Repository implementations
-├── presentation/     # Jetpack Compose UI, navigation, ViewModels
-│   ├── screens/      # Screen composables
-│   ├── components/   # Reusable UI components
-│   ├── theme/        # Role-based theme system
-│   ├── navigation/   # Navigation logic
-│   └── viewmodels/   # ViewModels for state management
-├── di/               # Hilt modules organized by feature
-└── data/             # DataStore, theme management
-```
+- ✅ **ALWAYS use evidence-based debugging** - Prioritize:
+  - Root-cause analysis from concrete outputs
+  - Stack trace examination and interpretation
+  - Failed assertion analysis and resolution
+  - Build log analysis for error identification
 
-## 🔧 Arthur's Life Build Pipeline
+## 🔧 Essential Build Commands
 
-**MANDATORY SEQUENCE** (all must pass, zero tolerance policy):
+**CRITICAL**: Always run commands from the project root directory. All build operations use the comprehensive Makefile.
 
+### Development Workflow
 ```bash
-# Always navigate to android-kotlin directory first
-cd android-kotlin
+# Setup (one-time)
+make setup
 
-# 1. Format and analyze (run after ANY code change)
-./gradlew detektFormat
-./gradlew detekt        # ZERO violations required
+# Complete quality pipeline (mandatory before commits)
+make copilot-pipeline    # format → lint → build → test → install
 
-# 2. Build and test (before marking any work complete)
-./gradlew build         # Must build successfully
-./gradlew test          # Must have ZERO test failures
-./gradlew installDebug  # Must install successfully
+# Individual operations
+make format              # Format code with detekt
+make lint               # Static analysis (ZERO violations required)  
+make build              # Build all variants
+make test               # Run all tests
+make install            # Install debug APK
 ```
 
-**NOTE**: See `~/.claude/CLAUDE.md` for the complete zero tolerance policy and universal build verification principles.
+### Testing Commands
+```bash
+make test-unit              # Unit tests only
+make test-integration       # Instrumentation tests (requires device)
+make test-coverage          # Generate coverage report
+make test-filter PATTERN="*TestName*"  # Run specific tests
+make test-class CLASS="MyTestClass"     # Run specific test class
+```
 
-## 🎯 Architecture Principles
+### Quality Assurance
+```bash
+make qa                     # Complete QA pipeline
+make clean                  # Clean build artifacts
+make deep-clean            # Deep clean (cache, docs, daemons)
+```
 
-### Clean Architecture + DDD
-- **Domain Layer**: Business logic, aggregates, value objects, domain events
-- **Infrastructure Layer**: Repository implementations, database, external concerns
-- **Presentation Layer**: UI, ViewModels, navigation, user interaction
-- **Dependency Rule**: Dependencies point inward toward domain
+## 🏗️ Architecture Overview
 
-### Key Patterns
-- **Aggregates**: User, Task, Token, Reward, Achievement
-- **Value Objects**: UserRole, TaskCategory, TokenBalance, RewardCategory
-- **Domain Events**: TaskCompleted, TokensEarned, RewardRedeemed
-- **Repository Pattern**: Domain interfaces, infrastructure implementations
-- **SOLID Principles**: Single responsibility, dependency inversion
-- **DRY Implementation**: Shared components, centralized validation
+### Clean Architecture + Domain-Driven Design
+- **Domain Layer** (`domain/`): Business logic, entities, use cases
+- **Infrastructure Layer** (`infrastructure/`): Repository implementations, database, data sources  
+- **Presentation Layer** (`presentation/`): Jetpack Compose UI, ViewModels, navigation
+
+### Key Domain Aggregates
+- **User** (`domain/user/`): User entities, roles (Child/Caregiver/Admin), PIN authentication
+- **Task** (`domain/task/`): Task management, completion tracking, categories
+- **Token** (`domain/user/TokenBalance.kt`): Token economy for rewards
+- **Reward** (`domain/reward/`): Reward catalog and redemption system
+- **Achievement** (`domain/achievement/`): Milestone tracking and unlocking
+- **Theme** (`domain/theme/`): User-based theme selection system
+
+### Project Structure
+```
+android-kotlin/app/src/main/java/com/lemonqwest/app/
+├── domain/           # Business logic (DDD aggregates)
+├── infrastructure/   # Data layer (Room, DataStore, repositories)  
+├── presentation/     # UI layer (Compose, ViewModels, navigation)
+├── di/              # Hilt dependency injection modules
+└── data/            # Theme preferences and data stores
+```
+
+## 🧪 Testing Architecture
+
+### Test Structure
+- **Unit Tests** (`src/test/`): Domain logic, use cases, ViewModels
+- **Integration Tests** (`src/androidTest/`): Database, UI flows, end-to-end scenarios
+
+### Critical Testing Patterns
+
+#### Modern LemonQwest Test Pattern (REQUIRED FOR ALL UNIT TESTS)
+```kotlin
+// Use for ALL unit tests - provides complete isolation and parallel safety
+@OptIn(ExperimentalCoroutinesApi::class)
+class MyTest {
+    @RegisterExtension
+    @JvmField
+    val testExtension = LemonQwestTestExtension()
+
+    private lateinit var mockDependencies: MockedDependencies
+
+    @BeforeEach
+    fun setUp() {
+        mockDependencies = mockk()
+        // Setup mock behavior with explicit every/coEvery blocks
+        // MockK initialization and cleanup handled automatically by extension
+    }
+
+    @Test
+    fun `should test specific behavior`() = runTest {
+        // Test implementation with complete isolation
+        // Dispatcher management handled automatically
+    }
+}
+```
+
+#### Android Instrumentation Test Pattern (REQUIRED FOR INTEGRATION TESTS)
+```kotlin
+// Use for androidTest integration tests with Hilt and database
+@HiltAndroidTest
+class MyIntegrationTest : AndroidTestBase() {
+    
+    @Test
+    fun `should test integration scenario`() = runTest {
+        // Complete isolation with Hilt injection, database cleanup, and dispatcher management
+    }
+}
+
+// For database-specific tests
+class MyDaoTest : DatabaseTestBase() {
+    
+    @Test
+    fun `should test database operation`() = runTest {
+        val dao = database.myDao()
+        // Fresh in-memory database per test with complete cleanup
+    }
+}
+
+// For ViewModel tests in androidTest (legacy compatibility)
+class MyViewModelTest : ViewModelTestBase() {
+    
+    protected fun runViewModelTest(testBody: suspend TestScope.() -> Unit) {
+        // Synchronized dispatcher management addressing TestMainDispatcher.kt:66 errors
+    }
+}
+```
+
+#### Domain Tests (No Coroutines)
+```kotlin
+// Use for simple domain logic without coroutines
+class MyDomainTest {
+    @Test
+    fun `should validate domain logic`() {
+        // Direct testing without dispatcher setup
+    }
+}
+```
+
+### Test Infrastructure - Modern Isolation Patterns ✅
+**STATUS**: Complete test isolation system with standardized patterns across all test types.
+
+#### Test Pattern Requirements
+- **Unit Tests**: MUST use `LemonQwestTestExtension` for complete isolation
+- **Integration Tests**: MUST use `AndroidTestBase` for Hilt automation and resource management
+- **Database Tests**: MUST use `DatabaseTestBase` for fresh in-memory databases
+- **UI Tests**: Use `ComposeUiTestBase` for appropriate Compose testing patterns
+
+#### Test Isolation Principles
+- **Perfect Isolation**: All tests run independently with zero state bleeding
+- **Parallel Safety**: All tests designed for concurrent execution
+- **Automated Resource Management**: No manual setup/cleanup required
+- **Consistent Patterns**: Standardized approaches across all test types
+
+#### Prohibited Legacy Patterns
+- **❌ FORBIDDEN**: Manual MockK setup (`MockKAnnotations.init()`, `unmockkAll()`)
+- **❌ FORBIDDEN**: Manual Hilt setup (`@HiltAndroidTest` + `HiltAndroidRule`)
+- **❌ FORBIDDEN**: Basic JUnit 5 without proper isolation
+- **❌ FORBIDDEN**: Any patterns that cause TestMainDispatcher.kt:66 errors
+
+#### Test Quality Standards
+- **Zero State Bleeding**: Tests must not affect each other
+- **Automated MockK Management**: All mocking handled by test extensions
+- **Build Pipeline Compliance**: All tests must pass format, lint, and build checks
+- **Thread Safety**: All tests must be safe for parallel execution
 
 ## 🎨 Theme System
 
-### User-Based Theme Selection
-- **All Users** → Can select any available theme (Material Light, Material Dark, Mario Classic)
-  - Default: Material Light theme for all users
-  - Theme Selection: Independent of user role
-  - Terminology: Adapts based on selected theme
-  - Visual: Theme-appropriate colors, icons, and components
-  
-- **Mario Classic Theme** → Game-inspired experience
-  - Terminology: Quests, Coins, Power-ups, Adventures
-  - Visual: Game-inspired colors, playful icons
-  - Components: Theme-aware with semantic mapping
-  
-- **Material Light/Dark Themes** → Professional experience
-  - Terminology: Tasks, Tokens, Rewards, Management
-  - Visual: Material Design 3 components
-  - Components: Standard Material components
+### User-Based Themes (All users can select any theme)
+- **Material Light** (default): Professional task management interface
+- **Material Dark**: Dark mode variant with proper contrast
+- **Mario Classic**: Gamified experience with Mario-themed terminology and visuals
 
-### Theme Implementation Rules
-- **All UI components** must support theme switching
-- **Use semantic mapping** for shared components
-- **Never use raw Material** components directly
-- **Theme-aware terminology** adapts to selected theme
-- **Accessibility compliance** for all themes (4.5:1 contrast ratio)
+### Theme Implementation
+- All UI components must support theme switching via semantic mapping
+- Theme-aware terminology adapts based on selected theme
+- Accessibility compliance required (4.5:1 contrast ratio minimum)
 
-## 📋 Arthur's Life Code Standards
+## 🔒 Security & Safety Standards
 
-### Kotlin Requirements (Arthur's Life Specific)
-- **Explicit imports only** (no wildcard imports)
-- **Explicit nullability** declarations
-- **camelCase** functions (including @Composable)
-- **PascalCase** classes and data classes
-- **SCREAMING_SNAKE_CASE** constants
-- **No magic numbers** (use named constants)
-- **Group 7+ parameters** into data classes
-- **No business logic in composables**
+- **COPPA Compliance**: Child safety and privacy protection
+- **Input Validation**: All user inputs validated at domain boundaries
+- **Secure Storage**: Android Keystore for sensitive data (PINs, tokens)
+- **No External Dependencies**: Offline-first architecture
 
-### Architecture Requirements (Arthur's Life Specific)
-- **Business logic** only in domain layer
-- **UI logic** only in presentation layer
-- **Data access** only in infrastructure layer
-- **Dependencies** point toward domain
-- **Repository pattern** for all data access
-- **Immutable data classes** for value objects
-- **Domain events** for cross-aggregate communication
+## 💻 Technology Stack
 
-### Security Requirements
-- **Input validation** for all user inputs
-- **Secure storage** for sensitive data
-- **COPPA compliance** for child safety
-- **No PII collection** or external integrations
-- **Defense-in-depth** security architecture
+### Core Technologies
+- **Language**: Kotlin 2.1.0 with Java 21 (fallback Java 17)
+- **UI**: Jetpack Compose with Material Design 3
+- **Database**: Room with SQLite, offline-first
+- **DI**: Hilt with feature-based modules
+- **Navigation**: Navigation Compose
+- **State Management**: ViewModels with coroutines
 
-### Accessibility Requirements
-- **TalkBack support** for all interactive elements
-- **Semantic roles** for UI components
-- **4.5:1 color contrast** ratio minimum
-- **contentDescription** for all images
-- **Proper heading hierarchy** for navigation
+### Build Tools
+- **Build System**: Gradle with version catalogs
+- **Quality Tools**: Detekt (static analysis), JaCoCo (coverage)
+- **Testing**: JUnit 5, MockK, Espresso
+- **Target**: Android API 24+, Target SDK 35
 
-## 🚀 Development Workflow
+## 📝 Code Standards
 
-### 1. Plan Mode
-When asked to implement new features:
-1. **Check if PRD exists** in `docs/product-requirements-documents/`
-2. **Check if IPD exists** in `memory-bank/plans/`
-3. **Create IPD if needed** following template standards
-4. **Reference source documents** in all planning
+### Kotlin Style
+- **Classes**: PascalCase (`TaskRepository`, `UserViewModel`)
+- **Functions**: camelCase (`createTask()`, `validateInput()`)
+- **Constants**: SCREAMING_SNAKE_CASE (`MAX_TASK_NAME_LENGTH`)
+- **Explicit imports**: No wildcard imports allowed
+- **Null safety**: Explicit nullability declarations required
 
-### 2. Implementation Mode
-Follow this exact sequence:
-1. **Domain** → Define entities, value objects, business rules
-2. **Infrastructure** → Repository implementations, DAOs
-3. **Presentation** → Theme-aware Compose screens, ViewModels
-4. **DI** → Wire dependencies with Hilt modules
-5. **Testing** → Unit tests, integration tests (80%+ coverage)
-6. **Validation** → Run complete build pipeline
+### Architecture Rules
+- Business logic only in domain layer
+- UI logic only in presentation layer  
+- Data access only in infrastructure layer
+- Dependencies point toward domain (Clean Architecture)
+- Repository pattern for all data access
+- Immutable data classes for value objects
 
-### 3. Task Management
-- **Create tasks** only with existing IPD
-- **Reference source documents** in all tasks
-- **Update** `memory-bank/plans/index.md` for changes
-- **Document progress** in individual task files
-- **Follow task state transitions** (Pending → In Progress → Completed)
+### Quality Requirements
+- **Testing**: Essential business rules coverage with simple, maintainable, scalable tests that run in parallel with perfect isolation
+- **Linting**: Zero Detekt violations (enforced)
+- **Test Quality**: Tests must be non-overengineered, focused on critical business logic validation
+- **Documentation**: KDoc for public APIs
 
-### 4. Documentation Updates
-- **Update Memory Bank** files for architectural changes
-- **Never edit PRDs** (they are read-only)
-- **Follow markdown standards** (emoji headers, navigation)
-- **Cross-reference** all related documents
-- **Maintain traceability** between PRDs, IPDs, and tasks
+## 🚨 Build Enforcement & Evidence Requirements
 
-## 🔍 Search and Analysis Strategy
+### Zero-Tolerance Policy with Evidence Verification
+All commands in the build pipeline MUST pass with zero failures AND provide concrete evidence:
 
-### File Pattern Recognition
-- **Domain interfaces**: `domain/[feature]/` (business logic)
-- **Repository implementations**: `infrastructure/repository/` (data access)
-- **Database entities**: `infrastructure/database/entities/` (Room entities)
-- **ViewModels**: `presentation/viewmodels/` (UI state management)
-- **Theme components**: `presentation/theme/components/` (UI components)
-- **DI modules**: `di/` (dependency injection)
+1. **`make format`** - Must format successfully
+   - ✅ **Evidence Required**: Command output showing "✅ Code formatting complete!"
+   - ❌ **Invalid**: Assuming formatting worked without running command
 
-### Search Strategy
-1. **For UI patterns** → Search `presentation/theme/` first
-2. **For business logic** → Search `domain/` first
-3. **For data access** → Search `infrastructure/` first
-4. **For existing features** → Use comprehensive codebase search
-5. **For documentation** → Check `docs/` and `memory-bank/`
+2. **`make lint`** - ZERO violations required (HARD STOP)
+   - ✅ **Evidence Required**: Detekt report showing "✅ Static analysis complete!" with zero violations
+   - ❌ **Invalid**: Claiming "looks clean" without running lint command
 
-### Analysis Workflow
-- **Use semantic search** for broad concept discovery
-- **Use file search** for specific patterns
-- **Check Memory Bank** for current context
-- **Verify against PRDs** for requirements
-- **Cross-reference IPDs** for implementation plans
+3. **`make build`** - Must build successfully (HARD STOP)  
+   - ✅ **Evidence Required**: Build output showing "✅ Build complete!" with no compilation errors
+   - ❌ **Invalid**: Inferring build success from lack of visible errors
 
-## 🧪 Arthur's Life Testing Strategy
+4. **`make test`** - ZERO test failures (HARD STOP)
+   - ✅ **Evidence Required**: Test execution results showing pass/fail counts and "✅ All tests completed!"
+   - ❌ **Invalid**: Assuming tests pass without running them
 
-### Testing Requirements (Arthur's Life Specific)
-- **80%+ coverage** for domain layer (mandatory)
-- **Unit tests** for all business logic
-- **Integration tests** for repository implementations
-- **UI tests** for critical user flows
-- **Accessibility tests** for all interactive elements
+5. **`make install`** - Must install successfully (HARD STOP)
+   - ✅ **Evidence Required**: Installation output showing "✅ Debug APK installed!"
+   - ❌ **Invalid**: Guessing installation worked without device confirmation
 
-### Testing Patterns (Arthur's Life Specific)
-- **Given-When-Then** structure for all tests
-- **MockK** for mocking dependencies
-- **Happy path** and error scenario coverage
-- **Test data factories** for consistent test data
-- **Parameterized tests** for multiple scenarios
+### Task Completion Requirements
+**NEVER mark work complete without ALL of the following:**
+- ✅ Concrete command outputs demonstrating success
+- ✅ Actual file diffs showing changes made  
+- ✅ Test execution results with pass/fail evidence
+- ✅ Build logs confirming zero violations/errors
 
-## 🚨 Arthur's Life Error Handling
+## 🔍 Common Development Tasks
 
-### Domain Layer (Arthur's Life Specific)
-- **Custom exceptions** for business rule violations
-- **Result patterns** for operation outcomes
-- **Validation** at aggregate boundaries
-- **Domain events** for error notifications
+### Adding New Features
+1. **Domain First**: Create entities, value objects, use cases
+2. **Infrastructure**: Implement repositories, DAOs, data sources
+3. **Presentation**: Build Compose screens with theme support
+4. **DI**: Wire dependencies in appropriate Hilt modules
+5. **Testing**: Essential business rules tests, integration tests for critical flows
+6. **Validation**: Run complete build pipeline
 
-### Infrastructure Layer (Arthur's Life Specific)
-- **Repository exceptions** for data access errors
-- **Database transaction** handling
-- **Network failure** resilience (offline-first)
-- **Data consistency** validation
-
-### Presentation Layer (Arthur's Life Specific)
-- **User-friendly error messages**
-- **Loading states** for async operations
-- **Error recovery** options
-- **Accessibility** for error states
-
-## 📚 Arthur's Life Documentation Standards
-
-### Markdown Requirements (Arthur's Life Specific)
-- **Kebab-case** filenames (no spaces or special characters)
-- **Emoji** section headers for navigation
-- **Required navigation** links (top/bottom)
-- **Line length** limit of 400 characters
-- **Proper hierarchy** (H2, H3 - avoid H1, H4+)
-- **Front matter** with metadata fields
-
-### Documentation Types (Arthur's Life Specific)
-- **Technical docs** in `docs/` directory
-- **Planning docs** in `memory-bank/plans/`
-- **Code documentation** with comprehensive comments
-- **Architecture decisions** recorded and justified
-- **API documentation** for public interfaces
-
-## 🎯 Arthur's Life Decision Matrix
-
-### Feature Implementation Priority
-1. **Task System** → Foundation for all other features
-2. **Token Economy** → Depends on task completion
-3. **Reward System** → Depends on token balance
-4. **Achievement System** → Depends on task/token data
-
-### When User Asks For:
-- **"tasks"** → Start with `domain/task/` then `infrastructure/task/`
-- **"rewards"** → Verify tasks/tokens exist first
-- **"achievements"** → Verify tasks exist first
-- **"screens"** → Verify underlying domain logic exists first
-- **"navigation"** → Check role-based navigation requirements
-- **"theme"** → Verify all three available themes (Material Light, Material Dark, Mario Classic)
-
-### Code Generation Rules
-- **Check existing patterns** before creating new ones
-- **Follow theme compatibility** for all UI components
-- **Implement security** validation for all inputs
-- **Add accessibility** features for all interactive elements
-- **Create comprehensive tests** for all new functionality
-
-## 📝 Arthur's Life Commit Standards
-
-### Commit Message Format (Arthur's Life Specific)
-```
-feat: Add token earning system for task completion
-
-- Implement TokenEarningUseCase with business logic
-- Add TokenTransaction domain entity
-- Create TokenRepository with Room implementation
-- Add comprehensive unit tests with 85% coverage
-- Update task completion flow to award tokens
-```
-
-### Special Requirements (Arthur's Life Specific)
-- **Do not add** "Generated by", "Co-authored By" or related annotations
-- **Reference Memory Bank** updates in commit messages
-- **Follow atomic commit practices** for single features
-- **Update documentation** for architectural changes
-
-## 🏁 Arthur's Life Success Criteria
-
-### Code Quality (Arthur's Life Specific)
-- **Zero Detekt violations** (enforced automatically)
-- **All tests passing** (80%+ domain coverage)
-- **Successful build** and installation
-- **Theme compatibility** across all roles
-- **Accessibility compliance** (TalkBack, contrast)
-
-### Architecture Quality (Arthur's Life Specific)
-- **Clean layer separation** (domain, infrastructure, presentation)
-- **Proper dependency direction** (toward domain)
-- **Immutable domain models** and value objects
-- **Comprehensive error handling**
-- **Security best practices** throughout
-
-### Documentation Quality (Arthur's Life Specific)
-- **Memory Bank maintenance** (current context)
-- **Cross-referenced** documents
-- **Markdown standards** compliance
-- **Architectural decisions** documented
-- **Traceability** between PRDs, IPDs, and tasks
-
----
-
-**ARTHUR'S LIFE BUILD VERIFICATION**:
+### Running Single Tests
 ```bash
-# ALL of these commands MUST pass with zero failures:
-cd android-kotlin
-./gradlew detektFormat  # Must format successfully
-./gradlew detekt        # Must have ZERO violations
-./gradlew build         # Must build successfully
-./gradlew test          # Must have ZERO test failures  
-./gradlew installDebug  # Must install successfully
+# Use gradle directly for specific test classes (Make targets not available)
+./gradlew testDebugUnitTest --tests "com.lemonqwest.app.domain.task.TaskRepositoryTest"
+
+# Run specific test packages
+./gradlew testDebugUnitTest --tests "com.lemonqwest.app.domain.task.*"
+
+# Run all unit tests with continue on failure
+./gradlew testDebugUnitTest --continue
 ```
 
-**Implementation is INCOMPLETE with ANY failures above.**
+### Test Suite Status & Debugging
+```bash
+# Current test suite status:
+# - All test patterns use modern isolation approaches
+# - 100% standardized pattern coverage across all test types
+# - Perfect test isolation with zero state bleeding
+# - All tests safe for parallel execution
 
-## 📖 How These Files Work Together
+# Debug test issues
+./gradlew clean              # Clean build artifacts
+./gradlew build              # Rebuild project
+```
 
-This file (`CLAUDE.md`) contains **Arthur's Life App specific** instructions and must be used in conjunction with `~/.claude/CLAUDE.md` which contains **universal development standards**.
+## 🗂️ File Organization
 
-### Reading Order
-1. **First** → Read `~/.claude/CLAUDE.md` for universal standards
-2. **Second** → Read this file for Arthur's Life specifics
-3. **During work** → Follow both sets of instructions
+### Domain Layer Organization  
+- Each aggregate has its own package (`user/`, `task/`, `reward/`, etc.)
+- Use cases in `usecase/` subdirectories within aggregates
+- Shared concepts in `common/` package
 
-### Division of Responsibilities
-- **~/.claude/CLAUDE.md** → Universal standards, build verification, general best practices
-- **CLAUDE.md** → Arthur's Life context, Memory Bank workflow, project-specific requirements
+### Testing Organization
+- Unit tests mirror main source structure
+- Test utilities in `testutils/` package  
+- Integration tests in `androidTest/` with automated Hilt setup via `AndroidTestBase`
+- UI tests use `ComposeUiTestBase` for Compose testing with proper isolation
 
-### When in Doubt
-- **Code standards** → Check `~/.claude/CLAUDE.md` file first, then project-specific additions
-- **Build process** → Use Arthur's Life specific commands, but follow `~/.claude/CLAUDE.md` zero-tolerance policy
-- **Architecture** → Arthur's Life uses Clean Architecture + DDD (specified here)
-- **Quality standards** → `~/.claude/CLAUDE.md` file defines the framework, this file adds project requirements
+### Test Debugging Guide
+**Modern Pattern Requirements:**
+- **Unit Tests**: Always use `@OptIn(ExperimentalCoroutinesApi::class)` and `LemonQwestTestExtension`
+- **Integration Tests**: Always extend `AndroidTestBase` for proper Hilt integration
+- **Database Tests**: Always extend `DatabaseTestBase` for fresh database per test
+- **MockK Usage**: Use explicit `every { }` blocks, avoid relaxed mocking
 
-Both files are **mandatory** and **complementary** - neither is complete without the other.
+**Common Setup Requirements:**
+1. Unit tests need `@OptIn(ExperimentalCoroutinesApi::class)` → Add annotation + import
+2. MockK methods need imports → Add `import io.mockk.any`, `import io.mockk.every`
+3. All mocks need explicit behavior → Use `every { }` blocks
+4. Test extensions required → Use `@RegisterExtension` with appropriate base class
+
+### Navigation Structure
+- Bottom navigation for role-based screens
+- Top navigation bar with user switching and theme selection
+- Role-specific routing (Child/Caregiver/Admin different tabs)
+
+## ⚡ Performance Considerations
+
+### Jetpack Compose Best Practices
+- Use `remember` for expensive calculations
+- State hoisting for reusable components  
+- LazyColumn for large lists
+- Proper key usage in lists
+
+### Database Optimization
+- Efficient Room queries with proper indexing
+- Flow-based reactive data loading
+- Minimal data transfers between layers
+
+### Memory Management
+- Proper coroutine cancellation in ViewModels
+- Resource cleanup in lifecycle-aware components
+- Efficient image handling for avatars
+
+This codebase follows enterprise-grade development practices with comprehensive quality gates, clear architectural boundaries, and extensive testing coverage. Always run the complete build pipeline before committing changes.

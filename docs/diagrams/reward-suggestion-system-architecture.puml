@@ -3,7 +3,7 @@
 
 LAYOUT_WITH_LEGEND()
 
-title Arthur's Life App - Reward Suggestion System Architecture (v1, 2025-07)
+title LemonQwest App - Reward Suggestion System Architecture (v1, 2025-07)
 
 Container_Boundary(domain, "Domain Layer") {
   Component(rewardSuggestionService, "RewardSuggestionService", "Kotlin", "Suggests rewards based on user behavior, preferences, achievement history, privacy settings")

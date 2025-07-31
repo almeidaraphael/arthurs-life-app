@@ -3,7 +3,7 @@
 
 LAYOUT_WITH_LEGEND()
 
-title Arthur's Life App - System Context (v1, 2025-07)
+title LemonQwest App - System Context (v1, 2025-07)
 
 Person(arthur, "Arthur", "A child user who needs accessible, gamified support for daily routines and positive behavior reinforcement")
 Person(parent, "Parent/Caregiver", "Sets up tasks, manages rewards, and monitors Arthur's progress while ensuring his safety and privacy")
@@ -13,15 +13,15 @@ System_Ext(coppa, "COPPA Compliance", "Child privacy and parental consent requir
 System_Ext(gdpr, "GDPR Compliance", "Data minimization and consent management")
 
 System_Boundary(device, "Arthur's Android Device") {
-  System(arthurslife, "Arthur's Life App", "Native Android app providing token-based gamification system for daily tasks with accessibility-first design, privacy, and child safety compliance")
+  System(lemonqwest, "LemonQwest App", "Native Android app providing token-based gamification system for daily tasks with accessibility-first design, privacy, and child safety compliance")
 }
 
-arthur --> arthurslife : "Completes tasks,\nredeems rewards,\nviews progress"
-parent --> arthurslife : "Sets up tasks,\nconfigures rewards,\nreviews progress,\nprovides consent"
-arthurslife --> talkback : "Provides semantic\ncontent descriptions"
-arthurslife --> accessibility : "Supports large text,\nhigh contrast,\nkeyboard navigation"
-arthurslife --> coppa : "Enforces child privacy,\nparental consent,\ndata minimization"
-arthurslife --> gdpr : "Handles consent,\ndata export/deletion,\nretention policies"
+arthur --> lemonqwest : "Completes tasks,\nredeems rewards,\nviews progress"
+parent --> lemonqwest : "Sets up tasks,\nconfigures rewards,\nreviews progress,\nprovides consent"
+lemonqwest --> talkback : "Provides semantic\ncontent descriptions"
+lemonqwest --> accessibility : "Supports large text,\nhigh contrast,\nkeyboard navigation"
+lemonqwest --> coppa : "Enforces child privacy,\nparental consent,\ndata minimization"
+lemonqwest --> gdpr : "Handles consent,\ndata export/deletion,\nretention policies"
 
 SHOW_LEGEND()
 @enduml

@@ -2,28 +2,33 @@
 
 [🏠 Back to Docs Hub](README.md) | [🏠 Main README](../README.md)
 
-Comprehensive theme management system providing user-based customization and deep UI integration for Arthur's Life Android application.
+Comprehensive theme management system providing user-based customization and deep UI integration for LemonQwest Android application.
 
 ## Document Overview
 
 ### Purpose
+
 Describes theme system architecture, available themes, and implementation details for user-based experience customization and consistent theme management.
 
 ### Audience
+
 - UI developers implementing theme-aware components
 - Designers and architects planning theme customizations
 - Prerequisite: Familiarity with Material Design 3, Jetpack Compose, and Android development
 
 ### Scope
+
 Covers theme architecture, available themes, user-based theme selection, and component integration. Excludes visual design specifications and branding guidelines.
 
 ## 🎯 Quick Reference
 
 ### Key Information
+
 - **Summary**: User-based theme system: Material Light (default), Material Dark, and Mario Classic themes available to all users
 - **Related**: [architecture.md](architecture.md), [tech-stack.md](tech-stack.md)
 
 ### Common Tasks
+
 - Understanding available themes
 - User-based theme selection
 - Theme architecture overview
@@ -32,12 +37,15 @@ Covers theme architecture, available themes, user-based theme selection, and com
 ## 📖 Main Content
 
 ### Overview
-Arthur's Life app features a theme management system for user-based customization, including colors, terminology, icons, backgrounds, and user experience elements.
+
+LemonQwest app features a theme management system for user-based customization, including colors, terminology, icons, backgrounds, and user experience elements.
 
 #### Theme System Architecture
+
 ![Theme System Architecture](diagrams/theme-system-architecture.svg)
 
 #### Key Features
+
 - User-based theme selection: All users can choose any theme
 - Default theme: Material Light for all users
 - Available themes: Material Light, Material Dark, Mario Classic
@@ -49,15 +57,18 @@ Arthur's Life app features a theme management system for user-based customizatio
 ## 🔗 Integration Points
 
 ### Dependencies
+
 - [architecture.md](architecture.md)
 - [tech-stack.md](tech-stack.md)
 
 ### Related Features
+
 - UI components, accessibility, theming
 
 ## 📚 Additional Resources
 
 ### Internal Documentation
+
 - [README.md](README.md)
 - [architecture.md](architecture.md)
 - [tech-stack.md](tech-stack.md)
@@ -65,12 +76,15 @@ Arthur's Life app features a theme management system for user-based customizatio
 ## 📝 Contributing
 
 ### How to Contribute
+
 Update documentation for major theme system changes. Validate instructions for new theme features.
 
 ### Review Process
+
 Technical and editorial review required for all changes.
 
 ### Style Guidelines
+
 Use clear, concise language and consistent terminology.
 
 ---

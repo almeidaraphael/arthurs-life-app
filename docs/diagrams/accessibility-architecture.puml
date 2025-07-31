@@ -3,7 +3,7 @@
 
 LAYOUT_WITH_LEGEND()
 
-title Arthur's Life App - Accessibility Architecture (v1, 2025-07)
+title LemonQwest App - Accessibility Architecture (v1, 2025-07)
 
 AddComponentTag("a11y", $bgColor="#e0f7fa", $fontColor="#006064", $legendText="Accessibility Feature")
 AddComponentTag("coppa", $bgColor="#fff3e0", $fontColor="#e65100", $legendText="COPPA Compliance")
@@ -17,7 +17,7 @@ System_Boundary(android, "Android System") {
   System_Ext(keyboard, "Keyboard Navigation", "External keyboard support")
 }
 
-System_Boundary(app, "Arthur's Life App") {
+System_Boundary(app, "LemonQwest App") {
   Container_Boundary(presentation, "Presentation Layer") {
     Component(semantics, "Accessibility Semantics", "Kotlin + Compose", "Content descriptions, roles, state descriptions for all UI elements, COPPA compliance", $tags="a11y+coppa")
     Component(navigation, "Focus Navigation", "Kotlin + Compose", "Logical tab order, keyboard navigation, accessibility audit", $tags="a11y")
